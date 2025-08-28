@@ -806,104 +806,114 @@
       }
     });
 
-    // Function to load and display the ranking
-    async function loadRanking() {
-      // Set loading state
+// Function to load and display the ranking
+async function loadRanking() {
+  // Set loading state
+  document.querySelector('#rankingTable tbody').innerHTML = 
+    '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
+    const ranking = await response.json();
+
+    // ADD DEBUGGING HERE
+    console.log('Ranking response:', ranking);
+    console.log('Ranking type:', typeof ranking);
+    console.log('Is array:', Array.isArray(ranking));
+
+    // Handle empty data case
+    if (!ranking || ranking.length === 0) {
       document.querySelector('#rankingTable tbody').innerHTML = 
-        '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
-
-      try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
-        const ranking = await response.json();
-
-        // Handle empty data case
-        if (ranking.length === 0) {
-          document.querySelector('#rankingTable tbody').innerHTML = 
-            '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
-          return;
-        }
-        
-        // Clear existing content
-        document.querySelector('#rankingTable tbody').innerHTML = '';
-        
-        // Populate table
-        ranking.forEach((player, index) => {
-          // Create row
-          const row = document.createElement('tr');
-          
-          // Add cells - now with Total Runs column
-          row.innerHTML = `
-            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
-            <td class="name-cell">${player.name}</td>
-            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
-            <td>${player.runCount || 0}</td>
-            <td>${formatDecimalToTime(player.totalZ2)}</td>
-            <td>${formatDecimalToTime(player.totalZ4)}</td>
-            <td>${formatDecimalToTime(player.totalZ5)}</td>
-          `;
-          
-          document.querySelector('#rankingTable tbody').appendChild(row);
-        });
-      } catch (error) {
-        document.querySelector('#rankingTable tbody').innerHTML = 
-          `<tr><td colspan="7" class="loading-message">Error: ${error.message}</td></tr>`;
-        console.error("Ranking load error:", error);
-      }
+        '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+      return;
     }
-
-    // Function to load activities
-    async function loadActivities(loadAll) {
-      // Set loading state
-      document.querySelector('#activitiesTable tbody').innerHTML = 
-        '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+    
+    // Clear existing content
+    document.querySelector('#rankingTable tbody').innerHTML = '';
+    
+    // Populate table
+    ranking.forEach((player, index) => {
+      // Create row
+      const row = document.createElement('tr');
       
-      try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
-        const activities = await response.json();
+      // Add cells - now with Total Runs column
+      row.innerHTML = `
+        <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+        <td class="name-cell">${player.name}</td>
+        <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
+        <td>${player.runCount || 0}</td>
+        <td>${formatDecimalToTime(player.totalZ2)}</td>
+        <td>${formatDecimalToTime(player.totalZ4)}</td>
+        <td>${formatDecimalToTime(player.totalZ5)}</td>
+      `;
+      
+      document.querySelector('#rankingTable tbody').appendChild(row);
+    });
+  } catch (error) {
+    console.error("Ranking load error:", error);
+    document.querySelector('#rankingTable tbody').innerHTML = 
+      `<tr><td colspan="7" class="loading-message">Error: ${error.message}</td></tr>`;
+  }
+}
 
-        // Handle empty data cases
-        if (!activities || activities.length === 0) {
-          const message = !activities ? "No activities data received." : "No activities recorded yet.";
-          document.querySelector('#activitiesTable tbody').innerHTML = 
-            `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
-          return;
-        }
-        
-        // Limit to 10 most recent if not showing all
-        let displayActivities = activities;
-        if (!loadAll) {
-          displayActivities = activities.slice(0, 10);
-        }
-        
-        // Clear existing content
-        document.querySelector('#activitiesTable tbody').innerHTML = '';
-        
-        // Populate table with activities (with points in 3rd column)
-        displayActivities.forEach(function(activity) {
-          // Format each time as h:mm:ss
-          const z2Display = formatDecimalToTime(activity.z2);
-          const z4Display = formatDecimalToTime(activity.z4);
-          const z5Display = formatDecimalToTime(activity.z5);
-          
-          // Add row
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${activity.date || "Unknown"}</td>
-            <td class="name-cell">${activity.name || "Unknown"}</td>
-            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
-            <td>${z2Display}</td>
-            <td>${z4Display}</td>
-            <td>${z5Display}</td>
-          `;
-          
-          document.querySelector('#activitiesTable tbody').appendChild(row);
-        });
-      } catch (error) {
-        document.querySelector('#activitiesTable tbody').innerHTML = 
-          `<tr><td colspan="6" class="loading-message">Error: ${error.message}</td></tr>`;
-        console.error("Activities load error:", error);
-      }
+// Function to load activities
+async function loadActivities(loadAll) {
+  // Set loading state
+  document.querySelector('#activitiesTable tbody').innerHTML = 
+    '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+  
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
+    const activities = await response.json();
+
+    // ADD DEBUGGING HERE
+    console.log('Activities response:', activities);
+    console.log('Activities type:', typeof activities);
+    console.log('Is array:', Array.isArray(activities));
+
+    // Handle empty data cases
+    if (!activities || activities.length === 0) {
+      const message = !activities ? "No activities data received." : "No activities recorded yet.";
+      document.querySelector('#activitiesTable tbody').innerHTML = 
+        `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
+      return;
     }
+    
+    // Limit to 10 most recent if not showing all
+    let displayActivities = activities;
+    if (!loadAll && Array.isArray(activities)) {
+      displayActivities = activities.slice(0, 10);
+    }
+    
+    // Clear existing content
+    document.querySelector('#activitiesTable tbody').innerHTML = '';
+    
+    // Populate table with activities (with points in 3rd column)
+    displayActivities.forEach(function(activity) {
+      // Format each time as h:mm:ss
+      const z2Display = formatDecimalToTime(activity.z2);
+      const z4Display = formatDecimalToTime(activity.z4);
+      const z5Display = formatDecimalToTime(activity.z5);
+      
+      // Add row
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${activity.date || "Unknown"}</td>
+        <td class="name-cell">${activity.name || "Unknown"}</td>
+        <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
+        <td>${z2Display}</td>
+        <td>${z4Display}</td>
+        <td>${z5Display}</td>
+      `;
+      
+      document.querySelector('#activitiesTable tbody').appendChild(row);
+    });
+  } catch (error) {
+    console.error("Activities load error:", error);
+    document.querySelector('#activitiesTable tbody').innerHTML = 
+      `<tr><td colspan="6" class="loading-message">Error: ${error.message}</td></tr>`;
+  }
+}
   </script>
 </body>
 </html>
