@@ -1,19 +1,15 @@
-// migrate-data.js
+// migrate-to-prod.js
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin for EMULATOR use
+// Initialize Firebase Admin for PRODUCTION
 admin.initializeApp({
-  projectId: 'runningchallenge-6c1f8' // Use demo project for emulator
+  projectId: 'runningchallenge-6c1f8',
+  credential: admin.credential.applicationDefault()
 });
 
-// Connect to the Firestore emulator
 const db = admin.firestore();
-db.settings({
-  host: 'localhost:8080',
-  ssl: false
-});
 
-// Your existing data
+// Your existing data from Google Sheets
 const existingData = [
   ['Batz', 0, 20.88, 0, 20.88, '8/1/2025 16:43:11', '0:00:00', '0:20:53', '0:00:00'],
   ['Andy', 24.07, 4.58, 3.45, 23.515, '8/3/2025 21:12:22', '0:24:04', '0:04:35', '0:03:27'],
@@ -50,7 +46,7 @@ function parseDate(dateString) {
 
 // Migration function
 async function migrateData() {
-  console.log('Starting data migration to LOCAL EMULATOR...');
+  console.log('Starting data migration to PRODUCTION...');
   
   try {
     const batch = db.batch();
@@ -79,16 +75,28 @@ async function migrateData() {
       batch.set(docRef, data);
       count++;
       
-      console.log(`Prepared entry ${count}: ${name} - ${zonePoints} points`);
+      console.log(`Prepared entry ${count}: ${name} - ${zonePoints} points (${timestamp})`);
     }
     
     // Commit the batch
     await batch.commit();
-    console.log(`✅ Successfully migrated ${count} entries to LOCAL EMULATOR!`);
+    console.log(`✅ Successfully migrated ${count} entries to PRODUCTION!`);
     
     // Verify the migration
     const snapshot = await db.collection('runs').get();
-    console.log(`📊 Total documents in emulator database: ${snapshot.size}`);
+    console.log(`📊 Total documents in production database: ${snapshot.size}`);
+    
+    // Show summary by player
+    const playerCounts = {};
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      playerCounts[data.name] = (playerCounts[data.name] || 0) + 1;
+    });
+    
+    console.log('\n📈 Final summary:');
+    Object.keys(playerCounts).forEach(name => {
+      console.log(`   ${name}: ${playerCounts[name]} runs`);
+    });
     
   } catch (error) {
     console.error('❌ Migration failed:', error);
