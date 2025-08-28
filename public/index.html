@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Running Challenge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Keep all your existing CSS - it's exactly the same */
+    :root {
+      --dark-bg: #121212;
+      --card-bg: #1e1e1e;
+      --purple-accent: #9c5fff;
+      --purple-light: #b17fff;
+      --purple-gradient: linear-gradient(135deg, #9c5fff 0%, #7733ff 100%);
+      --text-primary: #ffffff;
+      --text-secondary: #aaaaaa;
+      --border-radius: 12px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 15px 8px;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+    
+    header {
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    
+    .logo span {
+      color: var(--purple-accent);
+    }
+    
+    /* FORCE mobile layout - no grid/flex at all by default */
+    .card-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    /* ONLY add grid on desktop screens */
+    @media screen and (min-width: 992px) {
+      body {
+        padding: 20px;
+      }
+      
+      .card-section {
+        padding: 25px;
+      }
+      
+      .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto !important;
+        gap: 20px !important;
+      }
+      
+      .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+      }
+      
+      .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+      }
+      
+      .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+      }
+      
+      .card-section {
+        margin-bottom: 0;
+      }
+      
+      /* Make the two top sections the same height */
+      .time-section .card-section,
+      .ranking-section .card-section {
+        height: 100%;
+      }
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    h2 span {
+      color: var(--purple-accent);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Select & Input styling */
+    select, input {
+      width: 100%;
+      padding: 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* Custom dropdown arrow */
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--purple-accent);
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    
+    /* Fix dropdown styling across browsers */
+    select {
+      background-color: var(--card-bg);
+      cursor: pointer;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--purple-gradient);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--purple-light);
+      min-height: 24px;
+    }
+    
+    /* Responsive Tables for Mobile */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 10px;
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 500px; /* Ensures table doesn't get too squished */
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 8px 5px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+    }
+    
+    .data-table th {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .rank-cell {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .rank-1:after {
+      content: "🏆";
+      margin-left: 5px;
+    }
+    
+    .name-cell {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .points-cell {
+      color: var(--purple-accent);
+      font-weight: 600;
+    }
+
+    .loading-message {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+    }
+
+    /* Time inputs in one row on mobile */
+    .running-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 10px 5px;
+      text-align: center;
+    }
+    
+    /* More compact time inputs for mobile */
+    .time-segments {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .time-segment {
+      width: 32px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 5px 2px;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 38px;
+    }
+    
+    /* Hide number input spinners */
+    .time-segment::-webkit-inner-spin-button, 
+    .time-segment::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+    
+    .time-separator {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: bold;
+      padding: 0;
+    }
+    
+    /* Time segment labels */
+    .time-segment-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .time-segment-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 8px;
+    }
+    
+    /* Label above time inputs on mobile */
+    .stat-card label {
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    /* View all activities button */
+    .view-all-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(156, 95, 255, 0.1);
+      color: var(--purple-light);
+      border: 1px solid rgba(156, 95, 255, 0.3);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .view-all-btn:hover {
+      background: rgba(156, 95, 255, 0.2);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    /* Larger time inputs on desktop */
+    @media screen and (min-width: 992px) {
+      .time-segment {
+        width: 44px;
+        padding: 8px 2px;
+        font-size: 16px;
+        height: 44px;
+      }
+      
+      .time-separator {
+        font-size: 17px;
+        padding: 0 1px;
+      }
+      
+      .time-segment-label {
+        font-size: 11px;
+        margin-top: 4px;
+      }
+      
+      .stat-label {
+        font-size: 12px;
+        margin-top: 10px;
+      }
+      
+      .stat-card {
+        padding: 15px 10px;
+      }
+      
+      .stat-card label {
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      
+      .running-stats {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">RUN<span>.</span>CHALLENGE</div>
+    </header>
+    
+    <!-- Mobile-first layout with simple blocks that will apply grid only on desktop -->
+    <div class="desktop-layout">
+      <!-- Time Input Section -->
+      <div class="time-section">
+        <div class="card-section">
+          <h2>Log Your <span>Time</span></h2>
+          
+          <form id="runningForm">
+            <div class="form-group">
+              <label for="name">Select Runner</label>
+              <div class="select-wrapper">
+                <select id="name" name="name" required>
+                  <option value="">Choose your name</option>
+                  <option value="Andy">Andy</option>
+                  <option value="Batz">Batz</option>
+                  <option value="Hans">Hans</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="running-stats">
+              <div class="form-group stat-card">
+                <label for="z2_hours">Zone 2 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×0.5 points per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z4_hours">Zone 4 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×1 point per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z5_hours">Zone 5 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×2 points per minute</span>
+              </div>
+            </div>
+            
+            <button type="submit">Submit Running Time</button>
+            <div id="message"></div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Ranking Section -->
+      <div class="ranking-section">
+        <div class="card-section">
+          <h2>Current <span>Ranking</span></h2>
+          
+          <!-- Always use tables, but make them responsive -->
+          <div class="table-wrapper">
+            <table class="data-table" id="rankingTable">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Runner</th>
+                  <th>Points</th>
+                  <th>Runs</th>
+                  <th>Z2</th>
+                  <th>Z4</th>
+                  <th>Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="loading-message">Loading ranking data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activities Section -->
+      <div class="activities-section">
+        <div class="card-section">
+          <div class="section-header">
+            <h2>Recent <span>Activities</span></h2>
+            <div>
+              <button id="viewAllBtn" class="view-all-btn">View All Runs</button>
+            </div>
+          </div>
+          
+          <!-- Always use tables, but make them responsive -->
+          <div class="table-wrapper">
+            <table class="data-table" id="activitiesTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Runner</th>
+                  <th>Points</th>
+                  <th>Z2</th>
+                  <th>Z4</th>
+                  <th>Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6" class="loading-message">Loading activities...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration - UPDATE THESE URLs AFTER DEPLOYING runningchallenge-6c1f8
+    const FUNCTIONS_BASE_URL =  '/.netlify/functions';
+    
+    // Track whether we're showing all activities or just recent ones
+    let showingAllActivities = false;
+    
+    // Initial load when the page is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      loadRanking();
+      setupTimeInputs();
+      
+      // Load recent activities with a slight delay
+      setTimeout(function() {
+        loadActivities(false); // false = show only recent
+      }, 1000);
+      
+      // Add event listener for "View All" button
+      document.getElementById('viewAllBtn').addEventListener('click', function() {
+        showingAllActivities = !showingAllActivities;
+        loadActivities(showingAllActivities);
+        this.textContent = showingAllActivities ? "Show Recent Runs" : "View All Runs";
+      });
+    });
+    
+    // Setup time input fields
+    function setupTimeInputs() {
+      // Get all time segment inputs
+      const timeSegments = document.querySelectorAll('.time-segment');
+      
+      timeSegments.forEach(input => {
+        // Handle input event with improved auto-advance
+        input.addEventListener('input', function(e) {
+          // Remove any non-numeric characters
+          this.value = this.value.replace(/[^\d]/g, '');
+          
+          // Ensure values are within min/max range
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          if (value > max) {
+            this.value = max;
+          }
+          
+          // Auto-advance after exactly 2 digits for minutes/seconds fields
+          // Or after 2 digits for hours field
+          const isHoursField = this.id.includes('hours');
+          const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
+          
+          if ((isMinutesOrSecondsField && this.value.length >= 2) || 
+              (isHoursField && this.value.length >= 2)) {
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            }
+          }
+        });
+        
+        // Handle blur event - format and pad values when field loses focus
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            this.value = this.id.includes('hours') ? '0' : '00';
+          } else if ((this.id.includes('minutes') || this.id.includes('seconds'))) {
+            // Add leading zeros
+            const value = parseInt(this.value) || 0;
+            this.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        // Handle keypress events for navigation and value changes
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const value = parseInt(this.value) || 0;
+            const max = parseInt(this.getAttribute('max'));
+            this.value = (value < max) ? value + 1 : 0;
+            if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+              this.value = '0' + this.value;
+            }
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const value = parseInt(this.value) || 0;
+            const max = parseInt(this.getAttribute('max'));
+            this.value = (value > 0) ? value - 1 : max;
+            if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+              this.value = '0' + this.value;
+            }
+          } else if (e.key === 'ArrowRight' && this.selectionStart === this.value.length) {
+            // Navigate to next segment on right arrow at end of field
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            }
+          } else if (e.key === 'ArrowLeft' && this.selectionStart === 0) {
+            // Navigate to previous segment on left arrow at start of field
+            const prevInput = this.parentElement.previousElementSibling?.previousElementSibling?.querySelector('input');
+            if (prevInput) {
+              prevInput.focus();
+              prevInput.select();
+            }
+          } else if (e.key === 'Enter') {
+            // On Enter key, navigate to next segment or submit form
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            } else {
+              // If this is the last input in a row, move to the first input of the next row
+              const currentCard = this.closest('.stat-card');
+              const nextCard = currentCard.nextElementSibling;
+              if (nextCard) {
+                const nextRowFirstInput = nextCard.querySelector('.time-segment');
+                if (nextRowFirstInput) {
+                  nextRowFirstInput.focus();
+                  nextRowFirstInput.select();
+                }
+              }
+            }
+          }
+        });
+        
+        // Select all text on focus
+        input.addEventListener('focus', function() {
+          this.select();
+        });
+      });
+    }
+    
+    // Parse segmented time inputs to decimal minutes
+    function getTimeValue(zonePrefix) {
+      const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
+      const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
+      const seconds = parseInt(document.getElementById(zonePrefix + '_seconds').value) || 0;
+      
+      return (hours * 60) + minutes + (seconds / 60);
+    }
+    
+    // Get formatted time string from segments
+    function getTimeString(zonePrefix) {
+      let hours = document.getElementById(zonePrefix + '_hours').value || '0';
+      let minutes = document.getElementById(zonePrefix + '_minutes').value || '00';
+      let seconds = document.getElementById(zonePrefix + '_seconds').value || '00';
+      
+      // Ensure minutes and seconds have leading zeros
+      minutes = parseInt(minutes) < 10 && minutes.length < 2 ? '0' + minutes : minutes;
+      seconds = parseInt(seconds) < 10 && seconds.length < 2 ? '0' + seconds : seconds;
+      
+      return hours + ':' + minutes + ':' + seconds;
+    }
+    
+    // Format decimal minutes to h:mm:ss
+    function formatDecimalToTime(decimalMinutes) {
+      if (!decimalMinutes) return '0:00:00';
+      
+      const totalMinutes = decimalMinutes;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = Math.floor(totalMinutes % 60);
+      const seconds = Math.round((totalMinutes % 1) * 60);
+      
+      return hours + ':' + 
+             (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+             (seconds < 10 ? '0' + seconds : seconds);
+    }
+
+    // Event listener for form submission
+    document.getElementById('runningForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+      
+      // Ensure all time inputs have proper formatting
+      document.querySelectorAll('.time-segment').forEach(input => {
+        if (!input.value) {
+          if (input.id.includes('hours')) {
+            input.value = '0';
+          } else {
+            input.value = '00';
+          }
+        } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+          // Add leading zeros
+          const value = parseInt(input.value) || 0;
+          input.value = value < 10 ? '0' + value : value;
+        }
+      });
+      
+      // Get time values from segments
+      const z2Decimal = getTimeValue('z2');
+      const z4Decimal = getTimeValue('z4');
+      const z5Decimal = getTimeValue('z5');
+      
+      // Get formatted time strings
+      const z2Time = getTimeString('z2');
+      const z4Time = getTimeString('z4');
+      const z5Time = getTimeString('z5');
+      
+      const formData = {
+        name: form.name.value,
+        z2: z2Decimal.toFixed(2),
+        z4: z4Decimal.toFixed(2),
+        z5: z5Decimal.toFixed(2),
+        z2_display: z2Time,
+        z4_display: z4Time,
+        z5_display: z5Time
+      };
+
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = 'Submitting...';
+
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/addRun`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          messageDiv.textContent = result.message;
+          
+          // Reset time fields but keep the name
+          const selectedName = form.name.value;
+          
+          // Reset time fields
+          document.querySelectorAll('.time-segment').forEach(input => {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
+            }
+          });
+          
+          // Keep the name
+          form.name.value = selectedName;
+          
+          // Reload data
+          loadRanking();
+          setTimeout(function() {
+            loadActivities(showingAllActivities);
+          }, 1000);
+        } else {
+          messageDiv.textContent = 'Error: ' + result.error;
+        }
+      } catch (error) {
+        messageDiv.textContent = 'Error: ' + error.message;
+        console.error("Form submission error:", error);
+      }
+    });
+
+    // Function to load and display the ranking
+    async function loadRanking() {
+      // Set loading state
+      document.querySelector('#rankingTable tbody').innerHTML = 
+        '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
+        const ranking = await response.json();
+
+        // Handle empty data case
+        if (ranking.length === 0) {
+          document.querySelector('#rankingTable tbody').innerHTML = 
+            '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+          return;
+        }
+        
+        // Clear existing content
+        document.querySelector('#rankingTable tbody').innerHTML = '';
+        
+        // Populate table
+        ranking.forEach((player, index) => {
+          // Create row
+          const row = document.createElement('tr');
+          
+          // Add cells - now with Total Runs column
+          row.innerHTML = `
+            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+            <td class="name-cell">${player.name}</td>
+            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
+            <td>${player.runCount || 0}</td>
+            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ4)}</td>
+            <td>${formatDecimalToTime(player.totalZ5)}</td>
+          `;
+          
+          document.querySelector('#rankingTable tbody').appendChild(row);
+        });
+      } catch (error) {
+        document.querySelector('#rankingTable tbody').innerHTML = 
+          `<tr><td colspan="7" class="loading-message">Error: ${error.message}</td></tr>`;
+        console.error("Ranking load error:", error);
+      }
+    }
+
+    // Function to load activities
+    async function loadActivities(loadAll) {
+      // Set loading state
+      document.querySelector('#activitiesTable tbody').innerHTML = 
+        '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+      
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
+        const activities = await response.json();
+
+        // Handle empty data cases
+        if (!activities || activities.length === 0) {
+          const message = !activities ? "No activities data received." : "No activities recorded yet.";
+          document.querySelector('#activitiesTable tbody').innerHTML = 
+            `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
+          return;
+        }
+        
+        // Limit to 10 most recent if not showing all
+        let displayActivities = activities;
+        if (!loadAll) {
+          displayActivities = activities.slice(0, 10);
+        }
+        
+        // Clear existing content
+        document.querySelector('#activitiesTable tbody').innerHTML = '';
+        
+        // Populate table with activities (with points in 3rd column)
+        displayActivities.forEach(function(activity) {
+          // Format each time as h:mm:ss
+          const z2Display = formatDecimalToTime(activity.z2);
+          const z4Display = formatDecimalToTime(activity.z4);
+          const z5Display = formatDecimalToTime(activity.z5);
+          
+          // Add row
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${activity.date || "Unknown"}</td>
+            <td class="name-cell">${activity.name || "Unknown"}</td>
+            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
+            <td>${z2Display}</td>
+            <td>${z4Display}</td>
+            <td>${z5Display}</td>
+          `;
+          
+          document.querySelector('#activitiesTable tbody').appendChild(row);
+        });
+      } catch (error) {
+        document.querySelector('#activitiesTable tbody').innerHTML = 
+          `<tr><td colspan="6" class="loading-message">Error: ${error.message}</td></tr>`;
+        console.error("Activities load error:", error);
+      }
+    }
+  </script>
+</body>
+</html>
