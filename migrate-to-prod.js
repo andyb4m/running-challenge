@@ -1,10 +1,24 @@
 // migrate-to-prod.js
 const admin = require('firebase-admin');
 
+// Use the service account that works in Netlify
+const serviceAccount = {
+  "type": "service_account",
+  "project_id": "runningchallenge-6c1f8",
+  "private_key_id": "4040773599a91cdf1e22bee768e66758dae1492e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPZ5LYEJ0CQCUQ\nOWRYwYvZiaQ6qUSoxms7kuC4xLezF18GQXavXbMFSeA2ZlLsY2wyrFQ7wFdyu8eh\n1URx1f5hdcdUykjb+0ZTAlRMaOmIwXt9G3hpsGXuOdk4b6jyKGUgVCXkBvCz4NAU\nmhLvCn08cOeZvovjSOV+q3a61v+Xsiw4I3W2gcSZeC856ESFU3J+h/eyPX4cQJTk\nbM8kBocdHol/s44WqV/RyBM+VHaJFUAZD0sflq1iWTRmgcBGbDa1BjcFDJ1zoCUJ\n1jstV4Of4MxhdI9WLbFraguPpYrgicuspFHF4tZVKmWm1wwmlby9fJULBTzBB+Io\n8sHxzXMDAgMBAAECggEAIFsYHXz6AY/gOFe7v9zx5E4EwOIHRA0wTWrsg+asgdPz\njxZHXbRQaVLNF69+4EHib0VTHr8y5UNGMYkD1H594NZu8ltcYnUg03JZlFIJnLwS\nd8IBVvud6zw7FwLUaHLE0/ZMsvYiNu2riItAyOnp/7Pdba68RAjrRIebTiqcVR2+\nvHT6HQPB1KN4Fv2+qOsdleB72tVzSDl54nTlksVnRNFnPfNuKPw5RyG7Knh3b9YM\nBIfECfyEmVQ2vNuCCglNJwyiTOvCMS2NI9Q9m9Ol96Mc6fgjmwegDlbQczM+adY9\nG+vGVnICjx2HvwhyQ9QKHeuQz3lEseuG320L8aw9AQKBgQDssSqmNjEVxxeKVfim\nofQxCotJpdoW5n+XGYwH4NEgWW4EQXR8Rp7FaCCvREmhJYm4QFyWHSjh8NU8k/Eb\nbs7fhBbhx+5dmGhCP428B1e3pPYwuhcuh88jdo7mMyHtieai0CrftU0w9VeKrHaN\nWnw70f3bUUhisOBzl2kFN7lFeQKBgQDgUswtMqWk/x1rvVRu2RyWwvVs3RTteleS\n7VzFd9D+WIFYY6NSzcc9yLoplJfOXszvvpAJ5fhyW6k5f5RG9PobFqYvVzUbed9j\nwdXhs2OB+32GF9BrJJ+UN5arUgFe6fOC8q/fx9y7YWyGIaIqW8Q4whaYMnlxODYI\n75ZFxeSJWwKBgQCpiOUBlMNn0+kanyWxRUPBdMn8AJ3L1WICerwAUJm6UBQrXC7x\nbSwAPetbXtBWaqrQnNk0dMJ5w6UY9Oa4PZBULSquoiQsSiQzf44n5iKAWdo1YLWG\nEKTfw+XrISjmGeZnLC/peNVHghQoMgvgh7WAq5LnarssZYD/iq4gnJ9KEQKBgQCs\n+GsjttfvICApgXXne1YGEhJ4fQi0DRAV5R0Rzs/CL7Cc3UeEg9PMGkkh4sgjgwn3\nGzOpzkACvhcAlRVamW95D7/Y5R+4LgNIwqAPRunFwowJp7c3xqed/Dcbp0ITU8ZH\nBKcEoPHdMsQhsTGAA/6L3WzasqDd4oAX59YxuuP73QKBgEbcygjUMpKGZSCrRRzU\nCI6XgWZdYlg5fTgV/mrkmjECGnDx6HoXAhuPGKtmhcNbrGGAinpsOKMv+dEi8uA7\noH1X/NLlp02TyLXcwLNdFsVbO/nSikXIdEXapm0eryWmCsyuo7YXm80zksVNWMYJ\nmjd/TtOjC3sgDtWkGNoySHNz\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@runningchallenge-6c1f8.iam.gserviceaccount.com",
+  "client_id": "103206230348007162832",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40runningchallenge-6c1f8.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+};
+
 // Initialize Firebase Admin for PRODUCTION
 admin.initializeApp({
-  projectId: 'runningchallenge-6c1f8',
-  credential: admin.credential.applicationDefault()
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const db = admin.firestore();

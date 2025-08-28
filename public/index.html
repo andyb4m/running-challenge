@@ -7,7 +7,6 @@
   <title>Running Challenge</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Keep all your existing CSS - it's exactly the same */
     :root {
       --dark-bg: #121212;
       --card-bg: #1e1e1e;
@@ -17,6 +16,8 @@
       --text-primary: #ffffff;
       --text-secondary: #aaaaaa;
       --border-radius: 12px;
+      --shadow-default: 0 8px 30px rgba(0, 0, 0, 0.3);
+      --transition-default: all 0.3s ease;
     }
     
     * {
@@ -32,6 +33,7 @@
       line-height: 1.6;
       padding: 15px 8px;
       overflow-x: hidden;
+      min-height: 100vh;
     }
     
     .container {
@@ -42,31 +44,42 @@
     
     header {
       margin-bottom: 20px;
+      text-align: center;
     }
     
     .logo {
       font-size: 28px;
       font-weight: 700;
+      letter-spacing: 1px;
     }
     
     .logo span {
       color: var(--purple-accent);
     }
     
-    /* FORCE mobile layout - no grid/flex at all by default */
+    /* Mobile-first card sections */
     .card-section {
       background-color: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 15px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      box-shadow: var(--shadow-default);
       margin-bottom: 20px;
       width: 100%;
+      transition: var(--transition-default);
     }
     
-    /* ONLY add grid on desktop screens */
+    .card-section:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Desktop grid layout */
     @media screen and (min-width: 992px) {
       body {
         padding: 20px;
+      }
+      
+      header {
+        text-align: left;
       }
       
       .card-section {
@@ -99,10 +112,21 @@
         margin-bottom: 0;
       }
       
-      /* Make the two top sections the same height */
       .time-section .card-section,
       .ranking-section .card-section {
         height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section .running-stats {
+        flex: 1;
       }
     }
     
@@ -129,7 +153,7 @@
       font-weight: 500;
     }
     
-    /* Select & Input styling */
+    /* Improved form controls */
     select, input {
       width: 100%;
       padding: 12px;
@@ -141,9 +165,15 @@
       font-size: 16px;
       -webkit-appearance: none;
       appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(156, 95, 255, 0.2);
     }
 
-    /* Custom dropdown arrow */
     .select-wrapper {
       position: relative;
     }
@@ -157,12 +187,16 @@
       top: 50%;
       transform: translateY(-50%);
       pointer-events: none;
+      transition: var(--transition-default);
     }
     
-    /* Fix dropdown styling across browsers */
     select {
       background-color: var(--card-bg);
       cursor: pointer;
+    }
+    
+    select:hover + .select-wrapper::after {
+      color: var(--purple-light);
     }
     
     button {
@@ -176,6 +210,24 @@
       font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
+      transition: var(--transition-default);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(156, 95, 255, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
     
     #message {
@@ -184,29 +236,60 @@
       font-weight: 500;
       color: var(--purple-light);
       min-height: 24px;
+      padding: 8px;
+      border-radius: 6px;
+      transition: var(--transition-default);
     }
     
-    /* Responsive Tables for Mobile */
+    #message.success {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+    
+    #message.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    /* Improved responsive tables */
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       margin-bottom: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
     }
     
     .data-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      min-width: 500px; /* Ensures table doesn't get too squished */
+      min-width: 600px;
     }
     
     .data-table th,
     .data-table td {
-      padding: 8px 5px;
+      padding: 12px 8px;
       text-align: left;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       white-space: nowrap;
+    }
+    
+    /* Fixed column spacing for activities table */
+    #activitiesTable th:first-child,
+    #activitiesTable td:first-child {
+      width: 100px;
+      padding-right: 16px;
+    }
+    
+    #activitiesTable th:nth-child(2),
+    #activitiesTable td:nth-child(2) {
+      width: 80px;
+      padding-left: 16px;
+      padding-right: 12px;
     }
     
     .data-table th {
@@ -215,7 +298,12 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
     }
     
     .rank-cell {
@@ -242,45 +330,62 @@
       text-align: center;
       padding: 20px;
       color: var(--text-secondary);
+      font-style: italic;
     }
 
-    /* Time inputs in one row on mobile */
+    /* Improved mobile-friendly time inputs */
     .running-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 20px;
     }
 
     .stat-card {
       background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
-      padding: 10px 5px;
+      padding: 12px 8px;
       text-align: center;
+      transition: var(--transition-default);
     }
     
-    /* More compact time inputs for mobile */
+    .stat-card:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(156, 95, 255, 0.3);
+    }
+    
+    /* Smaller, more mobile-friendly time inputs */
     .time-segments {
       display: flex;
-      gap: 2px;
+      gap: 3px;
       justify-content: center;
       align-items: center;
       width: 100%;
     }
     
     .time-segment {
-      width: 32px;
+      width: 30px;
+      height: 36px;
       text-align: center;
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 5px 2px;
-      font-size: 14px;
+      border-radius: 6px;
+      padding: 4px 2px;
+      font-size: 13px;
       color: var(--text-primary);
       font-family: 'Courier New', monospace;
+      font-weight: 500;
       -webkit-appearance: none;
       appearance: none;
-      height: 38px;
+      transition: var(--transition-default);
+    }
+    
+    .time-segment:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(156, 95, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.08);
     }
     
     /* Hide number input spinners */
@@ -293,12 +398,11 @@
     
     .time-separator {
       color: var(--text-secondary);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
-      padding: 0;
+      padding: 0 1px;
     }
     
-    /* Time segment labels */
     .time-segment-container {
       display: flex;
       flex-direction: column;
@@ -311,22 +415,24 @@
       color: var(--text-secondary);
       margin-top: 3px;
       text-transform: uppercase;
+      font-weight: 500;
     }
 
     .stat-label {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--text-secondary);
       font-weight: 400;
       margin-top: 8px;
+      line-height: 1.2;
     }
     
-    /* Label above time inputs on mobile */
     .stat-card label {
-      font-size: 12px;
-      margin-bottom: 5px;
+      font-size: 11px;
+      margin-bottom: 8px;
+      font-weight: 500;
     }
 
-    /* View all activities button */
+    /* Improved view all button */
     .view-all-btn {
       display: inline-block;
       padding: 8px 16px;
@@ -339,11 +445,14 @@
       text-align: center;
       cursor: pointer;
       margin-top: 12px;
-      transition: all 0.2s ease;
+      transition: var(--transition-default);
+      text-decoration: none;
     }
 
     .view-all-btn:hover {
       background: rgba(156, 95, 255, 0.2);
+      border-color: rgba(156, 95, 255, 0.5);
+      transform: translateY(-1px);
     }
 
     .section-header {
@@ -351,29 +460,31 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     
-    /* Larger time inputs on desktop */
+    /* Desktop improvements */
     @media screen and (min-width: 992px) {
       .time-segment {
-        width: 44px;
-        padding: 8px 2px;
-        font-size: 16px;
-        height: 44px;
+        width: 38px;
+        height: 42px;
+        padding: 6px 2px;
+        font-size: 15px;
       }
       
       .time-separator {
-        font-size: 17px;
-        padding: 0 1px;
+        font-size: 14px;
+        padding: 0 2px;
       }
       
       .time-segment-label {
-        font-size: 11px;
+        font-size: 10px;
         margin-top: 4px;
       }
       
       .stat-label {
-        font-size: 12px;
+        font-size: 11px;
         margin-top: 10px;
       }
       
@@ -382,13 +493,132 @@
       }
       
       .stat-card label {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      
+      .running-stats {
+        gap: 15px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 14px 10px;
+      }
+      
+      #activitiesTable th:first-child,
+      #activitiesTable td:first-child {
+        width: 120px;
+        padding-right: 20px;
+      }
+      
+      #activitiesTable th:nth-child(2),
+      #activitiesTable td:nth-child(2) {
+        width: 100px;
+        padding-left: 20px;
+        padding-right: 16px;
+      }
+    }
+    
+    /* Tablet adjustments */
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      .time-segment {
+        width: 34px;
+        height: 38px;
         font-size: 14px;
-        margin-bottom: 8px;
+      }
+      
+      .stat-card {
+        padding: 14px 8px;
       }
       
       .running-stats {
         gap: 12px;
       }
+    }
+    
+    /* Small mobile adjustments */
+    @media screen and (max-width: 480px) {
+      body {
+        padding: 10px 6px;
+      }
+      
+      .card-section {
+        padding: 16px;
+      }
+      
+      .time-segment {
+        width: 28px;
+        height: 34px;
+        font-size: 12px;
+      }
+      
+      .time-separator {
+        font-size: 11px;
+      }
+      
+      .stat-card label {
+        font-size: 10px;
+      }
+      
+      .stat-label {
+        font-size: 8px;
+      }
+      
+      .data-table {
+        min-width: 500px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 10px 6px;
+        font-size: 13px;
+      }
+      
+      #activitiesTable th:first-child,
+      #activitiesTable td:first-child {
+        width: 85px;
+        padding-right: 12px;
+      }
+      
+      #activitiesTable th:nth-child(2),
+      #activitiesTable td:nth-child(2) {
+        width: 65px;
+        padding-left: 12px;
+        padding-right: 8px;
+      }
+    }
+    
+    /* Loading and error states */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .error-state {
+      color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Focus styles for better accessibility */
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--purple-accent);
+      outline-offset: 2px;
     }
   </style>
 </head>
@@ -398,7 +628,6 @@
       <div class="logo">RUN<span>.</span>CHALLENGE</div>
     </header>
     
-    <!-- Mobile-first layout with simple blocks that will apply grid only on desktop -->
     <div class="desktop-layout">
       <!-- Time Input Section -->
       <div class="time-section">
@@ -423,17 +652,17 @@
                 <label for="z2_hours">Zone 2 Time</label>
                 <div class="time-segments">
                   <div class="time-segment-container">
-                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric">
+                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
                     <span class="time-segment-label">h</span>
                   </div>
                   <span class="time-separator">:</span>
                   <div class="time-segment-container">
-                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
                     <span class="time-segment-label">m</span>
                   </div>
                   <span class="time-separator">:</span>
                   <div class="time-segment-container">
-                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
                     <span class="time-segment-label">s</span>
                   </div>
                 </div>
@@ -444,17 +673,17 @@
                 <label for="z4_hours">Zone 4 Time</label>
                 <div class="time-segments">
                   <div class="time-segment-container">
-                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric">
+                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
                     <span class="time-segment-label">h</span>
                   </div>
                   <span class="time-separator">:</span>
                   <div class="time-segment-container">
-                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
                     <span class="time-segment-label">m</span>
                   </div>
                   <span class="time-separator">:</span>
                   <div class="time-segment-container">
-                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
                     <span class="time-segment-label">s</span>
                   </div>
                 </div>
@@ -465,17 +694,17 @@
                 <label for="z5_hours">Zone 5 Time</label>
                 <div class="time-segments">
                   <div class="time-segment-container">
-                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric">
+                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
                     <span class="time-segment-label">h</span>
                   </div>
                   <span class="time-separator">:</span>
                   <div class="time-segment-container">
-                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
                     <span class="time-segment-label">m</span>
                   </div>
                   <span class="time-separator">:</span>
                   <div class="time-segment-container">
-                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric">
+                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
                     <span class="time-segment-label">s</span>
                   </div>
                 </div>
@@ -484,7 +713,7 @@
             </div>
             
             <button type="submit">Submit Running Time</button>
-            <div id="message"></div>
+            <div id="message" role="status" aria-live="polite"></div>
           </form>
         </div>
       </div>
@@ -494,18 +723,17 @@
         <div class="card-section">
           <h2>Current <span>Ranking</span></h2>
           
-          <!-- Always use tables, but make them responsive -->
           <div class="table-wrapper">
-            <table class="data-table" id="rankingTable">
+            <table class="data-table" id="rankingTable" role="table" aria-label="Current ranking">
               <thead>
                 <tr>
-                  <th>Rank</th>
-                  <th>Runner</th>
-                  <th>Points</th>
-                  <th>Runs</th>
-                  <th>Z2</th>
-                  <th>Z4</th>
-                  <th>Z5</th>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Runs</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
                 </tr>
               </thead>
               <tbody>
@@ -524,21 +752,20 @@
           <div class="section-header">
             <h2>Recent <span>Activities</span></h2>
             <div>
-              <button id="viewAllBtn" class="view-all-btn">View All Runs</button>
+              <button type="button" id="viewAllBtn" class="view-all-btn">View All Runs</button>
             </div>
           </div>
           
-          <!-- Always use tables, but make them responsive -->
           <div class="table-wrapper">
-            <table class="data-table" id="activitiesTable">
+            <table class="data-table" id="activitiesTable" role="table" aria-label="Recent activities">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Runner</th>
-                  <th>Points</th>
-                  <th>Z2</th>
-                  <th>Z4</th>
-                  <th>Z5</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
                 </tr>
               </thead>
               <tbody>
@@ -554,11 +781,36 @@
   </div>
 
   <script>
-    // Configuration - UPDATE THESE URLs AFTER DEPLOYING runningchallenge-6c1f8
-    const FUNCTIONS_BASE_URL =  '/.netlify/functions';
+    // Configuration
+    const FUNCTIONS_BASE_URL = '/.netlify/functions';
     
-    // Track whether we're showing all activities or just recent ones
+    // State management
     let showingAllActivities = false;
+    let isLoading = false;
+    
+    // Utility functions
+    const showMessage = (message, type = 'info') => {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type;
+      
+      // Auto-clear success messages after 3 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.textContent = '';
+          messageDiv.className = '';
+        }, 3000);
+      }
+    };
+    
+    const setLoadingState = (loading) => {
+      isLoading = loading;
+      const submitBtn = document.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = loading;
+        submitBtn.textContent = loading ? 'Submitting...' : 'Submit Running Time';
+      }
+    };
     
     // Initial load when the page is ready
     document.addEventListener('DOMContentLoaded', function() {
@@ -566,9 +818,7 @@
       setupTimeInputs();
       
       // Load recent activities with a slight delay
-      setTimeout(function() {
-        loadActivities(false); // false = show only recent
-      }, 1000);
+      setTimeout(() => loadActivities(false), 1000);
       
       // Add event listener for "View All" button
       document.getElementById('viewAllBtn').addEventListener('click', function() {
@@ -578,9 +828,8 @@
       });
     });
     
-    // Setup time input fields
+    // Setup time input fields with improved UX
     function setupTimeInputs() {
-      // Get all time segment inputs
       const timeSegments = document.querySelectorAll('.time-segment');
       
       timeSegments.forEach(input => {
@@ -597,8 +846,7 @@
             this.value = max;
           }
           
-          // Auto-advance after exactly 2 digits for minutes/seconds fields
-          // Or after 2 digits for hours field
+          // Auto-advance logic
           const isHoursField = this.id.includes('hours');
           const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
           
@@ -612,67 +860,80 @@
           }
         });
         
-        // Handle blur event - format and pad values when field loses focus
+        // Handle blur event - format and pad values
         input.addEventListener('blur', function() {
           if (!this.value) {
             this.value = this.id.includes('hours') ? '0' : '00';
           } else if ((this.id.includes('minutes') || this.id.includes('seconds'))) {
-            // Add leading zeros
             const value = parseInt(this.value) || 0;
             this.value = value < 10 ? '0' + value : value;
           }
         });
         
-        // Handle keypress events for navigation and value changes
+        // Enhanced keyboard navigation
         input.addEventListener('keydown', function(e) {
-          if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            const value = parseInt(this.value) || 0;
-            const max = parseInt(this.getAttribute('max'));
-            this.value = (value < max) ? value + 1 : 0;
-            if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
-              this.value = '0' + this.value;
-            }
-          } else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            const value = parseInt(this.value) || 0;
-            const max = parseInt(this.getAttribute('max'));
-            this.value = (value > 0) ? value - 1 : max;
-            if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
-              this.value = '0' + this.value;
-            }
-          } else if (e.key === 'ArrowRight' && this.selectionStart === this.value.length) {
-            // Navigate to next segment on right arrow at end of field
-            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
-            if (nextInput) {
-              nextInput.focus();
-              nextInput.select();
-            }
-          } else if (e.key === 'ArrowLeft' && this.selectionStart === 0) {
-            // Navigate to previous segment on left arrow at start of field
-            const prevInput = this.parentElement.previousElementSibling?.previousElementSibling?.querySelector('input');
-            if (prevInput) {
-              prevInput.focus();
-              prevInput.select();
-            }
-          } else if (e.key === 'Enter') {
-            // On Enter key, navigate to next segment or submit form
-            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
-            if (nextInput) {
-              nextInput.focus();
-              nextInput.select();
-            } else {
-              // If this is the last input in a row, move to the first input of the next row
-              const currentCard = this.closest('.stat-card');
-              const nextCard = currentCard.nextElementSibling;
-              if (nextCard) {
-                const nextRowFirstInput = nextCard.querySelector('.time-segment');
-                if (nextRowFirstInput) {
-                  nextRowFirstInput.focus();
-                  nextRowFirstInput.select();
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          switch(e.key) {
+            case 'ArrowUp':
+              e.preventDefault();
+              this.value = (value < max) ? value + 1 : 0;
+              if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+                this.value = '0' + this.value;
+              }
+              break;
+              
+            case 'ArrowDown':
+              e.preventDefault();
+              this.value = (value > 0) ? value - 1 : max;
+              if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+                this.value = '0' + this.value;
+              }
+              break;
+              
+            case 'ArrowRight':
+              if (this.selectionStart === this.value.length) {
+                const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+                if (nextInput) {
+                  nextInput.focus();
+                  nextInput.select();
                 }
               }
-            }
+              break;
+              
+            case 'ArrowLeft':
+              if (this.selectionStart === 0) {
+                const prevInput = this.parentElement.previousElementSibling?.previousElementSibling?.querySelector('input');
+                if (prevInput) {
+                  prevInput.focus();
+                  prevInput.select();
+                }
+              }
+              break;
+              
+            case 'Enter':
+              e.preventDefault();
+              const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+              if (nextInput) {
+                nextInput.focus();
+                nextInput.select();
+              } else {
+                // Move to next zone or submit
+                const currentCard = this.closest('.stat-card');
+                const nextCard = currentCard.nextElementSibling;
+                if (nextCard) {
+                  const nextRowFirstInput = nextCard.querySelector('.time-segment');
+                  if (nextRowFirstInput) {
+                    nextRowFirstInput.focus();
+                    nextRowFirstInput.select();
+                  }
+                } else {
+                  // Submit form if this is the last input
+                  document.getElementById('runningForm').dispatchEvent(new Event('submit'));
+                }
+              }
+              break;
           }
         });
         
@@ -719,51 +980,57 @@
              (seconds < 10 ? '0' + seconds : seconds);
     }
 
-    // Event listener for form submission
+    // Enhanced form submission with better error handling
     document.getElementById('runningForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
+      if (isLoading) return;
+
       const form = e.target;
+      setLoadingState(true);
       
-      // Ensure all time inputs have proper formatting
-      document.querySelectorAll('.time-segment').forEach(input => {
-        if (!input.value) {
-          if (input.id.includes('hours')) {
-            input.value = '0';
-          } else {
-            input.value = '00';
-          }
-        } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
-          // Add leading zeros
-          const value = parseInt(input.value) || 0;
-          input.value = value < 10 ? '0' + value : value;
-        }
-      });
-      
-      // Get time values from segments
-      const z2Decimal = getTimeValue('z2');
-      const z4Decimal = getTimeValue('z4');
-      const z5Decimal = getTimeValue('z5');
-      
-      // Get formatted time strings
-      const z2Time = getTimeString('z2');
-      const z4Time = getTimeString('z4');
-      const z5Time = getTimeString('z5');
-      
-      const formData = {
-        name: form.name.value,
-        z2: z2Decimal.toFixed(2),
-        z4: z4Decimal.toFixed(2),
-        z5: z5Decimal.toFixed(2),
-        z2_display: z2Time,
-        z4_display: z4Time,
-        z5_display: z5Time
-      };
-
-      const messageDiv = document.getElementById('message');
-      messageDiv.textContent = 'Submitting...';
-
       try {
+        // Ensure all time inputs have proper formatting
+        document.querySelectorAll('.time-segment').forEach(input => {
+          if (!input.value) {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
+            }
+          } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+            const value = parseInt(input.value) || 0;
+            input.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        // Get time values from segments
+        const z2Decimal = getTimeValue('z2');
+        const z4Decimal = getTimeValue('z4');
+        const z5Decimal = getTimeValue('z5');
+        
+        // Validate that at least some time was entered
+        if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+          showMessage('Please enter at least some training time.', 'error');
+          setLoadingState(false);
+          return;
+        }
+        
+        // Get formatted time strings
+        const z2Time = getTimeString('z2');
+        const z4Time = getTimeString('z4');
+        const z5Time = getTimeString('z5');
+        
+        const formData = {
+          name: form.name.value,
+          z2: z2Decimal.toFixed(2),
+          z4: z4Decimal.toFixed(2),
+          z5: z5Decimal.toFixed(2),
+          z2_display: z2Time,
+          z4_display: z4Time,
+          z5_display: z5Time
+        };
+
         const response = await fetch(`${FUNCTIONS_BASE_URL}/addRun`, {
           method: 'POST',
           headers: {
@@ -775,7 +1042,7 @@
         const result = await response.json();
         
         if (response.ok) {
-          messageDiv.textContent = result.message;
+          showMessage(result.message, 'success');
           
           // Reset time fields but keep the name
           const selectedName = form.name.value;
@@ -789,131 +1056,112 @@
             }
           });
           
-          // Keep the name
+          // Keep the name selected
           form.name.value = selectedName;
           
           // Reload data
           loadRanking();
-          setTimeout(function() {
-            loadActivities(showingAllActivities);
-          }, 1000);
+          setTimeout(() => loadActivities(showingAllActivities), 1000);
         } else {
-          messageDiv.textContent = 'Error: ' + result.error;
+          showMessage('Error: ' + result.error, 'error');
         }
       } catch (error) {
-        messageDiv.textContent = 'Error: ' + error.message;
+        showMessage('Network error: ' + error.message, 'error');
         console.error("Form submission error:", error);
+      } finally {
+        setLoadingState(false);
       }
     });
 
-// Function to load and display the ranking
-async function loadRanking() {
-  // Set loading state
-  document.querySelector('#rankingTable tbody').innerHTML = 
-    '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+    // Enhanced ranking load function
+    async function loadRanking() {
+      const tbody = document.querySelector('#rankingTable tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
 
-  try {
-    const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
-    const ranking = await response.json();
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const ranking = await response.json();
 
-    // ADD DEBUGGING HERE
-    console.log('Ranking response:', ranking);
-    console.log('Ranking type:', typeof ranking);
-    console.log('Is array:', Array.isArray(ranking));
-
-    // Handle empty data case
-    if (!ranking || ranking.length === 0) {
-      document.querySelector('#rankingTable tbody').innerHTML = 
-        '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
-      return;
+        if (!ranking || ranking.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        ranking.forEach((player, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+            <td class="name-cell">${player.name}</td>
+            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
+            <td>${player.runCount || 0}</td>
+            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ4)}</td>
+            <td>${formatDecimalToTime(player.totalZ5)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Ranking load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
+      }
     }
-    
-    // Clear existing content
-    document.querySelector('#rankingTable tbody').innerHTML = '';
-    
-    // Populate table
-    ranking.forEach((player, index) => {
-      // Create row
-      const row = document.createElement('tr');
+
+    // Enhanced activities load function
+    async function loadActivities(loadAll) {
+      const tbody = document.querySelector('#activitiesTable tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
       
-      // Add cells - now with Total Runs column
-      row.innerHTML = `
-        <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
-        <td class="name-cell">${player.name}</td>
-        <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
-        <td>${player.runCount || 0}</td>
-        <td>${formatDecimalToTime(player.totalZ2)}</td>
-        <td>${formatDecimalToTime(player.totalZ4)}</td>
-        <td>${formatDecimalToTime(player.totalZ5)}</td>
-      `;
-      
-      document.querySelector('#rankingTable tbody').appendChild(row);
-    });
-  } catch (error) {
-    console.error("Ranking load error:", error);
-    document.querySelector('#rankingTable tbody').innerHTML = 
-      `<tr><td colspan="7" class="loading-message">Error: ${error.message}</td></tr>`;
-  }
-}
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const activities = await response.json();
 
-// Function to load activities
-async function loadActivities(loadAll) {
-  // Set loading state
-  document.querySelector('#activitiesTable tbody').innerHTML = 
-    '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
-  
-  try {
-    const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
-    const activities = await response.json();
-
-    // ADD DEBUGGING HERE
-    console.log('Activities response:', activities);
-    console.log('Activities type:', typeof activities);
-    console.log('Is array:', Array.isArray(activities));
-
-    // Handle empty data cases
-    if (!activities || activities.length === 0) {
-      const message = !activities ? "No activities data received." : "No activities recorded yet.";
-      document.querySelector('#activitiesTable tbody').innerHTML = 
-        `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
-      return;
+        if (!activities || activities.length === 0) {
+          const message = !activities ? "No activities data received." : "No activities recorded yet.";
+          tbody.innerHTML = `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
+          return;
+        }
+        
+        // Limit to 10 most recent if not showing all
+        let displayActivities = activities;
+        if (!loadAll && Array.isArray(activities)) {
+          displayActivities = activities.slice(0, 10);
+        }
+        
+        tbody.innerHTML = '';
+        
+        displayActivities.forEach(function(activity) {
+          const z2Display = formatDecimalToTime(activity.z2);
+          const z4Display = formatDecimalToTime(activity.z4);
+          const z5Display = formatDecimalToTime(activity.z5);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${activity.date || "Unknown"}</td>
+            <td class="name-cell">${activity.name || "Unknown"}</td>
+            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
+            <td>${z2Display}</td>
+            <td>${z4Display}</td>
+            <td>${z5Display}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Activities load error:", error);
+        tbody.innerHTML = `<tr><td colspan="6" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
+      }
     }
-    
-    // Limit to 10 most recent if not showing all
-    let displayActivities = activities;
-    if (!loadAll && Array.isArray(activities)) {
-      displayActivities = activities.slice(0, 10);
-    }
-    
-    // Clear existing content
-    document.querySelector('#activitiesTable tbody').innerHTML = '';
-    
-    // Populate table with activities (with points in 3rd column)
-    displayActivities.forEach(function(activity) {
-      // Format each time as h:mm:ss
-      const z2Display = formatDecimalToTime(activity.z2);
-      const z4Display = formatDecimalToTime(activity.z4);
-      const z5Display = formatDecimalToTime(activity.z5);
-      
-      // Add row
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${activity.date || "Unknown"}</td>
-        <td class="name-cell">${activity.name || "Unknown"}</td>
-        <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
-        <td>${z2Display}</td>
-        <td>${z4Display}</td>
-        <td>${z5Display}</td>
-      `;
-      
-      document.querySelector('#activitiesTable tbody').appendChild(row);
-    });
-  } catch (error) {
-    console.error("Activities load error:", error);
-    document.querySelector('#activitiesTable tbody').innerHTML = 
-      `<tr><td colspan="6" class="loading-message">Error: ${error.message}</td></tr>`;
-  }
-}
   </script>
 </body>
 </html>
