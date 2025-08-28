@@ -1,10 +1,21 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin
+// Initialize Firebase Admin with environment variables
 if (!admin.apps.length) {
+  let credential;
+  
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    // Parse the service account from environment variable
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    credential = admin.credential.cert(serviceAccount);
+  } else {
+    // Fallback for local development
+    credential = admin.credential.applicationDefault();
+  }
+
   admin.initializeApp({
-    projectId: 'runningchallenge-6c1f8', // Your actual project ID
-    credential: admin.credential.applicationDefault()
+    credential: credential,
+    projectId: process.env.FIREBASE_PROJECT_ID || 'runningchallenge-6c1f8'
   });
 }
 
