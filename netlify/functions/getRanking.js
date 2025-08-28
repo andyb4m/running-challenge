@@ -1,22 +1,25 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin with environment variables
+// Initialize Firebase Admin - simplified approach
 if (!admin.apps.length) {
-  let credential;
-  
-  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-    // Parse the service account from environment variable
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    credential = admin.credential.cert(serviceAccount);
-  } else {
-    // Fallback for local development
-    credential = admin.credential.applicationDefault();
-  }
+  try {
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+      throw new Error('FIREBASE_SERVICE_ACCOUNT environment variable is missing');
+    }
 
-  admin.initializeApp({
-    credential: credential,
-    projectId: process.env.FIREBASE_PROJECT_ID || 'runningchallenge-6c1f8'
-  });
+    console.log('Parsing service account...');
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    
+    console.log('Initializing Firebase Admin...');
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    
+    console.log('Firebase Admin initialized successfully');
+  } catch (error) {
+    console.error('Firebase initialization failed:', error.message);
+    throw error;
+  }
 }
 
 const db = admin.firestore();
@@ -33,7 +36,9 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('Fetching runs from Firestore...');
     const snapshot = await db.collection('runs').get();
+    console.log(`Found ${snapshot.size} documents`);
     
     if (snapshot.empty) {
       return {
@@ -77,13 +82,14 @@ exports.handler = async (event, context) => {
 
     ranking.sort((a, b) => b.totalPoints - a.totalPoints);
 
+    console.log(`Returning ${ranking.length} players`);
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify(ranking)
     };
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Function error:', error);
     return {
       statusCode: 500,
       headers,

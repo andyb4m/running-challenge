@@ -1,28 +1,30 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin with environment variables
+// Initialize Firebase Admin - simplified approach
 if (!admin.apps.length) {
-  let credential;
-  
-  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-    // Parse the service account from environment variable
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    credential = admin.credential.cert(serviceAccount);
-  } else {
-    // Fallback for local development
-    credential = admin.credential.applicationDefault();
-  }
+  try {
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+      throw new Error('FIREBASE_SERVICE_ACCOUNT environment variable is missing');
+    }
 
-  admin.initializeApp({
-    credential: credential,
-    projectId: process.env.FIREBASE_PROJECT_ID || 'runningchallenge-6c1f8'
-  });
+    console.log('Parsing service account...');
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    
+    console.log('Initializing Firebase Admin...');
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    
+    console.log('Firebase Admin initialized successfully');
+  } catch (error) {
+    console.error('Firebase initialization failed:', error.message);
+    throw error;
+  }
 }
 
 const db = admin.firestore();
 
 exports.handler = async (event, context) => {
-  // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -54,6 +56,7 @@ exports.handler = async (event, context) => {
     
     const zonePoints = (parseFloat(z2) * 0.5) + (parseFloat(z4) * 1) + (parseFloat(z5) * 2);
     
+    console.log(`Adding run for ${name} with ${zonePoints} points`);
     await db.collection('runs').add({
       name: name,
       z2: parseFloat(z2) || 0,
@@ -66,13 +69,14 @@ exports.handler = async (event, context) => {
       z5Display: z5_display || '0:00:00'
     });
 
+    console.log('Run added successfully');
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ message: "Entry added successfully! Ranking updated." })
     };
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Function error:', error);
     return {
       statusCode: 500,
       headers,
