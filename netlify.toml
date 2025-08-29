@@ -1,9 +1,14 @@
+    
 [build]
   functions = "netlify/functions"
   publish = "public"
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Add this plugin to auto-install function dependencies
+[[plugins]]
+  package = "@netlify/plugin-functions-install-core"
 
 [[redirects]]
   from = "/*"

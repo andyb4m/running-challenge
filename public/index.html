@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Running Challenge</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     :root {
       --dark-bg: #121212;
@@ -251,6 +252,32 @@
       background-color: rgba(239, 68, 68, 0.1);
       color: #ef4444;
       border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    /* reCAPTCHA styling */
+    .g-recaptcha {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 14px;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    /* Mobile reCAPTCHA adjustments */
+    @media screen and (max-width: 480px) {
+      .g-recaptcha {
+        transform: scale(0.85);
+        transform-origin: center;
+      }
     }
     
     /* Improved responsive tables */
@@ -643,6 +670,7 @@
                   <option value="Andy">Andy</option>
                   <option value="Batz">Batz</option>
                   <option value="Hans">Hans</option>
+                  <option value="Eleana">Eleana</option>
                 </select>
               </div>
             </div>
@@ -709,6 +737,14 @@
                   </div>
                 </div>
                 <span class="stat-label">×2 points per minute</span>
+              </div>
+            </div>
+            
+            <!-- reCAPTCHA Widget -->
+            <div class="form-group">
+              <div class="g-recaptcha" data-sitekey="6Lek7LYrAAAAABXlOK8N5KAEr5d6_-BfqOFeGJZ4"></div>
+              <div id="recaptcha-error" class="error-message" style="display: none;">
+                Please complete the reCAPTCHA verification.
               </div>
             </div>
             
@@ -980,11 +1016,23 @@
              (seconds < 10 ? '0' + seconds : seconds);
     }
 
-    // Enhanced form submission with better error handling
+    // Enhanced form submission with reCAPTCHA
     document.getElementById('runningForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       if (isLoading) return;
+
+      // Check reCAPTCHA first
+      const recaptchaResponse = grecaptcha.getResponse();
+      const recaptchaError = document.getElementById('recaptcha-error');
+      
+      if (!recaptchaResponse) {
+        recaptchaError.style.display = 'block';
+        recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      } else {
+        recaptchaError.style.display = 'none';
+      }
 
       const form = e.target;
       setLoadingState(true);
@@ -1028,7 +1076,8 @@
           z5: z5Decimal.toFixed(2),
           z2_display: z2Time,
           z4_display: z4Time,
-          z5_display: z5Time
+          z5_display: z5Time,
+          recaptcha: recaptchaResponse // Add reCAPTCHA response
         };
 
         const response = await fetch(`${FUNCTIONS_BASE_URL}/addRun`, {
@@ -1044,10 +1093,9 @@
         if (response.ok) {
           showMessage(result.message, 'success');
           
-          // Reset time fields but keep the name
+          // Reset form including reCAPTCHA
           const selectedName = form.name.value;
           
-          // Reset time fields
           document.querySelectorAll('.time-segment').forEach(input => {
             if (input.id.includes('hours')) {
               input.value = '0';
@@ -1056,17 +1104,18 @@
             }
           });
           
-          // Keep the name selected
           form.name.value = selectedName;
+          grecaptcha.reset(); // Reset reCAPTCHA
           
-          // Reload data
           loadRanking();
           setTimeout(() => loadActivities(showingAllActivities), 1000);
         } else {
           showMessage('Error: ' + result.error, 'error');
+          grecaptcha.reset(); // Reset reCAPTCHA on error
         }
       } catch (error) {
         showMessage('Network error: ' + error.message, 'error');
+        grecaptcha.reset(); // Reset reCAPTCHA on error
         console.error("Form submission error:", error);
       } finally {
         setLoadingState(false);

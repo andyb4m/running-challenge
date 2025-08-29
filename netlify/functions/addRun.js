@@ -1,16 +1,14 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin - simplified approach
+// Initialize Firebase Admin
 if (!admin.apps.length) {
   try {
     if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
       throw new Error('FIREBASE_SERVICE_ACCOUNT environment variable is missing');
     }
 
-    console.log('Parsing service account...');
     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
     
-    console.log('Initializing Firebase Admin...');
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
@@ -23,6 +21,26 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+
+// Function to verify reCAPTCHA
+async function verifyRecaptcha(token) {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  
+  if (!secretKey) {
+    throw new Error('reCAPTCHA secret key not configured');
+  }
+  
+  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `secret=${secretKey}&response=${token}`
+  });
+  
+  const data = await response.json();
+  return data.success;
+}
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -44,7 +62,25 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { name, z2, z4, z5, z2_display, z4_display, z5_display } = JSON.parse(event.body);
+    const { name, z2, z4, z5, z2_display, z4_display, z5_display, recaptcha } = JSON.parse(event.body);
+    
+    // Verify reCAPTCHA first
+    if (!recaptcha) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'reCAPTCHA verification required' })
+      };
+    }
+    
+    const isValidRecaptcha = await verifyRecaptcha(recaptcha);
+    if (!isValidRecaptcha) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'reCAPTCHA verification failed' })
+      };
+    }
     
     if (!name) {
       return {
