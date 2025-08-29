@@ -253,6 +253,118 @@
       color: #ef4444;
       border: 1px solid rgba(239, 68, 68, 0.2);
     }
+
+    		/* Import section styling */
+		.import-section {
+		  margin-bottom: 25px;
+		  padding: 20px;
+		  background: rgba(255, 255, 255, 0.03);
+		  border-radius: 8px;
+		  border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.import-section h3 {
+		  color: var(--purple-accent);
+		  font-size: 18px;
+		  margin-bottom: 15px;
+		}
+
+		.parse-btn {
+		  width: auto;
+		  padding: 10px 20px;
+		  margin-top: 10px;
+		  margin-left: 0;
+		  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		}
+
+		.activity-preview {
+		  margin-top: 20px;
+		  padding: 15px;
+		  background: rgba(16, 185, 129, 0.1);
+		  border: 1px solid rgba(16, 185, 129, 0.3);
+		  border-radius: 8px;
+		}
+
+		.activity-preview h4 {
+		  color: #10b981;
+		  margin-bottom: 15px;
+		}
+
+		.preview-grid {
+		  display: grid;
+		  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		  gap: 10px;
+		  margin-bottom: 15px;
+		}
+
+		.preview-item {
+		  display: flex;
+		  justify-content: space-between;
+		  padding: 8px;
+		  background: rgba(255, 255, 255, 0.05);
+		  border-radius: 4px;
+		}
+
+		.preview-item label {
+		  font-weight: 500;
+		  color: var(--text-secondary);
+		}
+
+		.preview-item span {
+		  color: var(--text-primary);
+		  font-weight: 600;
+		}
+
+		.preview-actions {
+		  display: flex;
+		  gap: 10px;
+		}
+
+		.use-data-btn {
+		  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		  flex: 1;
+		}
+
+		.cancel-btn {
+		  background: rgba(239, 68, 68, 0.2);
+		  border: 1px solid rgba(239, 68, 68, 0.3);
+		  color: #ef4444;
+		  flex: 1;
+		}
+
+		.divider {
+		  text-align: center;
+		  margin: 20px 0;
+		  position: relative;
+		}
+
+		.divider::before {
+		  content: '';
+		  position: absolute;
+		  top: 50%;
+		  left: 0;
+		  right: 0;
+		  height: 1px;
+		  background: rgba(255, 255, 255, 0.1);
+		}
+
+		.divider span {
+		  background: var(--card-bg);
+		  padding: 0 15px;
+		  color: var(--text-secondary);
+		  font-size: 14px;
+		}
+
+		/* Mobile adjustments */
+		@media screen and (max-width: 480px) {
+		  .preview-grid {
+			grid-template-columns: 1fr;
+		  }
+		  
+		  .preview-actions {
+			flex-direction: column;
+		  }
+		}
     
     /* reCAPTCHA styling */
     .g-recaptcha {
@@ -674,7 +786,60 @@
                 </select>
               </div>
             </div>
-            
+            <!-- Add this section after the runner selection and before the manual time inputs -->
+            <div class="import-section">
+              <h3>Import from Activity Link</h3>
+              <div class="form-group">
+                <label for="activityLink">Paste Polar or Garmin Activity Link</label>
+                <input type="url" id="activityLink" placeholder="https://flow.polar.com/shared2/... or https://connect.garmin.com/modern/activity/...">
+                <button type="button" id="parseActivityBtn" class="parse-btn">Parse Activity</button>
+              </div>
+              
+              <!-- Preview section (hidden by default) -->
+              <div id="activityPreview" class="activity-preview" style="display: none;">
+                <h4>Parsed Activity Data</h4>
+                <div class="preview-grid">
+                  <div class="preview-item">
+                    <label>Activity Name:</label>
+                    <span id="previewName">-</span>
+                  </div>
+                  <div class="preview-item">
+                    <label>Date:</label>
+                    <span id="previewDate">-</span>
+                  </div>
+                  <div class="preview-item">
+                    <label>Duration:</label>
+                    <span id="previewDuration">-</span>
+                  </div>
+                  <div class="preview-item">
+                    <label>Zone 2 Time:</label>
+                    <span id="previewZ2">-</span>
+                  </div>
+                  <div class="preview-item">
+                    <label>Zone 4 Time:</label>
+                    <span id="previewZ4">-</span>
+                  </div>
+                  <div class="preview-item">
+                    <label>Zone 5 Time:</label>
+                    <span id="previewZ5">-</span>
+                  </div>
+                  <div class="preview-item">
+                    <label>Total Points:</label>
+                    <span id="previewPoints">-</span>
+                  </div>
+                </div>
+                <div class="preview-actions">
+                  <button type="button" id="useImportedData" class="use-data-btn">Use This Data</button>
+                  <button type="button" id="cancelImport" class="cancel-btn">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider">
+              <span>OR</span>
+            </div>
+
+            <h3>Manual Entry</h3>
             <div class="running-stats">
               <div class="form-group stat-card">
                 <label for="z2_hours">Zone 2 Time</label>
@@ -1210,6 +1375,102 @@
         console.error("Activities load error:", error);
         tbody.innerHTML = `<tr><td colspan="6" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
       }
+    }
+
+    // Activity link parsing
+    document.getElementById('parseActivityBtn')?.addEventListener('click', async function() {
+      const activityUrl = document.getElementById('activityLink').value.trim();
+      
+      if (!activityUrl) {
+        showMessage('Please enter an activity URL', 'error');
+        return;
+      }
+
+      if (!activityUrl.includes('flow.polar.com') && !activityUrl.includes('connect.garmin.com')) {
+        showMessage('Please enter a valid Polar or Garmin activity URL', 'error');
+        return;
+      }
+
+      this.disabled = true;
+      this.textContent = 'Parsing...';
+
+      try {
+        const response = await fetch('/.netlify/functions/parseActivity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ activityUrl })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          displayActivityPreview(result.data);
+          showMessage('Activity parsed successfully! Review the data below.', 'success');
+        } else {
+          showMessage('Error: ' + result.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Parse error: ' + error.message, 'error');
+      } finally {
+        this.disabled = false;
+        this.textContent = 'Parse Activity';
+      }
+    });
+
+    function displayActivityPreview(data) {
+      // Populate preview section
+      document.getElementById('previewName').textContent = data.name || 'Unknown';
+      document.getElementById('previewDate').textContent = data.date || 'Unknown';
+      document.getElementById('previewDuration').textContent = data.duration || '0:00:00';
+      document.getElementById('previewZ2').textContent = formatDecimalToTime(data.z2 || 0);
+      document.getElementById('previewZ4').textContent = formatDecimalToTime(data.z4 || 0);
+      document.getElementById('previewZ5').textContent = formatDecimalToTime(data.z5 || 0);
+      
+      const totalPoints = (data.z2 * 0.5) + (data.z4 * 1) + (data.z5 * 2);
+      document.getElementById('previewPoints').textContent = totalPoints.toFixed(1);
+      
+      // Show preview section
+      document.getElementById('activityPreview').style.display = 'block';
+      
+      // Store parsed data for later use
+      window.parsedActivityData = data;
+    }
+
+    // Use imported data button
+    document.getElementById('useImportedData')?.addEventListener('click', function() {
+      if (window.parsedActivityData) {
+        const data = window.parsedActivityData;
+        
+        // Fill in the manual time inputs with parsed data
+        fillTimeInputs('z2', data.z2 || 0);
+        fillTimeInputs('z4', data.z4 || 0);
+        fillTimeInputs('z5', data.z5 || 0);
+        
+        // Hide preview and clear URL
+        document.getElementById('activityPreview').style.display = 'none';
+        document.getElementById('activityLink').value = '';
+        
+        showMessage('Activity data loaded into form. You can adjust if needed.', 'success');
+      }
+    });
+
+    // Cancel import button
+    document.getElementById('cancelImport')?.addEventListener('click', function() {
+      document.getElementById('activityPreview').style.display = 'none';
+      document.getElementById('activityLink').value = '';
+      window.parsedActivityData = null;
+    });
+
+    function fillTimeInputs(zonePrefix, decimalMinutes) {
+      const hours = Math.floor(decimalMinutes / 60);
+      const minutes = Math.floor(decimalMinutes % 60);
+      const seconds = Math.round((decimalMinutes % 1) * 60);
+      
+      document.getElementById(zonePrefix + '_hours').value = hours;
+      document.getElementById(zonePrefix + '_minutes').value = minutes.toString().padStart(2, '0');
+      document.getElementById(zonePrefix + '_seconds').value = seconds.toString().padStart(2, '0');
     }
   </script>
 </body>
