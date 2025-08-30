@@ -61,10 +61,7 @@ exports.handler = async (event, context) => {
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none'
+        'Upgrade-Insecure-Requests': '1'
       },
       timeout: 15000
     });
@@ -78,6 +75,9 @@ exports.handler = async (event, context) => {
     const html = await response.text();
     console.log('HTML length:', html.length);
 
+    // Log a portion of HTML to see what we're working with
+    console.log('HTML sample (first 1000 chars):', html.substring(0, 1000));
+
     // Parse based on platform
     let activityData = {};
     if (platform === 'polar') {
@@ -86,14 +86,21 @@ exports.handler = async (event, context) => {
       activityData = parseGarminActivity(html);
     }
 
-    console.log('Parsed activity data:', activityData);
+    console.log('Final parsed activity data:', activityData);
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         platform: platform,
-        data: activityData
+        data: activityData,
+        debug: {
+          htmlLength: html.length,
+          containsHighcharts: html.includes('highcharts'),
+          containsTimeInZones: html.includes('tab-time-in-zones'),
+          containsHeartRate: html.includes('heart rate') || html.includes('Heart Rate'),
+          containsZones: html.includes('zone') || html.includes('Zone') || html.includes('Bereich')
+        }
       })
     };
 
@@ -129,32 +136,83 @@ function parsePolarActivity(html) {
       activityData.name = titleMatch[1].replace(/\s+/g, ' ').trim();
     }
 
-    // Parse Polar Highcharts heart rate zones
-    // Look for highcharts data labels with data-z-index and time values
-    const zonePattern = /<div[^>]*class="[^"]*highcharts-data-label[^"]*"[^>]*data-z-index="(\d+)"[^>]*>[\s\S]*?<span[^>]*class="values"[^>]*>[\s\S]*?(\d{2}:\d{2}:\d{2})<\/span>/gi;
-    
+    console.log('Looking for Polar heart rate zones...');
+
+    // Strategy 1: Look for JSON data in script tags
+    const scriptMatches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+    if (scriptMatches) {
+      console.log(`Found ${scriptMatches.length} script tags`);
+      
+      for (let i = 0; i < scriptMatches.length; i++) {
+        const script = scriptMatches[i];
+        
+        // Look for heart rate zone data in JSON
+        if (script.includes('heartRateZones') || script.includes('zones') || script.includes('timeInZone')) {
+          console.log(`Script ${i} contains zone data`);
+          
+          // Try to extract time values
+          const timeMatches = script.match(/(\d{2}:\d{2}:\d{2})/g);
+          if (timeMatches) {
+            console.log('Found times in script:', timeMatches);
+            
+            // Assign times to zones (adjust mapping as needed)
+            if (timeMatches.length >= 3) {
+              activityData.z2 = timeStringToMinutes(timeMatches[0]) || 0;
+              activityData.z4 = timeStringToMinutes(timeMatches[1]) || 0;
+              activityData.z5 = timeStringToMinutes(timeMatches[2]) || 0;
+            }
+          }
+        }
+      }
+    }
+
+    // Strategy 2: Look for specific Polar patterns from your screenshot
+    // Look for highcharts data with specific patterns
+    const highchartsPattern = /data-z-index="(\d+)"[\s\S]*?00:(\d{2}):(\d{2})/g;
     let match;
     const zones = {};
     
-    while ((match = zonePattern.exec(html)) !== null) {
+    while ((match = highchartsPattern.exec(html)) !== null) {
       const zoneIndex = parseInt(match[1]);
-      const timeString = match[2];
+      const minutes = parseInt(match[2]);
+      const seconds = parseInt(match[3]);
+      const totalMinutes = minutes + (seconds / 60);
       
-      console.log(`Found Polar zone ${zoneIndex}: ${timeString}`);
-      
-      // Convert time string to minutes
-      const minutes = timeStringToMinutes(timeString);
-      zones[zoneIndex] = minutes;
+      console.log(`Found Polar zone ${zoneIndex}: ${minutes}:${match[3]} = ${totalMinutes} minutes`);
+      zones[zoneIndex] = totalMinutes;
     }
 
-    // Map Polar zones to our system
-    // Polar typically has 5 zones (0-4), we need zones 2, 4, 5
-    // Assuming: Zone 1 = Z2, Zone 3 = Z4, Zone 4 = Z5
-    activityData.z2 = zones[1] || 0;  // Polar Zone 2 -> Our Zone 2
-    activityData.z4 = zones[3] || 0;  // Polar Zone 4 -> Our Zone 4  
-    activityData.z5 = zones[4] || 0;  // Polar Zone 5 -> Our Zone 5
+    // Map zones if we found any
+    if (Object.keys(zones).length > 0) {
+      // Polar zones: 0=recovery, 1=fat burn, 2=aerobic, 3=anaerobic, 4=max
+      // Map to our system: Zone 2 (aerobic), Zone 4 (anaerobic), Zone 5 (max)
+      activityData.z2 = zones[2] || 0;  // Polar Zone 3 -> Our Zone 2
+      activityData.z4 = zones[3] || 0;  // Polar Zone 4 -> Our Zone 4
+      activityData.z5 = zones[4] || 0;  // Polar Zone 5 -> Our Zone 5
+    }
 
-    console.log('Polar zones mapped:', { z2: activityData.z2, z4: activityData.z4, z5: activityData.z5 });
+    // Strategy 3: Look for any time patterns and try to extract them
+    if (activityData.z2 === 0 && activityData.z4 === 0 && activityData.z5 === 0) {
+      console.log('No zones found yet, trying broader search...');
+      
+      // Look for any time patterns in the format 00:06:32
+      const allTimeMatches = html.match(/00:(\d{2}):(\d{2})/g);
+      if (allTimeMatches && allTimeMatches.length >= 5) {
+        console.log('Found time patterns:', allTimeMatches);
+        
+        // Take the last 3 non-zero times (assuming they are the higher zones)
+        const nonZeroTimes = allTimeMatches
+          .map(timeStringToMinutes)
+          .filter(minutes => minutes > 0)
+          .slice(-3); // Take last 3
+        
+        if (nonZeroTimes.length >= 3) {
+          activityData.z2 = nonZeroTimes[0];
+          activityData.z4 = nonZeroTimes[1];
+          activityData.z5 = nonZeroTimes[2];
+        }
+      }
+    }
 
   } catch (error) {
     console.error('Polar parsing error:', error);
@@ -183,45 +241,44 @@ function parseGarminActivity(html) {
       activityData.name = titleMatch[1].replace(/\s+/g, ' ').trim();
     }
 
-    // Parse Garmin heart rate zones from #tab-time-in-zones
-    // Look for the time-in-zones tab content
-    const timeInZonesMatch = html.match(/<div[^>]*id="tab-time-in-zones"[^>]*class="tab-pane[^"]*active[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+    console.log('Looking for Garmin heart rate zones...');
+
+    // Strategy 1: Look for the specific tab content you showed
+    const tabTimeInZonesPattern = /tab-time-in-zones[\s\S]*?tab-content[\s\S]*?(\d{1,2}:\d{2}:\d{2})[\s\S]*?(\d{1,2}:\d{2}:\d{2})[\s\S]*?(\d{1,2}:\d{2}:\d{2})[\s\S]*?(\d{1,2}:\d{2}:\d{2})[\s\S]*?(\d{1,2}:\d{2}:\d{2})/;
+    const tabMatch = tabTimeInZonesPattern.exec(html);
     
-    if (timeInZonesMatch) {
-      const zoneContent = timeInZonesMatch[1];
-      console.log('Found Garmin time-in-zones content');
+    if (tabMatch) {
+      console.log('Found Garmin tab time zones:', tabMatch.slice(1));
       
-      // Look for time values in the zone content
-      // Pattern: look for time formats like 00:05:32 or 0:05:32
-      const timePattern = /(\d{1,2}:\d{2}:\d{2})/g;
-      const times = [];
-      let timeMatch;
+      // Map the 5 zones: Z1, Z2, Z3, Z4, Z5
+      const times = tabMatch.slice(1).map(timeStringToMinutes);
+      activityData.z2 = times[1] || 0;  // Zone 2
+      activityData.z4 = times[3] || 0;  // Zone 4
+      activityData.z5 = times[4] || 0;  // Zone 5
+    } else {
+      // Strategy 2: Look for any time patterns in Garmin format
+      console.log('Tab pattern not found, trying broader search...');
       
-      while ((timeMatch = timePattern.exec(zoneContent)) !== null) {
-        const timeString = timeMatch[1];
-        const minutes = timeStringToMinutes(timeString);
-        if (minutes > 0) { // Only include non-zero times
-          times.push(minutes);
-          console.log(`Found Garmin time: ${timeString} = ${minutes} minutes`);
+      // Look for script tags with zone data
+      const scriptMatches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+      if (scriptMatches) {
+        for (let script of scriptMatches) {
+          if (script.includes('timeInZone') || script.includes('heartRateZones')) {
+            console.log('Found script with zone data');
+            
+            const timeMatches = script.match(/(\d{1,2}:\d{2}:\d{2})/g);
+            if (timeMatches && timeMatches.length >= 5) {
+              console.log('Found times in script:', timeMatches);
+              
+              const times = timeMatches.map(timeStringToMinutes);
+              activityData.z2 = times[1] || 0;
+              activityData.z4 = times[3] || 0;
+              activityData.z5 = times[4] || 0;
+              break;
+            }
+          }
         }
       }
-
-      // Map times to zones (assuming order: Z1, Z2, Z3, Z4, Z5)
-      // We want zones 2, 4, 5 (indices 1, 3, 4)
-      if (times.length >= 5) {
-        activityData.z2 = times[1] || 0;  // Zone 2
-        activityData.z4 = times[3] || 0;  // Zone 4
-        activityData.z5 = times[4] || 0;  // Zone 5
-      } else if (times.length >= 3) {
-        // If we only have 3 times, assume they are Z2, Z4, Z5
-        activityData.z2 = times[0] || 0;
-        activityData.z4 = times[1] || 0;
-        activityData.z5 = times[2] || 0;
-      }
-
-      console.log('Garmin zones mapped:', { z2: activityData.z2, z4: activityData.z4, z5: activityData.z5 });
-    } else {
-      console.log('Could not find Garmin time-in-zones content');
     }
 
   } catch (error) {
@@ -233,8 +290,10 @@ function parseGarminActivity(html) {
 }
 
 function timeStringToMinutes(timeString) {
-  // Convert "HH:MM:SS" or "MM:SS" to decimal minutes
-  const parts = timeString.split(':').map(p => parseInt(p) || 0);
+  if (!timeString) return 0;
+  
+  // Handle different time formats
+  const parts = timeString.replace(/[^\d:]/g, '').split(':').map(p => parseInt(p) || 0);
   
   if (parts.length === 3) {
     // HH:MM:SS
