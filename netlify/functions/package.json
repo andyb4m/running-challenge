@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "firebase-admin": "^11.8.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "puppeteer-core": "^21.0.0",
+    "@sparticuz/chromium": "^116.0.0"
   }
 }

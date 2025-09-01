@@ -1,4 +1,5 @@
-const fetch = require('node-fetch');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -18,6 +19,8 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
+
+  let browser = null;
 
   try {
     console.log('Function started');
@@ -44,34 +47,153 @@ exports.handler = async (event, context) => {
       };
     }
 
-    console.log('Garmin URL detected');
+    console.log('Garmin URL detected, launching browser...');
 
-    // Fetch the activity page
-    console.log('Fetching activity page...');
-    
-    const response = await fetch(activityUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1'
-      },
-      timeout: 15000
+    // Launch headless browser
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
 
-    console.log('Fetch response status:', response.status);
+    const page = await browser.newPage();
+    
+    // Set user agent
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    console.log('Navigating to activity page...');
+    
+    // Navigate to the activity page
+    await page.goto(activityUrl, { 
+      waitUntil: 'networkidle2',
+      timeout: 30000 
+    });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    console.log('Page loaded, looking for Zeit in Bereichen tab...');
+
+    // Wait for the page to load and look for the "Zeit in Bereichen" tab
+    try {
+      // Wait for the tab to be available
+      await page.waitForSelector('a[href="#tab-time-in-zones"]', { timeout: 10000 });
+      console.log('Found Zeit in Bereichen tab, clicking...');
+      
+      // Click on the "Zeit in Bereichen" tab
+      await page.click('a[href="#tab-time-in-zones"]');
+      
+      // Wait for the content to load
+      await page.waitForSelector('#tab-time-in-zones', { timeout: 10000 });
+      await page.waitForTimeout(2000); // Give it extra time to load
+      
+      console.log('Tab content loaded, extracting zone data...');
+      
+    } catch (error) {
+      console.log('Could not find or click Zeit in Bereichen tab:', error.message);
     }
 
-    const html = await response.text();
-    console.log('HTML length:', html.length);
+    // Extract the zone data
+    const activityData = await page.evaluate(() => {
+      const data = {
+        name: document.title || 'Garmin Activity',
+        date: new Date().toLocaleDateString(),
+        duration: '0:00:00',
+        zones: {
+          z1: '0:00',
+          z2: '0:00', 
+          z3: '0:00',
+          z4: '0:00',
+          z5: '0:00'
+        }
+      };
 
-    // Parse Garmin activity
-    const activityData = parseGarminActivity(html);
+      try {
+        // Look for the time-in-zones tab content
+        const zonesTab = document.getElementById('tab-time-in-zones');
+        if (zonesTab) {
+          console.log('Found zones tab content');
+          
+          // Method 1: Look for Bereich elements with time values
+          const bereichElements = zonesTab.querySelectorAll('[class*="zoneNumber"], [class*="zone"]');
+          
+          bereichElements.forEach(element => {
+            const text = element.textContent;
+            const bereichMatch = text.match(/Bereich\s*(\d+)/);
+            
+            if (bereichMatch) {
+              const zoneNumber = bereichMatch[1];
+              
+              // Look for time in nearby elements
+              let timeElement = element.parentElement;
+              for (let i = 0; i < 5; i++) { // Search up to 5 levels
+                if (timeElement) {
+                  const timeMatch = timeElement.textContent.match(/(\d{1,2}:\d{2})/);
+                  if (timeMatch) {
+                    console.log(`Found Zone ${zoneNumber}: ${timeMatch[1]}`);
+                    if (zoneNumber >= 1 && zoneNumber <= 5) {
+                      data.zones[`z${zoneNumber}`] = timeMatch[1];
+                    }
+                    break;
+                  }
+                  timeElement = timeElement.parentElement;
+                }
+              }
+            }
+          });
+          
+          // Method 2: Look for any elements containing "Bereich" and time patterns
+          if (Object.values(data.zones).every(zone => zone === '0:00')) {
+            const allElements = zonesTab.querySelectorAll('*');
+            
+            allElements.forEach(element => {
+              const text = element.textContent;
+              if (text.includes('Bereich')) {
+                const bereichMatch = text.match(/Bereich\s*(\d+)[\s\S]*?(\d{1,2}:\d{2})/);
+                if (bereichMatch) {
+                  const zoneNumber = bereichMatch[1];
+                  const timeValue = bereichMatch[2];
+                  console.log(`Method 2 - Zone ${zoneNumber}: ${timeValue}`);
+                  if (zoneNumber >= 1 && zoneNumber <= 5) {
+                    data.zones[`z${zoneNumber}`] = timeValue;
+                  }
+                }
+              }
+            });
+          }
+        }
+
+        // Method 3: Fallback - look anywhere on the page for Bereich patterns
+        if (Object.values(data.zones).every(zone => zone === '0:00')) {
+          const bodyText = document.body.textContent;
+          const bereichMatches = bodyText.match(/Bereich\s*(\d+)[\s\S]*?(\d{1,2}:\d{2})/g);
+          
+          if (bereichMatches) {
+            bereichMatches.forEach(match => {
+              const parts = match.match(/Bereich\s*(\d+)[\s\S]*?(\d{1,2}:\d{2})/);
+              if (parts) {
+                const zoneNumber = parts[1];
+                const timeValue = parts[2];
+                console.log(`Method 3 - Zone ${zoneNumber}: ${timeValue}`);
+                if (zoneNumber >= 1 && zoneNumber <= 5) {
+                  data.zones[`z${zoneNumber}`] = timeValue;
+                }
+              }
+            });
+          }
+        }
+
+      } catch (error) {
+        console.error('Error extracting zone data:', error);
+        data.error = 'Could not extract zone data';
+      }
+
+      return data;
+    });
+
+    // Convert to legacy format for backward compatibility
+    activityData.z2 = timeStringToMinutes(activityData.zones.z2);
+    activityData.z4 = timeStringToMinutes(activityData.zones.z4);
+    activityData.z5 = timeStringToMinutes(activityData.zones.z5);
 
     console.log('Final parsed activity data:', activityData);
 
@@ -82,11 +204,8 @@ exports.handler = async (event, context) => {
         platform: 'garmin',
         data: activityData,
         debug: {
-          htmlLength: html.length,
-          containsTimeInZones: html.includes('tab-time-in-zones'),
-          containsBereich: html.includes('Bereich'),
-          containsZoneNumber: html.includes('timeInZonesChart_zoneNumber'),
-          containsProgressBar: html.includes('timeInZonesChart_progressBar')
+          zonesFound: Object.values(activityData.zones).filter(zone => zone !== '0:00').length,
+          zones: activityData.zones
         }
       })
     };
@@ -101,121 +220,12 @@ exports.handler = async (event, context) => {
         details: 'Check function logs for more information'
       })
     };
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 };
-
-function parseGarminActivity(html) {
-  console.log('Parsing Garmin activity...');
-  
-  let activityData = {
-    name: 'Garmin Activity',
-    date: new Date().toLocaleDateString(),
-    duration: '0:00:00',
-    zones: {
-      z1: '0:00',
-      z2: '0:00', 
-      z3: '0:00',
-      z4: '0:00',
-      z5: '0:00'
-    }
-  };
-
-  try {
-    // Extract title
-    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    if (titleMatch && titleMatch[1]) {
-      activityData.name = titleMatch[1].replace(/\s+/g, ' ').trim();
-    }
-
-    console.log('Looking for Garmin heart rate zones...');
-
-    // Strategy 1: Look for the time-in-zones tab structure
-    const timeInZonesPattern = /tab-time-in-zones[\s\S]*?tab-content/;
-    const tabMatch = timeInZonesPattern.exec(html);
-    
-    if (tabMatch) {
-      console.log('Found tab-time-in-zones section');
-      
-      // Extract the zones section
-      const zonesSection = html.substring(tabMatch.index, tabMatch.index + 10000); // Get a reasonable chunk
-      
-      // Look for zone data using the structure from your screenshot
-      const zonePattern = /timeInZonesChart_zoneNumber[^>]*>([^<]*Bereich\s*(\d+)[^<]*)<[\s\S]*?timeInZonesChart_progressBar[\s\S]*?<span[^>]*>(\d+:\d+)</g;
-      
-      let match;
-      while ((match = zonePattern.exec(zonesSection)) !== null) {
-        const zoneText = match[1]; // e.g., "Bereich 5"
-        const zoneNumber = match[2]; // e.g., "5"
-        const timeValue = match[3]; // e.g., "0:02"
-        
-        console.log(`Found zone ${zoneNumber}: ${timeValue}`);
-        
-        // Map to our zone structure
-        if (zoneNumber >= 1 && zoneNumber <= 5) {
-          activityData.zones[`z${zoneNumber}`] = timeValue;
-        }
-      }
-    }
-
-    // Strategy 2: Alternative pattern matching if the first doesn't work
-    if (Object.values(activityData.zones).every(zone => zone === '0:00')) {
-      console.log('Primary pattern failed, trying alternative patterns...');
-      
-      // Look for Bereich patterns with time values
-      const bereichPattern = /Bereich\s*(\d+)[\s\S]*?(\d+:\d+)/g;
-      let match;
-      
-      while ((match = bereichPattern.exec(html)) !== null) {
-        const zoneNumber = match[1];
-        const timeValue = match[2];
-        
-        console.log(`Alternative pattern - Zone ${zoneNumber}: ${timeValue}`);
-        
-        if (zoneNumber >= 1 && zoneNumber <= 5) {
-          activityData.zones[`z${zoneNumber}`] = timeValue;
-        }
-      }
-    }
-
-    // Strategy 3: Look for any time patterns in zone context
-    if (Object.values(activityData.zones).every(zone => zone === '0:00')) {
-      console.log('All patterns failed, trying broad time search...');
-      
-      // Look for script tags that might contain zone data
-      const scriptMatches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
-      if (scriptMatches) {
-        for (let script of scriptMatches) {
-          if (script.includes('timeInZone') || script.includes('heartRateZones') || script.includes('Bereich')) {
-            console.log('Found script with potential zone data');
-            
-            // Look for time patterns
-            const timeMatches = script.match(/(\d{1,2}:\d{2})/g);
-            if (timeMatches && timeMatches.length >= 5) {
-              console.log('Found times in script:', timeMatches);
-              
-              // Assign to zones (assuming order Z1-Z5)
-              for (let i = 0; i < Math.min(5, timeMatches.length); i++) {
-                activityData.zones[`z${i + 1}`] = timeMatches[i];
-              }
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    // Convert to legacy format for backward compatibility
-    activityData.z2 = timeStringToMinutes(activityData.zones.z2);
-    activityData.z4 = timeStringToMinutes(activityData.zones.z4);
-    activityData.z5 = timeStringToMinutes(activityData.zones.z5);
-
-  } catch (error) {
-    console.error('Garmin parsing error:', error);
-    activityData.error = 'Could not parse Garmin activity data';
-  }
-
-  return activityData;
-}
 
 function timeStringToMinutes(timeString) {
   if (!timeString || timeString === '0:00') return 0;
