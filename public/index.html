@@ -786,60 +786,8 @@
                 </select>
               </div>
             </div>
-            <!-- Add this section after the runner selection and before the manual time inputs -->
-            <div class="import-section">
-              <h3>Import from Activity Link</h3>
-              <div class="form-group">
-                <label for="activityLink">Paste Polar or Garmin Activity Link</label>
-                <input type="url" id="activityLink" placeholder="https://flow.polar.com/shared2/... or https://connect.garmin.com/modern/activity/...">
-                <button type="button" id="parseActivityBtn" class="parse-btn">Parse Activity</button>
-              </div>
-              
-              <!-- Preview section (hidden by default) -->
-              <div id="activityPreview" class="activity-preview" style="display: none;">
-                <h4>Parsed Activity Data</h4>
-                <div class="preview-grid">
-                  <div class="preview-item">
-                    <label>Activity Name:</label>
-                    <span id="previewName">-</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Date:</label>
-                    <span id="previewDate">-</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Duration:</label>
-                    <span id="previewDuration">-</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Zone 2 Time:</label>
-                    <span id="previewZ2">-</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Zone 4 Time:</label>
-                    <span id="previewZ4">-</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Zone 5 Time:</label>
-                    <span id="previewZ5">-</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Total Points:</label>
-                    <span id="previewPoints">-</span>
-                  </div>
-                </div>
-                <div class="preview-actions">
-                  <button type="button" id="useImportedData" class="use-data-btn">Use This Data</button>
-                  <button type="button" id="cancelImport" class="cancel-btn">Cancel</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="divider">
-              <span>OR</span>
-            </div>
-
-            <h3>Manual Entry</h3>
+           
+           
             <div class="running-stats">
               <div class="form-group stat-card">
                 <label for="z2_hours">Zone 2 Time</label>
