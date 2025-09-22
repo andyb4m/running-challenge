@@ -472,12 +472,62 @@
       font-style: italic;
     }
 
-    /* Improved mobile-friendly time inputs */
     .running-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-bottom: 20px;
+    }
+    /* Mobile: Stack zones vertically with tighter spacing */
+    @media screen and (max-width: 768px) {
+      .running-stats {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      
+      .stat-card {
+        padding: 18px 16px;
+        border-radius: 8px;
+      }
+      
+      .stat-card label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      
+      .time-segments {
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      
+      .time-segment {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+      }
+      
+      .time-separator {
+        font-size: 16px;
+        font-weight: bold;
+        padding: 0 3px;
+      }
+      
+      .time-segment-label {
+        font-size: 11px;
+        margin-top: 4px;
+        font-weight: 600;
+      }
+      
+      .stat-label {
+        font-size: 11px;
+        margin-top: 8px;
+        font-weight: 500;
+      }
     }
 
     .stat-card {
@@ -497,7 +547,7 @@
     /* Smaller, more mobile-friendly time inputs */
     .time-segments {
       display: flex;
-      gap: 3px;
+      gap: 4px;
       justify-content: center;
       align-items: center;
       width: 100%;
@@ -514,7 +564,7 @@
       font-size: 13px;
       color: var(--text-primary);
       font-family: 'Courier New', monospace;
-      font-weight: 500;
+      font-weight: 600;
       -webkit-appearance: none;
       appearance: none;
       transition: var(--transition-default);
@@ -629,6 +679,7 @@
       
       .stat-card {
         padding: 15px 10px;
+        border-radius: 8px;
       }
       
       .stat-card label {
@@ -669,6 +720,7 @@
       
       .stat-card {
         padding: 14px 8px;
+        border-radius: 8px;
       }
       
       .running-stats {
@@ -683,25 +735,47 @@
       }
       
       .card-section {
-        padding: 16px;
+        padding: 16px 12px;
       }
       
-      .time-segment {
-        width: 28px;
-        height: 34px;
-        font-size: 12px;
+      .running-stats {
+        gap: 10px !important;
       }
       
-      .time-separator {
-        font-size: 11px;
+      .stat-card {
+        padding: 16px 14px !important;
+        border-radius: 8px !important;
       }
       
       .stat-card label {
-        font-size: 10px;
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+      }
+      
+      /* Compact but touch-friendly time inputs */
+      .time-segments {
+        gap: 4px !important;
+      }
+      
+      .time-segment {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 15px !important;
+      }
+      
+      .time-separator {
+        font-size: 15px !important;
+        padding: 0 2px !important;
+      }
+      
+      .time-segment-label {
+        font-size: 10px !important;
+        margin-top: 3px !important;
       }
       
       .stat-label {
-        font-size: 8px;
+        font-size: 10px !important;
+        margin-top: 6px !important;
       }
       
       .data-table {
@@ -726,12 +800,6 @@
         padding-left: 12px;
         padding-right: 8px;
       }
-    }
-    
-    /* Loading and error states */
-    .loading {
-      opacity: 0.6;
-      pointer-events: none;
     }
     
     .error-state {
