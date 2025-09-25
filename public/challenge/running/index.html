@@ -1,663 +1,1634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Running Challenge - Track Your Progress</title>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Running Challenge 2024 - FitChallenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <style>
+    :root {
+      /* Primary Colors - Updated to match home page */
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #8b5cf6;
+      --secondary-color: #06d6a0;
+      --secondary-dark: #059669;
+      
+      /* Background Colors - Updated to match home page */
+      --background-dark: #0f0f23;
+      --background-secondary: #1a1a2e;
+      --card-background: #16213e;
+      --card-hover: #1e2749;
+      
+      /* Text Colors - Updated to match home page */
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      /* Border & Accent Colors - Updated to match home page */
+      --border-color: #334155;
+      --border-light: #475569;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+      
+      /* Gradients - Updated to match home page */
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --gradient-secondary: linear-gradient(135deg, #06d6a0 0%, #059669 100%);
+      --gradient-hero: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      
+      /* Spacing */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      
+      /* Border Radius */
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-2xl: 1.5rem;
+      
+      /* Transitions */
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+      
+      /* Legacy variables for compatibility */
+      --dark-bg: var(--background-dark);
+      --card-bg: var(--card-background);
+      --purple-accent: var(--primary-color);
+      --purple-light: var(--primary-light);
+      --purple-gradient: var(--gradient-primary);
+      --border-radius: var(--radius-xl);
+      --shadow-default: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      --transition-default: var(--transition-normal);
+    }
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
-            authDomain: "running-challenge-app.firebaseapp.com",
-            projectId: "running-challenge-app",
-            storageBucket: "running-challenge-app.appspot.com",
-            messagingSenderId: "1092527848130",
-            appId: "1:1092527848130:web:a6d3c8a7d8b5c9e2f4g5h6"
-        };
+    /* Navigation - New addition to match home page */
+    .challenge-nav {
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-lg) 0;
+      margin-bottom: var(--spacing-xl);
+    }
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        window.db = db;
-        window.firestoreModules = { collection, addDoc, getDocs, query, orderBy, onSnapshot };
-    </script>
+    .challenge-nav .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-    <style>
-        :root {
-          /* Primary Colors */
-          --primary-color: #6366f1;
-          --primary-dark: #4f46e5;
-          --primary-light: #8b5cf6;
-          --secondary-color: #06d6a0;
-          --secondary-dark: #059669;
-          
-          /* Background Colors */
-          --background-dark: #0f0f23;
-          --background-secondary: #1a1a2e;
-          --card-background: #16213e;
-          --card-hover: #1e2749;
-          
-          /* Text Colors */
-          --text-primary: #ffffff;
-          --text-secondary: #94a3b8;
-          --text-muted: #64748b;
-          
-          /* Border & Accent Colors */
-          --border-color: #334155;
-          --border-light: #475569;
-          --success-color: #10b981;
-          --warning-color: #f59e0b;
-          --error-color: #ef4444;
-          --info-color: #3b82f6;
-          
-          /* Gradients */
-          --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          --gradient-secondary: linear-gradient(135deg, #06d6a0 0%, #059669 100%);
-          --gradient-hero: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-          
-          /* Spacing */
-          --spacing-xs: 0.25rem;
-          --spacing-sm: 0.5rem;
-          --spacing-md: 1rem;
-          --spacing-lg: 1.5rem;
-          --spacing-xl: 2rem;
-          --spacing-2xl: 3rem;
-          
-          /* Border Radius */
-          --radius-sm: 0.375rem;
-          --radius-md: 0.5rem;
-          --radius-lg: 0.75rem;
-          --radius-xl: 1rem;
-          --radius-2xl: 1.5rem;
-          
-          /* Transitions */
-          --transition-fast: 0.15s ease;
-          --transition-normal: 0.3s ease;
-          --transition-slow: 0.5s ease;
-        }
+    .back-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-md);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    .back-link:hover {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-light);
+    }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--background-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
+    .challenge-nav h1 {
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-weight: 700;
+    }
 
-        /* Navigation */
-        .challenge-nav {
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            padding: var(--spacing-lg) 0;
-            margin-bottom: var(--spacing-xl);
-        }
+    .challenge-nav h1 i {
+      color: var(--primary-color);
+    }
+    
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .logo span {
+      color: var(--purple-accent);
+    }
+    
+    /* Mobile-first card sections */
+    .card-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow-default);
+      margin-bottom: 20px;
+      width: 100%;
+      transition: var(--transition-default);
+      border: 1px solid var(--border-color);
+    }
+    
+    .card-section:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--primary-color);
+      transform: translateY(-4px);
+    }
+    
+    /* Desktop grid layout */
+    @media screen and (min-width: 992px) {
+      body {
+        padding: 0;
+      }
+      
+      header {
+        text-align: left;
+      }
+      
+      .card-section {
+        padding: 25px;
+      }
+      
+      .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto !important;
+        gap: 20px !important;
+      }
+      
+      .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+      }
+      
+      .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+      }
+      
+      .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+      }
+      
+      .card-section {
+        margin-bottom: 0;
+      }
+      
+      .time-section .card-section,
+      .ranking-section .card-section {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section .running-stats {
+        flex: 1;
+      }
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    h2 span {
+      color: var(--purple-accent);
+    }
 
-        .challenge-nav .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    h2 i {
+      color: var(--primary-color);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Improved form controls */
+    select, input {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--background-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
 
-        .back-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition-normal);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-md);
-        }
+    .select-wrapper {
+      position: relative;
+    }
 
-        .back-link:hover {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary-light);
-        }
+    .select-wrapper::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--purple-accent);
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: var(--transition-default);
+    }
+    
+    select {
+      background-color: var(--card-bg);
+      cursor: pointer;
+    }
+    
+    select:hover + .select-wrapper::after {
+      color: var(--purple-light);
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--purple-gradient);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: var(--transition-default);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--purple-light);
+      min-height: 24px;
+      padding: 8px;
+      border-radius: 6px;
+      transition: var(--transition-default);
+    }
+    
+    #message.success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    #message.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error-color);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
 
-        .challenge-nav h1 {
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
+    /* Import section styling */
+    .import-section {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
 
-        .challenge-nav h1 i {
-            color: var(--primary-color);
-        }
+    .import-section h3 {
+      color: var(--purple-accent);
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
+    .parse-btn {
+      width: auto;
+      padding: 10px 20px;
+      margin-top: 10px;
+      margin-left: 0;
+      background: var(--gradient-secondary);
+    }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-xl);
-            margin-bottom: var(--spacing-xl);
-        }
+    .activity-preview {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+    }
 
-        .card {
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-xl);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: var(--transition-normal);
-        }
+    .activity-preview h4 {
+      color: var(--success-color);
+      margin-bottom: 15px;
+    }
 
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            border-color: var(--primary-color);
-        }
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
 
-        .card h2 {
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-lg);
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
+    .preview-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+    }
 
-        .card h2 i {
-            color: var(--primary-color);
-        }
+    .preview-item label {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
 
-        .form-group {
-            margin-bottom: var(--spacing-lg);
-        }
+    .preview-item span {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-primary);
-            font-weight: 500;
-        }
+    .preview-actions {
+      display: flex;
+      gap: 10px;
+    }
 
-        .form-control {
-            width: 100%;
-            padding: var(--spacing-md);
-            background: var(--background-dark);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: var(--transition-normal);
-        }
+    .use-data-btn {
+      background: var(--gradient-secondary);
+      flex: 1;
+    }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
+    .cancel-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-color);
+      flex: 1;
+    }
 
-        .form-control::placeholder {
-            color: var(--text-muted);
-        }
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
-        }
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border-color);
+    }
 
-        .zone-buttons {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-lg);
-        }
+    .divider span {
+      background: var(--card-bg);
+      padding: 0 15px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
 
-        .zone-btn {
-            padding: var(--spacing-md);
-            background: var(--background-dark);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition-normal);
-            text-align: center;
-            font-weight: 500;
-        }
+    /* Mobile adjustments */
+    @media screen and (max-width: 480px) {
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .preview-actions {
+        flex-direction: column;
+      }
+    }
+    
+    /* reCAPTCHA styling */
+    .g-recaptcha {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+    }
 
-        .zone-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--text-primary);
-        }
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      text-align: center;
+    }
 
-        .zone-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
+    /* Mobile reCAPTCHA adjustments */
+    @media screen and (max-width: 480px) {
+      .g-recaptcha {
+        transform: scale(0.85);
+        transform-origin: center;
+      }
+    }
+    
+    /* Improved responsive tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 10px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 600px;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    
+    /* Fixed column spacing for activities table */
+    #activitiesTable th:first-child,
+    #activitiesTable td:first-child {
+      width: 100px;
+      padding-right: 16px;
+    }
+    
+    #activitiesTable th:nth-child(2),
+    #activitiesTable td:nth-child(2) {
+      width: 80px;
+      padding-left: 16px;
+      padding-right: 12px;
+    }
+    
+    .data-table th {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .rank-cell {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .rank-1:after {
+      content: "🏆";
+      margin-left: 5px;
+    }
+    
+    .name-cell {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .points-cell {
+      color: var(--purple-accent);
+      font-weight: 600;
+    }
 
-        .btn {
-            background: var(--gradient-primary);
-            color: white;
-            padding: var(--spacing-md) var(--spacing-xl);
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-normal);
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            min-height: 48px;
-        }
+    .loading-message {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-        }
+    .running-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    /* Mobile: Stack zones vertically with tighter spacing */
+    @media screen and (max-width: 768px) {
+      .running-stats {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      
+      .stat-card {
+        padding: 18px 16px;
+        border-radius: var(--radius-md);
+      }
+      
+      .stat-card label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      
+      .time-segments {
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      
+      .time-segment {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+      }
+      
+      .time-separator {
+        font-size: 16px;
+        font-weight: bold;
+        padding: 0 3px;
+      }
+      
+      .time-segment-label {
+        font-size: 11px;
+        margin-top: 4px;
+        font-weight: 600;
+      }
+      
+      .stat-label {
+        font-size: 11px;
+        margin-top: 8px;
+        font-weight: 500;
+      }
+    }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      text-align: center;
+      transition: var(--transition-default);
+    }
+    
+    .stat-card:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary-color);
+    }
+    
+    /* Smaller, more mobile-friendly time inputs */
+    .time-segments {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .time-segment {
+      width: 30px;
+      height: 36px;
+      text-align: center;
+      background-color: var(--background-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px 2px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    .time-segment:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Hide number input spinners */
+    .time-segment::-webkit-inner-spin-button, 
+    .time-segment::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+    
+    .time-separator {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: bold;
+      padding: 0 1px;
+    }
+    
+    .time-segment-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .time-segment-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
 
-        .leaderboard {
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-        }
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 8px;
+      line-height: 1.2;
+    }
+    
+    .stat-card label {
+      font-size: 11px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
 
-        .leaderboard h2 {
-            background: var(--gradient-primary);
-            color: white;
-            padding: var(--spacing-lg);
-            margin: 0;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-        }
+    /* Improved view all button */
+    .view-all-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--purple-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: var(--transition-default);
+      text-decoration: none;
+    }
 
-        .leaderboard-content {
-            padding: var(--spacing-lg);
-        }
+    .view-all-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.5);
+      transform: translateY(-1px);
+    }
 
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-sm);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-md);
-            transition: var(--transition-normal);
-        }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    /* Desktop improvements */
+    @media screen and (min-width: 992px) {
+      .time-segment {
+        width: 38px;
+        height: 42px;
+        padding: 6px 2px;
+        font-size: 15px;
+      }
+      
+      .time-separator {
+        font-size: 14px;
+        padding: 0 2px;
+      }
+      
+      .time-segment-label {
+        font-size: 10px;
+        margin-top: 4px;
+      }
+      
+      .stat-label {
+        font-size: 11px;
+        margin-top: 10px;
+      }
+      
+      .stat-card {
+        padding: 15px 10px;
+        border-radius: var(--radius-md);
+      }
+      
+      .stat-card label {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      
+      .running-stats {
+        gap: 15px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 14px 10px;
+      }
+      
+      #activitiesTable th:first-child,
+      #activitiesTable td:first-child {
+        width: 120px;
+        padding-right: 20px;
+      }
+      
+      #activitiesTable th:nth-child(2),
+      #activitiesTable td:nth-child(2) {
+        width: 100px;
+        padding-left: 20px;
+        padding-right: 16px;
+      }
+    }
+    
+    /* Tablet adjustments */
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      .time-segment {
+        width: 34px;
+        height: 38px;
+        font-size: 14px;
+      }
+      
+      .stat-card {
+        padding: 14px 8px;
+        border-radius: var(--radius-md);
+      }
+      
+      .running-stats {
+        gap: 12px;
+      }
+    }
+    
+    /* Small mobile adjustments */
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 0 var(--spacing-md);
+      }
+      
+      .card-section {
+        padding: 16px 12px;
+      }
+      
+      .running-stats {
+        gap: 10px !important;
+      }
+      
+      .stat-card {
+        padding: 16px 14px !important;
+        border-radius: var(--radius-md) !important;
+      }
+      
+      .stat-card label {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+      }
+      
+      /* Compact but touch-friendly time inputs */
+      .time-segments {
+        gap: 4px !important;
+      }
+      
+      .time-segment {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 15px !important;
+      }
+      
+      .time-separator {
+        font-size: 15px !important;
+        padding: 0 2px !important;
+      }
+      
+      .time-segment-label {
+        font-size: 10px !important;
+        margin-top: 3px !important;
+      }
+      
+      .stat-label {
+        font-size: 10px !important;
+        margin-top: 6px !important;
+      }
+      
+      .data-table {
+        min-width: 500px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 10px 6px;
+        font-size: 13px;
+      }
+      
+      #activitiesTable th:first-child,
+      #activitiesTable td:first-child {
+        width: 85px;
+        padding-right: 12px;
+      }
+      
+      #activitiesTable th:nth-child(2),
+      #activitiesTable td:nth-child(2) {
+        width: 65px;
+        padding-left: 12px;
+        padding-right: 8px;
+      }
+    }
+    
+    .error-state {
+      color: var(--error-color);
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Focus styles for better accessibility */
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--purple-accent);
+      outline-offset: 2px;
+    }
 
-        .leaderboard-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .leaderboard-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .rank {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            color: white;
-            font-weight: 700;
-            margin-right: var(--spacing-md);
-        }
-
-        .player-info {
-            flex: 1;
-        }
-
-        .player-name {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .player-details {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .score {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1.125rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: var(--spacing-xl);
-            color: var(--text-secondary);
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border-color);
-            border-top: 2px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: var(--spacing-sm);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--success-color);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--spacing-lg);
-            display: none;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .success-message.show {
-            display: flex;
-        }
-
-        @media (max-width: 768px) {
-            .challenge-nav .nav-container {
-                flex-direction: column;
-                gap: var(--spacing-md);
-                text-align: center;
-            }
-            
-            .container {
-                padding: 0 var(--spacing-md);
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .zone-buttons {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .zone-buttons {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    /* Mobile navigation adjustments */
+    @media screen and (max-width: 768px) {
+      .challenge-nav .nav-container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Add this right after the <body> tag -->
-    <nav class="challenge-nav">
-        <div class="nav-container">
-            <a href="/" class="back-link">
-                <i class="fas fa-arrow-left"></i>
-                Back to Challenges
-            </a>
-            <h1>
-                <i class="fas fa-running"></i>
-                Running Challenge 2024
-            </h1>
-            <div></div> <!-- Spacer for flexbox -->
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="grid">
-            <div class="card">
-                <h2>
-                    <i class="fas fa-plus-circle"></i>
-                    Log Your Activity
-                </h2>
-                
-                <div class="success-message" id="successMessage">
-                    <i class="fas fa-check-circle"></i>
-                    Activity logged successfully!
-                </div>
-
-                <form id="activityForm">
-                    <div class="form-group">
-                        <label for="playerName">Player Name</label>
-                        <input type="text" id="playerName" class="form-control" placeholder="Enter your name" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="distance">Distance (km)</label>
-                            <input type="number" id="distance" class="form-control" placeholder="5.0" step="0.1" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="duration">Duration (minutes)</label>
-                            <input type="number" id="duration" class="form-control" placeholder="30" min="1" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Training Zone</label>
-                        <div class="zone-buttons">
-                            <button type="button" class="zone-btn" data-zone="1">Zone 1</button>
-                            <button type="button" class="zone-btn" data-zone="2">Zone 2</button>
-                            <button type="button" class="zone-btn" data-zone="3">Zone 3</button>
-                            <button type="button" class="zone-btn" data-zone="4">Zone 4</button>
-                            <button type="button" class="zone-btn" data-zone="5">Zone 5</button>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn" id="submitBtn">
-                        <i class="fas fa-save"></i>
-                        Log Activity
-                    </button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="leaderboard">
-                    <h2>
-                        <i class="fas fa-trophy"></i>
-                        Leaderboard
-                    </h2>
-                    <div class="leaderboard-content" id="leaderboard">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            Loading leaderboard...
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Navigation - New addition to match home page -->
+  <nav class="challenge-nav">
+    <div class="nav-container">
+      <a href="/" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Back to Challenges
+      </a>
+      <h1>
+        <i class="fas fa-running"></i>
+        Running Challenge 2024
+      </h1>
+      <div></div> <!-- Spacer for flexbox -->
     </div>
+  </nav>
 
-    <script>
-        let selectedZone = null;
-
-        // Zone selection
-        document.querySelectorAll('.zone-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                selectedZone = this.dataset.zone;
-            });
-        });
-
-        // Form submission
-        document.getElementById('activityForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+  <div class="container">
+    <div class="desktop-layout">
+      <!-- Time Input Section -->
+      <div class="time-section">
+        <div class="card-section">
+          <h2><i class="fas fa-stopwatch"></i>Log Your <span>Time</span></h2>
+          
+          <form id="runningForm">
+            <div class="form-group">
+              <label for="name">Select Runner</label>
+              <div class="select-wrapper">
+                <select id="name" name="name" required>
+                  <option value="">Choose your name</option>
+                  <option value="Andy">Andy</option>
+                  <option value="Batz">Batz</option>
+                  <option value="Hans">Hans</option>
+                  <option value="Eleana">Eleana</option>
+                </select>
+              </div>
+            </div>
+           
+           
+            <div class="running-stats">
+              <div class="form-group stat-card">
+                <label for="z2_hours">Zone 2 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×0.5 points per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z4_hours">Zone 4 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×1 point per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z5_hours">Zone 5 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×2 points per minute</span>
+              </div>
+            </div>
             
-            if (!selectedZone) {
-                alert('Please select a training zone');
-                return;
-            }
-
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
+            <!-- reCAPTCHA Widget -->
+            <div class="form-group">
+              <div class="g-recaptcha" data-sitekey="6Lek7LYrAAAAABXlOK8N5KAEr5d6_-BfqOFeGJZ4"></div>
+              <div id="recaptcha-error" class="error-message" style="display: none;">
+                Please complete the reCAPTCHA verification.
+              </div>
+            </div>
             
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<div class="spinner"></div> Logging...';
+            <button type="submit">
+              <i class="fas fa-save"></i>
+              Submit Running Time
+            </button>
+            <div id="message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Ranking Section -->
+      <div class="ranking-section">
+        <div class="card-section">
+          <h2><i class="fas fa-trophy"></i>Current <span>Ranking</span></h2>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="rankingTable" role="table" aria-label="Current ranking">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Runs</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="loading-message">Loading ranking data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activities Section -->
+      <div class="activities-section">
+        <div class="card-section">
+          <div class="section-header">
+            <h2><i class="fas fa-list"></i>Recent <span>Activities</span></h2>
+            <div>
+              <button type="button" id="viewAllBtn" class="view-all-btn">View All Runs</button>
+            </div>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="activitiesTable" role="table" aria-label="Recent activities">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6" class="loading-message">Loading activities...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            try {
-                const { collection, addDoc } = window.firestoreModules;
-                
-                const activityData = {
-                    playerName: document.getElementById('playerName').value,
-                    distance: parseFloat(document.getElementById('distance').value),
-                    duration: parseInt(document.getElementById('duration').value),
-                    zone: parseInt(selectedZone),
-                    timestamp: new Date(),
-                    pace: calculatePace(parseFloat(document.getElementById('distance').value), parseInt(document.getElementById('duration').value)),
-                    points: calculatePoints(parseFloat(document.getElementById('distance').value), parseInt(selectedZone))
-                };
-
-                await addDoc(collection(window.db, 'activities'), activityData);
-                
-                // Show success message
-                const successMsg = document.getElementById('successMessage');
-                successMsg.classList.add('show');
-                setTimeout(() => successMsg.classList.remove('show'), 3000);
-
-                // Reset form
-                document.getElementById('activityForm').reset();
-                document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
-                selectedZone = null;
-
-                // Refresh leaderboard
-                loadLeaderboard();
-
-            } catch (error) {
-                console.error('Error adding activity:', error);
-                alert('Error logging activity. Please try again.');
-            } finally {
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+  <script>
+    // Configuration
+    const FUNCTIONS_BASE_URL = '/.netlify/functions';
+    
+    // State management
+    let showingAllActivities = false;
+    let isLoading = false;
+    
+    // Utility functions
+    const showMessage = (message, type = 'info') => {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type;
+      
+      // Auto-clear success messages after 3 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.textContent = '';
+          messageDiv.className = '';
+        }, 3000);
+      }
+    };
+    
+    const setLoadingState = (loading) => {
+      isLoading = loading;
+      const submitBtn = document.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = loading;
+        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-save"></i> Submit Running Time';
+      }
+    };
+    
+    // Initial load when the page is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      loadRanking();
+      setupTimeInputs();
+      
+      // Load recent activities with a slight delay
+      setTimeout(() => loadActivities(false), 1000);
+      
+      // Add event listener for "View All" button
+      document.getElementById('viewAllBtn').addEventListener('click', function() {
+        showingAllActivities = !showingAllActivities;
+        loadActivities(showingAllActivities);
+        this.textContent = showingAllActivities ? "Show Recent Runs" : "View All Runs";
+      });
+    });
+    
+    // Setup time input fields with improved UX
+    function setupTimeInputs() {
+      const timeSegments = document.querySelectorAll('.time-segment');
+      
+      timeSegments.forEach(input => {
+        // Handle input event with improved auto-advance
+        input.addEventListener('input', function(e) {
+          // Remove any non-numeric characters
+          this.value = this.value.replace(/[^\d]/g, '');
+          
+          // Ensure values are within min/max range
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          if (value > max) {
+            this.value = max;
+          }
+          
+          // Auto-advance logic
+          const isHoursField = this.id.includes('hours');
+          const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
+          
+          if ((isMinutesOrSecondsField && this.value.length >= 2) || 
+              (isHoursField && this.value.length >= 2)) {
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
             }
+          }
         });
-
-        // Calculate pace (min/km)
-        function calculatePace(distance, duration) {
-            return Math.round((duration / distance) * 10) / 10;
-        }
-
-        // Calculate points based on distance and zone
-        function calculatePoints(distance, zone) {
-            const basePoints = distance * 10;
-            const zoneMultiplier = [1, 1.2, 1.5, 2, 2.5][zone - 1];
-            return Math.round(basePoints * zoneMultiplier);
-        }
-
-        // Load leaderboard
-        async function loadLeaderboard() {
-            try {
-                const { collection, getDocs, query, orderBy } = window.firestoreModules;
-                const leaderboardDiv = document.getElementById('leaderboard');
-                
-                const q = query(collection(window.db, 'activities'), orderBy('timestamp', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                // Group activities by player and calculate totals
-                const playerStats = {};
-                
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const playerName = data.playerName;
-                    
-                    if (!playerStats[playerName]) {
-                        playerStats[playerName] = {
-                            name: playerName,
-                            totalDistance: 0,
-                            totalPoints: 0,
-                            activities: 0,
-                            lastActivity: data.timestamp
-                        };
-                    }
-                    
-                    playerStats[playerName].totalDistance += data.distance;
-                    playerStats[playerName].totalPoints += data.points;
-                    playerStats[playerName].activities += 1;
-                    
-                    if (data.timestamp > playerStats[playerName].lastActivity) {
-                        playerStats[playerName].lastActivity = data.timestamp;
-                    }
-                });
-
-                // Convert to array and sort by points
-                const sortedPlayers = Object.values(playerStats)
-                    .sort((a, b) => b.totalPoints - a.totalPoints);
-
-                // Display leaderboard
-                if (sortedPlayers.length === 0) {
-                    leaderboardDiv.innerHTML = '<div class="loading">No activities logged yet. Be the first!</div>';
-                    return;
+        
+        // Handle blur event - format and pad values
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            this.value = this.id.includes('hours') ? '0' : '00';
+          } else if ((this.id.includes('minutes') || this.id.includes('seconds'))) {
+            const value = parseInt(this.value) || 0;
+            this.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        // Enhanced keyboard navigation
+        input.addEventListener('keydown', function(e) {
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          switch(e.key) {
+            case 'ArrowUp':
+              e.preventDefault();
+              this.value = (value < max) ? value + 1 : 0;
+              if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+                this.value = '0' + this.value;
+              }
+              break;
+              
+            case 'ArrowDown':
+              e.preventDefault();
+              this.value = (value > 0) ? value - 1 : max;
+              if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+                this.value = '0' + this.value;
+              }
+              break;
+              
+            case 'ArrowRight':
+              if (this.selectionStart === this.value.length) {
+                const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+                if (nextInput) {
+                  nextInput.focus();
+                  nextInput.select();
                 }
+              }
+              break;
+              
+            case 'ArrowLeft':
+              if (this.selectionStart === 0) {
+                const prevInput = this.parentElement.previousElementSibling?.previousElementSibling?.querySelector('input');
+                if (prevInput) {
+                  prevInput.focus();
+                  prevInput.select();
+                }
+              }
+              break;
+              
+            case 'Enter':
+              e.preventDefault();
+              const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+              if (nextInput) {
+                nextInput.focus();
+                nextInput.select();
+              } else {
+                // Move to next zone or submit
+                const currentCard = this.closest('.stat-card');
+                const nextCard = currentCard.nextElementSibling;
+                if (nextCard) {
+                  const nextRowFirstInput = nextCard.querySelector('.time-segment');
+                  if (nextRowFirstInput) {
+                    nextRowFirstInput.focus();
+                    nextRowFirstInput.select();
+                  }
+                } else {
+                  // Submit form if this is the last input
+                  document.getElementById('runningForm').dispatchEvent(new Event('submit'));
+                }
+              }
+              break;
+          }
+        });
+        
+        // Select all text on focus
+        input.addEventListener('focus', function() {
+          this.select();
+        });
+      });
+    }
+    
+    // Parse segmented time inputs to decimal minutes
+    function getTimeValue(zonePrefix) {
+      const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
+      const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
+      const seconds = parseInt(document.getElementById(zonePrefix + '_seconds').value) || 0;
+      
+      return (hours * 60) + minutes + (seconds / 60);
+    }
+    
+    // Get formatted time string from segments
+    function getTimeString(zonePrefix) {
+      let hours = document.getElementById(zonePrefix + '_hours').value || '0';
+      let minutes = document.getElementById(zonePrefix + '_minutes').value || '00';
+      let seconds = document.getElementById(zonePrefix + '_seconds').value || '00';
+      
+      // Ensure minutes and seconds have leading zeros
+      minutes = parseInt(minutes) < 10 && minutes.length < 2 ? '0' + minutes : minutes;
+      seconds = parseInt(seconds) < 10 && seconds.length < 2 ? '0' + seconds : seconds;
+      
+      return hours + ':' + minutes + ':' + seconds;
+    }
+    
+    // Format decimal minutes to h:mm:ss
+    function formatDecimalToTime(decimalMinutes) {
+      if (!decimalMinutes) return '0:00:00';
+      
+      const totalMinutes = decimalMinutes;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = Math.floor(totalMinutes % 60);
+      const seconds = Math.round((totalMinutes % 1) * 60);
+      
+      return hours + ':' + 
+             (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+             (seconds < 10 ? '0' + seconds : seconds);
+    }
 
-                leaderboardDiv.innerHTML = sortedPlayers.map((player, index) => `
-                    <div class="leaderboard-item">
-                        <div class="rank">${index + 1}</div>
-                        <div class="player-info">
-                            <div class="player-name">${player.name}</div>
-                            <div class="player-details">
-                                ${player.totalDistance.toFixed(1)}km • ${player.activities} runs
-                            </div>
-                        </div>
-                        <div class="score">${player.totalPoints}</div>
-                    </div>
-                `).join('');
+    // Enhanced form submission with reCAPTCHA
+    document.getElementById('runningForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                document.getElementById('leaderboard').innerHTML = 
-                    '<div class="loading">Error loading leaderboard</div>';
+      if (isLoading) return;
+
+      // Check reCAPTCHA first
+      const recaptchaResponse = grecaptcha.getResponse();
+      const recaptchaError = document.getElementById('recaptcha-error');
+      
+      if (!recaptchaResponse) {
+        recaptchaError.style.display = 'block';
+        recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      } else {
+        recaptchaError.style.display = 'none';
+      }
+
+      const form = e.target;
+      setLoadingState(true);
+      
+      try {
+        // Ensure all time inputs have proper formatting
+        document.querySelectorAll('.time-segment').forEach(input => {
+          if (!input.value) {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
             }
+          } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+            const value = parseInt(input.value) || 0;
+            input.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        // Get time values from segments
+        const z2Decimal = getTimeValue('z2');
+        const z4Decimal = getTimeValue('z4');
+        const z5Decimal = getTimeValue('z5');
+        
+        // Validate that at least some time was entered
+        if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+          showMessage('Please enter at least some training time.', 'error');
+          setLoadingState(false);
+          return;
         }
+        
+        // Get formatted time strings
+        const z2Time = getTimeString('z2');
+        const z4Time = getTimeString('z4');
+        const z5Time = getTimeString('z5');
+        
+        const formData = {
+          name: form.name.value,
+          z2: z2Decimal.toFixed(2),
+          z4: z4Decimal.toFixed(2),
+          z5: z5Decimal.toFixed(2),
+          z2_display: z2Time,
+          z4_display: z4Time,
+          z5_display: z5Time,
+          recaptcha: recaptchaResponse // Add reCAPTCHA response
+        };
 
-        // Load leaderboard when page loads
-        window.addEventListener('load', loadLeaderboard);
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/addRun`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
 
-        // Real-time updates
-        if (window.firestoreModules) {
-            const { collection, onSnapshot } = window.firestoreModules;
-            onSnapshot(collection(window.db, 'activities'), (snapshot) => {
-                loadLeaderboard();
-            });
+        const result = await response.json();
+        
+        if (response.ok) {
+          showMessage(result.message, 'success');
+          
+          // Reset form including reCAPTCHA
+          const selectedName = form.name.value;
+          
+          document.querySelectorAll('.time-segment').forEach(input => {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
+            }
+          });
+          
+          form.name.value = selectedName;
+          grecaptcha.reset(); // Reset reCAPTCHA
+          
+          loadRanking();
+          setTimeout(() => loadActivities(showingAllActivities), 1000);
+        } else {
+          showMessage('Error: ' + result.error, 'error');
+          grecaptcha.reset(); // Reset reCAPTCHA on error
         }
-    </script>
+      } catch (error) {
+        showMessage('Network error: ' + error.message, 'error');
+        grecaptcha.reset(); // Reset reCAPTCHA on error
+        console.error("Form submission error:", error);
+      } finally {
+        setLoadingState(false);
+      }
+    });
+
+    // Enhanced ranking load function
+    async function loadRanking() {
+      const tbody = document.querySelector('#rankingTable tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const ranking = await response.json();
+
+        if (!ranking || ranking.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        ranking.forEach((player, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+            <td class="name-cell">${player.name}</td>
+            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
+            <td>${player.runCount || 0}</td>
+            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ4)}</td>
+            <td>${formatDecimalToTime(player.totalZ5)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Ranking load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Enhanced activities load function
+    async function loadActivities(loadAll) {
+      const tbody = document.querySelector('#activitiesTable tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+      
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const activities = await response.json();
+
+        if (!activities || activities.length === 0) {
+          const message = !activities ? "No activities data received." : "No activities recorded yet.";
+          tbody.innerHTML = `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
+          return;
+        }
+        
+        // Limit to 10 most recent if not showing all
+        let displayActivities = activities;
+        if (!loadAll && Array.isArray(activities)) {
+          displayActivities = activities.slice(0, 10);
+        }
+        
+        tbody.innerHTML = '';
+        
+        displayActivities.forEach(function(activity) {
+          const z2Display = formatDecimalToTime(activity.z2);
+          const z4Display = formatDecimalToTime(activity.z4);
+          const z5Display = formatDecimalToTime(activity.z5);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${activity.date || "Unknown"}</td>
+            <td class="name-cell">${activity.name || "Unknown"}</td>
+            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
+            <td>${z2Display}</td>
+            <td>${z4Display}</td>
+            <td>${z5Display}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Activities load error:", error);
+        tbody.innerHTML = `<tr><td colspan="6" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Activity link parsing
+    document.getElementById('parseActivityBtn')?.addEventListener('click', async function() {
+      const activityUrl = document.getElementById('activityLink').value.trim();
+      
+      if (!activityUrl) {
+        showMessage('Please enter an activity URL', 'error');
+        return;
+      }
+
+      if (!activityUrl.includes('flow.polar.com') && !activityUrl.includes('connect.garmin.com')) {
+        showMessage('Please enter a valid Polar or Garmin activity URL', 'error');
+        return;
+      }
+
+      this.disabled = true;
+      this.textContent = 'Parsing...';
+
+      try {
+        const response = await fetch('/.netlify/functions/parseActivity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ activityUrl })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          displayActivityPreview(result.data);
+          showMessage('Activity parsed successfully! Review the data below.', 'success');
+        } else {
+          showMessage('Error: ' + result.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Parse error: ' + error.message, 'error');
+      } finally {
+        this.disabled = false;
+        this.textContent = 'Parse Activity';
+      }
+    });
+
+    function displayActivityPreview(data) {
+      // Populate preview section
+      document.getElementById('previewName').textContent = data.name || 'Unknown';
+      document.getElementById('previewDate').textContent = data.date || 'Unknown';
+      document.getElementById('previewDuration').textContent = data.duration || '0:00:00';
+      document.getElementById('previewZ2').textContent = formatDecimalToTime(data.z2 || 0);
+      document.getElementById('previewZ4').textContent = formatDecimalToTime(data.z4 || 0);
+      document.getElementById('previewZ5').textContent = formatDecimalToTime(data.z5 || 0);
+      
+      const totalPoints = (data.z2 * 0.5) + (data.z4 * 1) + (data.z5 * 2);
+      document.getElementById('previewPoints').textContent = totalPoints.toFixed(1);
+      
+      // Show preview section
+      document.getElementById('activityPreview').style.display = 'block';
+      
+      // Store parsed data for later use
+      window.parsedActivityData = data;
+    }
+
+    // Use imported data button
+    document.getElementById('useImportedData')?.addEventListener('click', function() {
+      if (window.parsedActivityData) {
+        const data = window.parsedActivityData;
+        
+        // Fill in the manual time inputs with parsed data
+        fillTimeInputs('z2', data.z2 || 0);
+        fillTimeInputs('z4', data.z4 || 0);
+        fillTimeInputs('z5', data.z5 || 0);
+        
+        // Hide preview and clear URL
+        document.getElementById('activityPreview').style.display = 'none';
+        document.getElementById('activityLink').value = '';
+        
+        showMessage('Activity data loaded into form. You can adjust if needed.', 'success');
+      }
+    });
+
+    // Cancel import button
+    document.getElementById('cancelImport')?.addEventListener('click', function() {
+      document.getElementById('activityPreview').style.display = 'none';
+      document.getElementById('activityLink').value = '';
+      window.parsedActivityData = null;
+    });
+
+    function fillTimeInputs(zonePrefix, decimalMinutes) {
+      const hours = Math.floor(decimalMinutes / 60);
+      const minutes = Math.floor(decimalMinutes % 60);
+      const seconds = Math.round((decimalMinutes % 1) * 60);
+      
+      document.getElementById(zonePrefix + '_hours').value = hours;
+      document.getElementById(zonePrefix + '_minutes').value = minutes.toString().padStart(2, '0');
+      document.getElementById(zonePrefix + '_seconds').value = seconds.toString().padStart(2, '0');
+    }
+  </script>
 </body>
 </html>
