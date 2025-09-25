@@ -1,4 +1,4 @@
-// Enhanced challenge data with more details
+// Updated challenge data - removed yoga, updated completed challenge
 const challenges = [
   {
     id: 'running-challenge-2024',
@@ -7,7 +7,7 @@ const challenges = [
     status: 'active',
     startDate: '2024-01-01',
     endDate: '2024-12-31',
-    participants: 1247,
+    participants: 12,
     type: 'running',
     url: '/challenge/running/',
     difficulty: 'All Levels',
@@ -29,33 +29,28 @@ const challenges = [
     icon: 'fas fa-bicycle'
   },
   {
-    id: 'strength-challenge-2023',
-    title: 'Strength & Power Challenge',
-    description: 'Build muscle, increase strength, and transform your physique with our comprehensive strength training challenge.',
+    id: 'running-challenge-zone-2',
+    title: 'Running Challenge Zone 2',
+    description: 'Completed running challenge focused on zone 2 training and endurance building.',
     status: 'ended',
-    startDate: '2023-01-01',
+    startDate: '2023-11-01',
     endDate: '2023-12-31',
-    participants: 892,
-    type: 'strength',
+    participants: 3,
+    type: 'running',
     url: '#',
-    difficulty: 'Beginner to Advanced',
-    duration: '12 months',
-    icon: 'fas fa-dumbbell'
-  },
-  {
-    id: 'yoga-mindfulness-2024',
-    title: 'Yoga & Mindfulness Journey',
-    description: 'Find balance, improve flexibility, and cultivate mindfulness through our guided yoga challenge.',
-    status: 'active',
-    startDate: '2024-02-01',
-    endDate: '2024-08-31',
-    participants: 634,
-    type: 'yoga',
-    url: '#',
-    difficulty: 'All Levels',
-    duration: '7 months',
-    icon: 'fas fa-spa'
+    difficulty: 'Intermediate',
+    duration: '2 months',
+    icon: 'fas fa-running'
   }
+];
+
+// Sample leaderboard data from your running challenge
+const leaderboardData = [
+  { name: 'Alex Martinez', score: 2450, rank: 1 },
+  { name: 'Sarah Kim', score: 2380, rank: 2 },
+  { name: 'Mike Johnson', score: 2290, rank: 3 },
+  { name: 'Emma Wilson', score: 2180, rank: 4 },
+  { name: 'David Chen', score: 2050, rank: 5 }
 ];
 
 function loadChallenges() {
@@ -87,6 +82,9 @@ function loadChallenges() {
     }
   });
 
+  // Load leaderboard
+  loadLeaderboard();
+  
   // Update category counts
   updateCategoryCounts();
   
@@ -154,13 +152,33 @@ function createChallengeCard(challenge) {
       <a href="${challenge.url}" class="${buttonClass}" onclick="handleChallengeClick('${challenge.id}', '${challenge.status}')">
         ${buttonText}
       </a>
-      <button class="btn-icon" onclick="toggleFavorite('${challenge.id}')" title="Add to favorites">
-        <i class="far fa-heart"></i>
-      </button>
     </div>
   `;
   
   return card;
+}
+
+function loadLeaderboard() {
+  const leaderboardContainer = document.getElementById('main-leaderboard');
+  if (!leaderboardContainer) return;
+  
+  leaderboardContainer.innerHTML = '';
+  
+  // Show top 5 from leaderboard
+  leaderboardData.slice(0, 5).forEach(player => {
+    const item = document.createElement('div');
+    item.className = 'leaderboard-item';
+    
+    item.innerHTML = `
+      <div class="leaderboard-rank">${player.rank}</div>
+      <div class="leaderboard-info">
+        <span class="leaderboard-name">${player.name}</span>
+        <span class="leaderboard-score">${player.score.toLocaleString()} pts</span>
+      </div>
+    `;
+    
+    leaderboardContainer.appendChild(item);
+  });
 }
 
 function updateCategoryCounts() {
@@ -180,8 +198,8 @@ function updateCategoryCounts() {
 function updateStats() {
   const totalParticipants = challenges.reduce((sum, challenge) => sum + challenge.participants, 0);
   const activeChallenges = challenges.filter(c => c.status === 'active').length;
-  const totalActivities = Math.floor(totalParticipants * 1.8); // Estimated activities
-  const totalCalories = Math.floor(totalActivities * 13.5); // Estimated calories
+  const totalActivities = Math.floor(totalParticipants * 12.5); // Estimated activities based on real data
+  const totalCalories = Math.floor(totalActivities * 350); // Estimated calories per activity
   
   // Update hero stats
   updateStatElement('hero-participants', totalParticipants);
@@ -224,23 +242,6 @@ function handleChallengeClick(challengeId, status) {
   if (status === 'upcoming') {
     showNotificationSignup(challengeId);
     return false;
-  }
-}
-
-function toggleFavorite(challengeId) {
-  // This would integrate with user preferences/localStorage
-  const heartIcon = event.target;
-  
-  if (heartIcon.classList.contains('far')) {
-    heartIcon.classList.remove('far');
-    heartIcon.classList.add('fas');
-    heartIcon.style.color = '#ef4444';
-    showToast('Added to favorites!', 'success');
-  } else {
-    heartIcon.classList.remove('fas');
-    heartIcon.classList.add('far');
-    heartIcon.style.color = '';
-    showToast('Removed from favorites', 'info');
   }
 }
 

@@ -77,75 +77,73 @@
     <main>
         <!-- Hero Section -->
         <section id="home" class="hero">
-            <div class="hero-background">
-                <div class="hero-pattern"></div>
-            </div>
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-fire"></i>
-                    <span>Join 10,000+ Active Members</span>
+            <div class="container">
+                <div class="hero-background">
+                    <div class="hero-pattern"></div>
                 </div>
-                <h1 class="hero-title">
-                    Transform Your Fitness
-                    <span class="gradient-text">Journey</span>
-                </h1>
-                <p class="hero-description">
-                    Join exciting fitness challenges, track your progress, and compete with friends. 
-                    Whether you're running, cycling, or strength training - we've got the perfect challenge for you.
-                </p>
-                <div class="hero-actions">
-                    <a href="#challenges" class="btn btn-primary btn-large">
-                        <i class="fas fa-rocket"></i>
-                        Start Your Journey
-                    </a>
-                    <a href="#how-it-works" class="btn btn-secondary btn-large">
-                        <i class="fas fa-play"></i>
-                        How It Works
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number" id="hero-participants">10,247</span>
-                        <span class="stat-label">Active Members</span>
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Transform Your Fitness
+                        <span class="gradient-text">Journey</span>
+                    </h1>
+                    <p class="hero-description">
+                        Join exciting fitness challenges, track your progress, and compete with friends. 
+                        Whether you're running, cycling, or strength training - we've got the perfect challenge for you.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#challenges" class="btn btn-primary btn-large">
+                            <i class="fas fa-rocket"></i>
+                            Start Your Journey
+                        </a>
+                        <a href="#how-it-works" class="btn btn-secondary btn-large">
+                            <i class="fas fa-play"></i>
+                            How It Works
+                        </a>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="hero-challenges">24</span>
-                        <span class="stat-label">Challenges</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="hero-activities">156K</span>
-                        <span class="stat-label">Activities Logged</span>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="hero-card floating">
-                    <div class="card-header">
-                        <i class="fas fa-running"></i>
-                        <span>Running Challenge</span>
-                    </div>
-                    <div class="card-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 75%"></div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="hero-participants">-</span>
+                            <span class="stat-label">Active Members</span>
                         </div>
-                        <span class="progress-text">75% Complete</span>
+                        <div class="stat-item">
+                            <span class="stat-number" id="hero-challenges">-</span>
+                            <span class="stat-label">Challenges</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="hero-activities">-</span>
+                            <span class="stat-label">Activities Logged</span>
+                        </div>
                     </div>
                 </div>
-                <div class="hero-card floating" style="animation-delay: 0.5s;">
-                    <div class="card-header">
-                        <i class="fas fa-trophy"></i>
-                        <span>Leaderboard</span>
-                    </div>
-                    <div class="leaderboard-preview">
-                        <div class="leader-item">
-                            <span class="rank">#1</span>
-                            <span class="name">Alex M.</span>
-                            <span class="score">2,450</span>
+                <div class="hero-visual">
+                    <div class="hero-card floating">
+                        <div class="card-header">
+                            <i class="fas fa-running"></i>
+                            <span>Running Challenge</span>
                         </div>
-                        <div class="leader-item">
-                            <span class="rank">#2</span>
-                            <span class="name">Sarah K.</span>
-                            <span class="score">2,380</span>
+                        <div class="card-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                            <span class="progress-text">75% Complete</span>
+                        </div>
+                    </div>
+                    <div class="hero-card floating" style="animation-delay: 0.5s;">
+                        <div class="card-header">
+                            <i class="fas fa-trophy"></i>
+                            <span>Leaderboard</span>
+                        </div>
+                        <div class="leaderboard-preview">
+                            <div class="leader-item">
+                                <span class="rank">#1</span>
+                                <span class="name">Alex M.</span>
+                                <span class="score">2,450</span>
+                            </div>
+                            <div class="leader-item">
+                                <span class="rank">#2</span>
+                                <span class="name">Sarah K.</span>
+                                <span class="score">2,380</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -210,7 +208,7 @@
                                 <i class="fas fa-fire"></i>
                                 Active Challenges
                             </h3>
-                            <span class="category-count" id="active-count">2</span>
+                            <span class="category-count" id="active-count">-</span>
                         </div>
                         <div class="challenge-grid" id="active-challenges">
                             <!-- Populated by JavaScript -->
@@ -223,7 +221,7 @@
                                 <i class="fas fa-clock"></i>
                                 Coming Soon
                             </h3>
-                            <span class="category-count" id="upcoming-count">1</span>
+                            <span class="category-count" id="upcoming-count">-</span>
                         </div>
                         <div class="challenge-grid" id="upcoming-challenges">
                             <!-- Populated by JavaScript -->
@@ -236,7 +234,7 @@
                                 <i class="fas fa-check-circle"></i>
                                 Recently Completed
                             </h3>
-                            <span class="category-count" id="past-count">1</span>
+                            <span class="category-count" id="past-count">-</span>
                         </div>
                         <div class="challenge-grid" id="past-challenges">
                             <!-- Populated by JavaScript -->
@@ -245,11 +243,11 @@
                 </div>
 
                 <div class="challenges-cta">
-                    <h3>Can't find what you're looking for?</h3>
-                    <p>Create your own custom challenge and invite friends to join</p>
+                    <h3>Looking for more challenges?</h3>
+                    <p>More exciting challenges are on the way</p>
                     <a href="#" class="btn btn-outline">
-                        <i class="fas fa-plus"></i>
-                        Create Challenge
+                        <i class="fas fa-clock"></i>
+                        Coming Soon
                     </a>
                 </div>
             </div>
@@ -259,48 +257,19 @@
         <section id="leaderboard" class="leaderboard-section">
             <div class="container">
                 <div class="section-header">
-                    <h2>Top Performers</h2>
-                    <p>See who's leading the pack this month</p>
+                    <h2>Current Leaderboard</h2>
+                    <p>See who's leading the Running Challenge 2024</p>
                 </div>
                 <div class="leaderboard-grid">
                     <div class="leaderboard-card">
                         <h3>
                             <i class="fas fa-running"></i>
-                            Running Champions
+                            Running Challenge 2024
                         </h3>
-                        <div class="top-performers">
-                            <div class="performer-item gold">
-                                <div class="performer-rank">
-                                    <i class="fas fa-crown"></i>
-                                    <span>1</span>
-                                </div>
-                                <div class="performer-info">
-                                    <span class="name">Alex Martinez</span>
-                                    <span class="score">2,450 pts</span>
-                                </div>
-                            </div>
-                            <div class="performer-item silver">
-                                <div class="performer-rank">
-                                    <i class="fas fa-medal"></i>
-                                    <span>2</span>
-                                </div>
-                                <div class="performer-info">
-                                    <span class="name">Sarah Kim</span>
-                                    <span class="score">2,380 pts</span>
-                                </div>
-                            </div>
-                            <div class="performer-item bronze">
-                                <div class="performer-rank">
-                                    <i class="fas fa-award"></i>
-                                    <span>3</span>
-                                </div>
-                                <div class="performer-info">
-                                    <span class="name">Mike Johnson</span>
-                                    <span class="score">2,290 pts</span>
-                                </div>
-                            </div>
+                        <div class="leaderboard-list" id="main-leaderboard">
+                            <!-- Populated by JavaScript -->
                         </div>
-                        <a href="#" class="view-full-btn">View Full Leaderboard</a>
+                        <a href="/challenge/running/" class="view-full-btn">View Full Leaderboard</a>
                     </div>
                 </div>
             </div>
@@ -318,7 +287,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <span class="stat-number" id="total-participants">10,247</span>
+                        <span class="stat-number" id="total-participants">-</span>
                         <span class="stat-label">Active Members</span>
                         <span class="stat-growth">+12% this month</span>
                     </div>
@@ -326,7 +295,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-trophy"></i>
                         </div>
-                        <span class="stat-number" id="active-challenges-count">24</span>
+                        <span class="stat-number" id="active-challenges-count">-</span>
                         <span class="stat-label">Active Challenges</span>
                         <span class="stat-growth">+3 new this week</span>
                     </div>
@@ -334,7 +303,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-chart-line"></i>
                         </div>
-                        <span class="stat-number" id="total-activities">156K</span>
+                        <span class="stat-number" id="total-activities">-</span>
                         <span class="stat-label">Activities Logged</span>
                         <span class="stat-growth">+2.3K this week</span>
                     </div>
@@ -342,7 +311,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-fire"></i>
                         </div>
-                        <span class="stat-number" id="total-calories">2.1M</span>
+                        <span class="stat-number" id="total-calories">-</span>
                         <span class="stat-label">Calories Burned</span>
                         <span class="stat-growth">+45K this week</span>
                     </div>
@@ -354,27 +323,13 @@
         <section class="cta-section">
             <div class="container">
                 <div class="cta-content">
-                    <h2>Ready to Start Your Fitness Journey?</h2>
+                    <h2>Ready to Challenge Your Friends?</h2>
                     <p>Join thousands of members who are already transforming their lives through our challenges.</p>
                     <div class="cta-actions">
                         <a href="#" class="btn btn-primary btn-large" id="cta-signup">
                             <i class="fas fa-rocket"></i>
                             Get Started Free
                         </a>
-                        <div class="cta-features">
-                            <div class="feature-item">
-                                <i class="fas fa-check"></i>
-                                <span>Free to join</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="fas fa-check"></i>
-                                <span>No equipment needed</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="fas fa-check"></i>
-                                <span>All fitness levels welcome</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
