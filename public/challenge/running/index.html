@@ -8,6 +8,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
+            authDomain: "running-challenge-app.firebaseapp.com",
+            projectId: "running-challenge-app",
+            storageBucket: "running-challenge-app.appspot.com",
+            messagingSenderId: "1092527848130",
+            appId: "1:1092527848130:web:a6d3c8a7d8b5c9e2f4g5h6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db;
+        window.firestoreModules = { collection, addDoc, getDocs, query, orderBy, onSnapshot };
+    </script>
+
     <style>
         :root {
           /* Primary Colors */
@@ -132,10 +153,20 @@
             padding: 0 var(--spacing-lg);
         }
 
-        /* Rest of your existing styles with updated color scheme */
-        /* Update all your existing CSS to use the new CSS variables */
-        /* I'll show the key updates below */
+        /* Main Content */
+        .main-content {
+            padding: var(--spacing-2xl) 0;
+        }
 
+        /* Grid Layout */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        /* Cards */
         .card {
             background: var(--card-background);
             border: 1px solid var(--border-color);
@@ -150,18 +181,72 @@
             border-color: var(--primary-color);
         }
 
+        .card h2 {
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .card h2 i {
+            color: var(--primary-color);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition-normal);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-lg);
+            padding: var(--spacing-md) var(--spacing-xl);
             border: none;
             border-radius: var(--radius-md);
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
             transition: var(--transition-normal);
-            font-size: 0.875rem;
+            font-size: 1rem;
+            min-height: 48px;
         }
 
         .btn-primary {
@@ -174,9 +259,158 @@
             box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
         }
 
-        /* Update your existing styles to match the new design system */
-        /* This ensures consistency between home page and challenge page */
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
+        /* Zone Buttons */
+        .zone-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .zone-btn {
+            padding: var(--spacing-md);
+            background: var(--background-dark);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .zone-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+        }
+
+        .zone-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+        }
+
+        .leaderboard-header {
+            background: var(--gradient-primary);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .leaderboard-header h2 {
+            color: white;
+            margin: 0;
+        }
+
+        .leaderboard-list {
+            padding: var(--spacing-lg);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            transition: var(--transition-normal);
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .leaderboard-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            margin-right: var(--spacing-md);
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .player-details {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .score {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: var(--spacing-sm);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success Message */
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success-color);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .nav-container {
                 flex-direction: column;
@@ -186,6 +420,24 @@
             
             .container {
                 padding: 0 var(--spacing-md);
+            }
+
+            .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .zone-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .zone-buttons {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -206,9 +458,231 @@
         </div>
     </nav>
 
-    <!-- Your existing challenge content goes here -->
-    <!-- Update the styling to match the new design system -->
-    
-    <!-- Rest of your existing HTML content -->
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <div class="challenge-grid">
+                <!-- Activity Logging Card -->
+                <div class="card">
+                    <h2>
+                        <i class="fas fa-plus-circle"></i>
+                        Log Your Run
+                    </h2>
+                    
+                    <div class="success-message" id="successMessage">
+                        <i class="fas fa-check-circle"></i>
+                        Activity logged successfully!
+                    </div>
+
+                    <form id="activityForm">
+                        <div class="form-group">
+                            <label for="playerName">Your Name</label>
+                            <input type="text" id="playerName" class="form-control" placeholder="Enter your name" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="distance">Distance (km)</label>
+                                <input type="number" id="distance" class="form-control" placeholder="5.0" step="0.1" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="duration">Duration (minutes)</label>
+                                <input type="number" id="duration" class="form-control" placeholder="30" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Training Zone</label>
+                            <div class="zone-buttons">
+                                <button type="button" class="zone-btn" data-zone="1">Zone 1</button>
+                                <button type="button" class="zone-btn" data-zone="2">Zone 2</button>
+                                <button type="button" class="zone-btn" data-zone="3">Zone 3</button>
+                                <button type="button" class="zone-btn" data-zone="4">Zone 4</button>
+                                <button type="button" class="zone-btn" data-zone="5">Zone 5</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            Log Activity
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Leaderboard Card -->
+                <div class="card">
+                    <div class="leaderboard">
+                        <div class="leaderboard-header">
+                            <h2>
+                                <i class="fas fa-trophy"></i>
+                                Leaderboard
+                            </h2>
+                        </div>
+                        <div class="leaderboard-list" id="leaderboard">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading leaderboard...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedZone = null;
+
+        // Zone selection
+        document.querySelectorAll('.zone-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedZone = this.dataset.zone;
+            });
+        });
+
+        // Form submission
+        document.getElementById('activityForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!selectedZone) {
+                alert('Please select a training zone');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Logging...';
+
+            try {
+                const { collection, addDoc } = window.firestoreModules;
+                
+                const activityData = {
+                    playerName: document.getElementById('playerName').value,
+                    distance: parseFloat(document.getElementById('distance').value),
+                    duration: parseInt(document.getElementById('duration').value),
+                    zone: parseInt(selectedZone),
+                    timestamp: new Date(),
+                    pace: calculatePace(parseFloat(document.getElementById('distance').value), parseInt(document.getElementById('duration').value)),
+                    points: calculatePoints(parseFloat(document.getElementById('distance').value), parseInt(selectedZone))
+                };
+
+                await addDoc(collection(window.db, 'activities'), activityData);
+                
+                // Show success message
+                const successMsg = document.getElementById('successMessage');
+                successMsg.classList.add('show');
+                setTimeout(() => successMsg.classList.remove('show'), 3000);
+
+                // Reset form
+                document.getElementById('activityForm').reset();
+                document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
+                selectedZone = null;
+
+                // Refresh leaderboard
+                loadLeaderboard();
+
+            } catch (error) {
+                console.error('Error adding activity:', error);
+                alert('Error logging activity. Please try again.');
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Calculate pace (min/km)
+        function calculatePace(distance, duration) {
+            return Math.round((duration / distance) * 10) / 10;
+        }
+
+        // Calculate points based on distance and zone
+        function calculatePoints(distance, zone) {
+            const basePoints = distance * 10;
+            const zoneMultiplier = [1, 1.2, 1.5, 2, 2.5][zone - 1];
+            return Math.round(basePoints * zoneMultiplier);
+        }
+
+        // Load leaderboard
+        async function loadLeaderboard() {
+            try {
+                const { collection, getDocs, query, orderBy } = window.firestoreModules;
+                const leaderboardDiv = document.getElementById('leaderboard');
+                
+                const q = query(collection(window.db, 'activities'), orderBy('timestamp', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                // Group activities by player and calculate totals
+                const playerStats = {};
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const playerName = data.playerName;
+                    
+                    if (!playerStats[playerName]) {
+                        playerStats[playerName] = {
+                            name: playerName,
+                            totalDistance: 0,
+                            totalPoints: 0,
+                            activities: 0,
+                            lastActivity: data.timestamp
+                        };
+                    }
+                    
+                    playerStats[playerName].totalDistance += data.distance;
+                    playerStats[playerName].totalPoints += data.points;
+                    playerStats[playerName].activities += 1;
+                    
+                    if (data.timestamp > playerStats[playerName].lastActivity) {
+                        playerStats[playerName].lastActivity = data.timestamp;
+                    }
+                });
+
+                // Convert to array and sort by points
+                const sortedPlayers = Object.values(playerStats)
+                    .sort((a, b) => b.totalPoints - a.totalPoints);
+
+                // Display leaderboard
+                if (sortedPlayers.length === 0) {
+                    leaderboardDiv.innerHTML = '<div class="loading">No activities logged yet. Be the first!</div>';
+                    return;
+                }
+
+                leaderboardDiv.innerHTML = sortedPlayers.map((player, index) => `
+                    <div class="leaderboard-item">
+                        <div class="rank">${index + 1}</div>
+                        <div class="player-info">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-details">
+                                ${player.totalDistance.toFixed(1)}km • ${player.activities} runs
+                            </div>
+                        </div>
+                        <div class="score">${player.totalPoints}</div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                document.getElementById('leaderboard').innerHTML = 
+                    '<div class="loading">Error loading leaderboard</div>';
+            }
+        }
+
+        // Load leaderboard when page loads
+        window.addEventListener('load', loadLeaderboard);
+
+        // Real-time updates
+        if (window.firestoreModules) {
+            const { collection, onSnapshot } = window.firestoreModules;
+            onSnapshot(collection(window.db, 'activities'), (snapshot) => {
+                loadLeaderboard();
+            });
+        }
+    </script>
 </body>
 </html>
