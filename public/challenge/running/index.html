@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Running Challenge 2024 - FitChallenge</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Running Challenge - Track Your Progress</title>
     
     <!-- Firebase SDK -->
     <script type="module">
@@ -94,6 +90,8 @@
             background: var(--background-dark);
             color: var(--text-primary);
             line-height: 1.6;
+            margin: 0;
+            padding: 0;
         }
 
         /* Navigation */
@@ -102,12 +100,10 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             padding: var(--spacing-lg) 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            margin-bottom: var(--spacing-xl);
         }
 
-        .nav-container {
+        .challenge-nav .nav-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 var(--spacing-lg);
@@ -117,13 +113,13 @@
         }
 
         .back-link {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
             padding: var(--spacing-sm) var(--spacing-md);
             border-radius: var(--radius-md);
         }
@@ -136,7 +132,7 @@
         .challenge-nav h1 {
             color: var(--text-primary);
             font-size: 1.5rem;
-            font-weight: 700;
+            margin: 0;
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
@@ -146,32 +142,25 @@
             color: var(--primary-color);
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 var(--spacing-lg);
         }
 
-        /* Main Content */
-        .main-content {
-            padding: var(--spacing-2xl) 0;
-        }
-
-        /* Grid Layout */
-        .challenge-grid {
+        .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: var(--spacing-xl);
-            margin-bottom: var(--spacing-2xl);
+            margin-bottom: var(--spacing-xl);
         }
 
-        /* Cards */
         .card {
             background: var(--card-background);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-xl);
             padding: var(--spacing-xl);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transition: var(--transition-normal);
         }
 
@@ -184,6 +173,7 @@
         .card h2 {
             color: var(--text-primary);
             margin-bottom: var(--spacing-lg);
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
@@ -193,7 +183,6 @@
             color: var(--primary-color);
         }
 
-        /* Form Styles */
         .form-group {
             margin-bottom: var(--spacing-lg);
         }
@@ -232,43 +221,9 @@
             gap: var(--spacing-md);
         }
 
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-md) var(--spacing-xl);
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: var(--transition-normal);
-            font-size: 1rem;
-            min-height: 48px;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Zone Buttons */
         .zone-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(5, 1fr);
             gap: var(--spacing-sm);
             margin-bottom: var(--spacing-lg);
         }
@@ -296,7 +251,34 @@
             color: white;
         }
 
-        /* Leaderboard */
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            min-height: 48px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .leaderboard {
             background: var(--card-background);
             border: 1px solid var(--border-color);
@@ -304,18 +286,19 @@
             overflow: hidden;
         }
 
-        .leaderboard-header {
+        .leaderboard h2 {
             background: var(--gradient-primary);
-            padding: var(--spacing-lg);
-            text-align: center;
-        }
-
-        .leaderboard-header h2 {
             color: white;
+            padding: var(--spacing-lg);
             margin: 0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
         }
 
-        .leaderboard-list {
+        .leaderboard-content {
             padding: var(--spacing-lg);
         }
 
@@ -372,7 +355,6 @@
             font-size: 1.125rem;
         }
 
-        /* Loading States */
         .loading {
             text-align: center;
             padding: var(--spacing-xl);
@@ -395,7 +377,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Success Message */
         .success-message {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -404,15 +385,16 @@
             border-radius: var(--radius-md);
             margin-bottom: var(--spacing-lg);
             display: none;
+            align-items: center;
+            gap: var(--spacing-sm);
         }
 
         .success-message.show {
-            display: block;
+            display: flex;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
-            .nav-container {
+            .challenge-nav .nav-container {
                 flex-direction: column;
                 gap: var(--spacing-md);
                 text-align: center;
@@ -422,7 +404,7 @@
                 padding: 0 var(--spacing-md);
             }
 
-            .challenge-grid {
+            .grid {
                 grid-template-columns: 1fr;
             }
 
@@ -443,7 +425,7 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Add this right after the <body> tag -->
     <nav class="challenge-nav">
         <div class="nav-container">
             <a href="/" class="back-link">
@@ -458,71 +440,64 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container">
-        <div class="main-content">
-            <div class="challenge-grid">
-                <!-- Activity Logging Card -->
-                <div class="card">
-                    <h2>
-                        <i class="fas fa-plus-circle"></i>
-                        Log Your Run
-                    </h2>
-                    
-                    <div class="success-message" id="successMessage">
-                        <i class="fas fa-check-circle"></i>
-                        Activity logged successfully!
-                    </div>
-
-                    <form id="activityForm">
-                        <div class="form-group">
-                            <label for="playerName">Your Name</label>
-                            <input type="text" id="playerName" class="form-control" placeholder="Enter your name" required>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="distance">Distance (km)</label>
-                                <input type="number" id="distance" class="form-control" placeholder="5.0" step="0.1" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="duration">Duration (minutes)</label>
-                                <input type="number" id="duration" class="form-control" placeholder="30" min="1" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Training Zone</label>
-                            <div class="zone-buttons">
-                                <button type="button" class="zone-btn" data-zone="1">Zone 1</button>
-                                <button type="button" class="zone-btn" data-zone="2">Zone 2</button>
-                                <button type="button" class="zone-btn" data-zone="3">Zone 3</button>
-                                <button type="button" class="zone-btn" data-zone="4">Zone 4</button>
-                                <button type="button" class="zone-btn" data-zone="5">Zone 5</button>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <i class="fas fa-save"></i>
-                            Log Activity
-                        </button>
-                    </form>
+        <div class="grid">
+            <div class="card">
+                <h2>
+                    <i class="fas fa-plus-circle"></i>
+                    Log Your Activity
+                </h2>
+                
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    Activity logged successfully!
                 </div>
 
-                <!-- Leaderboard Card -->
-                <div class="card">
-                    <div class="leaderboard">
-                        <div class="leaderboard-header">
-                            <h2>
-                                <i class="fas fa-trophy"></i>
-                                Leaderboard
-                            </h2>
+                <form id="activityForm">
+                    <div class="form-group">
+                        <label for="playerName">Player Name</label>
+                        <input type="text" id="playerName" class="form-control" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="distance">Distance (km)</label>
+                            <input type="number" id="distance" class="form-control" placeholder="5.0" step="0.1" min="0" required>
                         </div>
-                        <div class="leaderboard-list" id="leaderboard">
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                Loading leaderboard...
-                            </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (minutes)</label>
+                            <input type="number" id="duration" class="form-control" placeholder="30" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Training Zone</label>
+                        <div class="zone-buttons">
+                            <button type="button" class="zone-btn" data-zone="1">Zone 1</button>
+                            <button type="button" class="zone-btn" data-zone="2">Zone 2</button>
+                            <button type="button" class="zone-btn" data-zone="3">Zone 3</button>
+                            <button type="button" class="zone-btn" data-zone="4">Zone 4</button>
+                            <button type="button" class="zone-btn" data-zone="5">Zone 5</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Log Activity
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="leaderboard">
+                    <h2>
+                        <i class="fas fa-trophy"></i>
+                        Leaderboard
+                    </h2>
+                    <div class="leaderboard-content" id="leaderboard">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading leaderboard...
                         </div>
                     </div>
                 </div>
