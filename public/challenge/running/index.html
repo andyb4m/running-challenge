@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Running Challenge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <style>
+
+    .challenge-nav {
+    background: rgba(45, 45, 45, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 0;
+    border-bottom: 1px solid #404040;
+    margin-bottom: 20px;
+    }
+
+    .challenge-nav .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .back-link {
+        color: #8b5cf6;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+        color: #a78bfa;
+    }
+
+    .challenge-nav h1 {
+        color: #ffffff;
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .challenge-nav .nav-container {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+    }
+    
+    :root {
+      --dark-bg: #121212;
+      --card-bg: #1e1e1e;
+      --purple-accent: #9c5fff;
+      --purple-light: #b17fff;
+      --purple-gradient: linear-gradient(135deg, #9c5fff 0%, #7733ff 100%);
+      --text-primary: #ffffff;
+      --text-secondary: #aaaaaa;
+      --border-radius: 12px;
+      --shadow-default: 0 8px 30px rgba(0, 0, 0, 0.3);
+      --transition-default: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 15px 8px;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+    
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .logo span {
+      color: var(--purple-accent);
+    }
+    
+    /* Mobile-first card sections */
+    .card-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow-default);
+      margin-bottom: 20px;
+      width: 100%;
+      transition: var(--transition-default);
+    }
+    
+    .card-section:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Desktop grid layout */
+    @media screen and (min-width: 992px) {
+      body {
+        padding: 20px;
+      }
+      
+      header {
+        text-align: left;
+      }
+      
+      .card-section {
+        padding: 25px;
+      }
+      
+      .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto !important;
+        gap: 20px !important;
+      }
+      
+      .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+      }
+      
+      .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+      }
+      
+      .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+      }
+      
+      .card-section {
+        margin-bottom: 0;
+      }
+      
+      .time-section .card-section,
+      .ranking-section .card-section {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section .running-stats {
+        flex: 1;
+      }
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    h2 span {
+      color: var(--purple-accent);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Improved form controls */
+    select, input {
+      width: 100%;
+      padding: 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(156, 95, 255, 0.2);
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--purple-accent);
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: var(--transition-default);
+    }
+    
+    select {
+      background-color: var(--card-bg);
+      cursor: pointer;
+    }
+    
+    select:hover + .select-wrapper::after {
+      color: var(--purple-light);
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--purple-gradient);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: var(--transition-default);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(156, 95, 255, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--purple-light);
+      min-height: 24px;
+      padding: 8px;
+      border-radius: 6px;
+      transition: var(--transition-default);
+    }
+    
+    #message.success {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+    
+    #message.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    		/* Import section styling */
+		.import-section {
+		  margin-bottom: 25px;
+		  padding: 20px;
+		  background: rgba(255, 255, 255, 0.03);
+		  border-radius: 8px;
+		  border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.import-section h3 {
+		  color: var(--purple-accent);
+		  font-size: 18px;
+		  margin-bottom: 15px;
+		}
+
+		.parse-btn {
+		  width: auto;
+		  padding: 10px 20px;
+		  margin-top: 10px;
+		  margin-left: 0;
+		  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		}
+
+		.activity-preview {
+		  margin-top: 20px;
+		  padding: 15px;
+		  background: rgba(16, 185, 129, 0.1);
+		  border: 1px solid rgba(16, 185, 129, 0.3);
+		  border-radius: 8px;
+		}
+
+		.activity-preview h4 {
+		  color: #10b981;
+		  margin-bottom: 15px;
+		}
+
+		.preview-grid {
+		  display: grid;
+		  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		  gap: 10px;
+		  margin-bottom: 15px;
+		}
+
+		.preview-item {
+		  display: flex;
+		  justify-content: space-between;
+		  padding: 8px;
+		  background: rgba(255, 255, 255, 0.05);
+		  border-radius: 4px;
+		}
+
+		.preview-item label {
+		  font-weight: 500;
+		  color: var(--text-secondary);
+		}
+
+		.preview-item span {
+		  color: var(--text-primary);
+		  font-weight: 600;
+		}
+
+		.preview-actions {
+		  display: flex;
+		  gap: 10px;
+		}
+
+		.use-data-btn {
+		  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		  flex: 1;
+		}
+
+		.cancel-btn {
+		  background: rgba(239, 68, 68, 0.2);
+		  border: 1px solid rgba(239, 68, 68, 0.3);
+		  color: #ef4444;
+		  flex: 1;
+		}
+
+		.divider {
+		  text-align: center;
+		  margin: 20px 0;
+		  position: relative;
+		}
+
+		.divider::before {
+		  content: '';
+		  position: absolute;
+		  top: 50%;
+		  left: 0;
+		  right: 0;
+		  height: 1px;
+		  background: rgba(255, 255, 255, 0.1);
+		}
+
+		.divider span {
+		  background: var(--card-bg);
+		  padding: 0 15px;
+		  color: var(--text-secondary);
+		  font-size: 14px;
+		}
+
+		/* Mobile adjustments */
+		@media screen and (max-width: 480px) {
+		  .preview-grid {
+			grid-template-columns: 1fr;
+		  }
+		  
+		  .preview-actions {
+			flex-direction: column;
+		  }
+		}
+    
+    /* reCAPTCHA styling */
+    .g-recaptcha {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 14px;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    /* Mobile reCAPTCHA adjustments */
+    @media screen and (max-width: 480px) {
+      .g-recaptcha {
+        transform: scale(0.85);
+        transform-origin: center;
+      }
+    }
+    
+    /* Improved responsive tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 600px;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+    }
+    
+    /* Fixed column spacing for activities table */
+    #activitiesTable th:first-child,
+    #activitiesTable td:first-child {
+      width: 100px;
+      padding-right: 16px;
+    }
+    
+    #activitiesTable th:nth-child(2),
+    #activitiesTable td:nth-child(2) {
+      width: 80px;
+      padding-left: 16px;
+      padding-right: 12px;
+    }
+    
+    .data-table th {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .rank-cell {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .rank-1:after {
+      content: "🏆";
+      margin-left: 5px;
+    }
+    
+    .name-cell {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .points-cell {
+      color: var(--purple-accent);
+      font-weight: 600;
+    }
+
+    .loading-message {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .running-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    /* Mobile: Stack zones vertically with tighter spacing */
+    @media screen and (max-width: 768px) {
+      .running-stats {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      
+      .stat-card {
+        padding: 18px 16px;
+        border-radius: 8px;
+      }
+      
+      .stat-card label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      
+      .time-segments {
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      
+      .time-segment {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+      }
+      
+      .time-separator {
+        font-size: 16px;
+        font-weight: bold;
+        padding: 0 3px;
+      }
+      
+      .time-segment-label {
+        font-size: 11px;
+        margin-top: 4px;
+        font-weight: 600;
+      }
+      
+      .stat-label {
+        font-size: 11px;
+        margin-top: 8px;
+        font-weight: 500;
+      }
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px 8px;
+      text-align: center;
+      transition: var(--transition-default);
+    }
+    
+    .stat-card:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(156, 95, 255, 0.3);
+    }
+    
+    /* Smaller, more mobile-friendly time inputs */
+    .time-segments {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .time-segment {
+      width: 30px;
+      height: 36px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 4px 2px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    .time-segment:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(156, 95, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Hide number input spinners */
+    .time-segment::-webkit-inner-spin-button, 
+    .time-segment::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+    
+    .time-separator {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: bold;
+      padding: 0 1px;
+    }
+    
+    .time-segment-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .time-segment-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 8px;
+      line-height: 1.2;
+    }
+    
+    .stat-card label {
+      font-size: 11px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    /* Improved view all button */
+    .view-all-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(156, 95, 255, 0.1);
+      color: var(--purple-light);
+      border: 1px solid rgba(156, 95, 255, 0.3);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: var(--transition-default);
+      text-decoration: none;
+    }
+
+    .view-all-btn:hover {
+      background: rgba(156, 95, 255, 0.2);
+      border-color: rgba(156, 95, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    /* Desktop improvements */
+    @media screen and (min-width: 992px) {
+      .time-segment {
+        width: 38px;
+        height: 42px;
+        padding: 6px 2px;
+        font-size: 15px;
+      }
+      
+      .time-separator {
+        font-size: 14px;
+        padding: 0 2px;
+      }
+      
+      .time-segment-label {
+        font-size: 10px;
+        margin-top: 4px;
+      }
+      
+      .stat-label {
+        font-size: 11px;
+        margin-top: 10px;
+      }
+      
+      .stat-card {
+        padding: 15px 10px;
+        border-radius: 8px;
+      }
+      
+      .stat-card label {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      
+      .running-stats {
+        gap: 15px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 14px 10px;
+      }
+      
+      #activitiesTable th:first-child,
+      #activitiesTable td:first-child {
+        width: 120px;
+        padding-right: 20px;
+      }
+      
+      #activitiesTable th:nth-child(2),
+      #activitiesTable td:nth-child(2) {
+        width: 100px;
+        padding-left: 20px;
+        padding-right: 16px;
+      }
+    }
+    
+    /* Tablet adjustments */
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      .time-segment {
+        width: 34px;
+        height: 38px;
+        font-size: 14px;
+      }
+      
+      .stat-card {
+        padding: 14px 8px;
+        border-radius: 8px;
+      }
+      
+      .running-stats {
+        gap: 12px;
+      }
+    }
+    
+    /* Small mobile adjustments */
+    @media screen and (max-width: 480px) {
+      body {
+        padding: 10px 6px;
+      }
+      
+      .card-section {
+        padding: 16px 12px;
+      }
+      
+      .running-stats {
+        gap: 10px !important;
+      }
+      
+      .stat-card {
+        padding: 16px 14px !important;
+        border-radius: 8px !important;
+      }
+      
+      .stat-card label {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+      }
+      
+      /* Compact but touch-friendly time inputs */
+      .time-segments {
+        gap: 4px !important;
+      }
+      
+      .time-segment {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 15px !important;
+      }
+      
+      .time-separator {
+        font-size: 15px !important;
+        padding: 0 2px !important;
+      }
+      
+      .time-segment-label {
+        font-size: 10px !important;
+        margin-top: 3px !important;
+      }
+      
+      .stat-label {
+        font-size: 10px !important;
+        margin-top: 6px !important;
+      }
+      
+      .data-table {
+        min-width: 500px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 10px 6px;
+        font-size: 13px;
+      }
+      
+      #activitiesTable th:first-child,
+      #activitiesTable td:first-child {
+        width: 85px;
+        padding-right: 12px;
+      }
+      
+      #activitiesTable th:nth-child(2),
+      #activitiesTable td:nth-child(2) {
+        width: 65px;
+        padding-left: 12px;
+        padding-right: 8px;
+      }
+    }
+    
+    .error-state {
+      color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Focus styles for better accessibility */
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--purple-accent);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="challenge-nav">
+    <div class="nav-container">
+        <a href="/" class="back-link">← Back to Challenges</a>
+        <h1>Running Challenge 2024</h1>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header>
+      <div class="logo">RUN<span>.</span>CHALLENGE</div>
+    </header>
+    
+    <div class="desktop-layout">
+      <!-- Time Input Section -->
+      <div class="time-section">
+        <div class="card-section">
+          <h2>Log Your <span>Time</span></h2>
+          
+          <form id="runningForm">
+            <div class="form-group">
+              <label for="name">Select Runner</label>
+              <div class="select-wrapper">
+                <select id="name" name="name" required>
+                  <option value="">Choose your name</option>
+                  <option value="Andy">Andy</option>
+                  <option value="Batz">Batz</option>
+                  <option value="Hans">Hans</option>
+                  <option value="Eleana">Eleana</option>
+                </select>
+              </div>
+            </div>
+           
+           
+            <div class="running-stats">
+              <div class="form-group stat-card">
+                <label for="z2_hours">Zone 2 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×0.5 points per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z4_hours">Zone 4 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×1 point per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z5_hours">Zone 5 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×2 points per minute</span>
+              </div>
+            </div>
+            
+            <!-- reCAPTCHA Widget -->
+            <div class="form-group">
+              <div class="g-recaptcha" data-sitekey="6Lek7LYrAAAAABXlOK8N5KAEr5d6_-BfqOFeGJZ4"></div>
+              <div id="recaptcha-error" class="error-message" style="display: none;">
+                Please complete the reCAPTCHA verification.
+              </div>
+            </div>
+            
+            <button type="submit">Submit Running Time</button>
+            <div id="message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Ranking Section -->
+      <div class="ranking-section">
+        <div class="card-section">
+          <h2>Current <span>Ranking</span></h2>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="rankingTable" role="table" aria-label="Current ranking">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Runs</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="loading-message">Loading ranking data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activities Section -->
+      <div class="activities-section">
+        <div class="card-section">
+          <div class="section-header">
+            <h2>Recent <span>Activities</span></h2>
+            <div>
+              <button type="button" id="viewAllBtn" class="view-all-btn">View All Runs</button>
+            </div>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="activitiesTable" role="table" aria-label="Recent activities">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6" class="loading-message">Loading activities...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const FUNCTIONS_BASE_URL = '/.netlify/functions';
+    
+    // State management
+    let showingAllActivities = false;
+    let isLoading = false;
+    
+    // Utility functions
+    const showMessage = (message, type = 'info') => {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type;
+      
+      // Auto-clear success messages after 3 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.textContent = '';
+          messageDiv.className = '';
+        }, 3000);
+      }
+    };
+    
+    const setLoadingState = (loading) => {
+      isLoading = loading;
+      const submitBtn = document.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = loading;
+        submitBtn.textContent = loading ? 'Submitting...' : 'Submit Running Time';
+      }
+    };
+    
+    // Initial load when the page is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      loadRanking();
+      setupTimeInputs();
+      
+      // Load recent activities with a slight delay
+      setTimeout(() => loadActivities(false), 1000);
+      
+      // Add event listener for "View All" button
+      document.getElementById('viewAllBtn').addEventListener('click', function() {
+        showingAllActivities = !showingAllActivities;
+        loadActivities(showingAllActivities);
+        this.textContent = showingAllActivities ? "Show Recent Runs" : "View All Runs";
+      });
+    });
+    
+    // Setup time input fields with improved UX
+    function setupTimeInputs() {
+      const timeSegments = document.querySelectorAll('.time-segment');
+      
+      timeSegments.forEach(input => {
+        // Handle input event with improved auto-advance
+        input.addEventListener('input', function(e) {
+          // Remove any non-numeric characters
+          this.value = this.value.replace(/[^\d]/g, '');
+          
+          // Ensure values are within min/max range
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          if (value > max) {
+            this.value = max;
+          }
+          
+          // Auto-advance logic
+          const isHoursField = this.id.includes('hours');
+          const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
+          
+          if ((isMinutesOrSecondsField && this.value.length >= 2) || 
+              (isHoursField && this.value.length >= 2)) {
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            }
+          }
+        });
+        
+        // Handle blur event - format and pad values
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            this.value = this.id.includes('hours') ? '0' : '00';
+          } else if ((this.id.includes('minutes') || this.id.includes('seconds'))) {
+            const value = parseInt(this.value) || 0;
+            this.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        // Enhanced keyboard navigation
+        input.addEventListener('keydown', function(e) {
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          switch(e.key) {
+            case 'ArrowUp':
+              e.preventDefault();
+              this.value = (value < max) ? value + 1 : 0;
+              if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+                this.value = '0' + this.value;
+              }
+              break;
+              
+            case 'ArrowDown':
+              e.preventDefault();
+              this.value = (value > 0) ? value - 1 : max;
+              if ((this.id.includes('minutes') || this.id.includes('seconds')) && this.value < 10) {
+                this.value = '0' + this.value;
+              }
+              break;
+              
+            case 'ArrowRight':
+              if (this.selectionStart === this.value.length) {
+                const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+                if (nextInput) {
+                  nextInput.focus();
+                  nextInput.select();
+                }
+              }
+              break;
+              
+            case 'ArrowLeft':
+              if (this.selectionStart === 0) {
+                const prevInput = this.parentElement.previousElementSibling?.previousElementSibling?.querySelector('input');
+                if (prevInput) {
+                  prevInput.focus();
+                  prevInput.select();
+                }
+              }
+              break;
+              
+            case 'Enter':
+              e.preventDefault();
+              const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+              if (nextInput) {
+                nextInput.focus();
+                nextInput.select();
+              } else {
+                // Move to next zone or submit
+                const currentCard = this.closest('.stat-card');
+                const nextCard = currentCard.nextElementSibling;
+                if (nextCard) {
+                  const nextRowFirstInput = nextCard.querySelector('.time-segment');
+                  if (nextRowFirstInput) {
+                    nextRowFirstInput.focus();
+                    nextRowFirstInput.select();
+                  }
+                } else {
+                  // Submit form if this is the last input
+                  document.getElementById('runningForm').dispatchEvent(new Event('submit'));
+                }
+              }
+              break;
+          }
+        });
+        
+        // Select all text on focus
+        input.addEventListener('focus', function() {
+          this.select();
+        });
+      });
+    }
+    
+    // Parse segmented time inputs to decimal minutes
+    function getTimeValue(zonePrefix) {
+      const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
+      const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
+      const seconds = parseInt(document.getElementById(zonePrefix + '_seconds').value) || 0;
+      
+      return (hours * 60) + minutes + (seconds / 60);
+    }
+    
+    // Get formatted time string from segments
+    function getTimeString(zonePrefix) {
+      let hours = document.getElementById(zonePrefix + '_hours').value || '0';
+      let minutes = document.getElementById(zonePrefix + '_minutes').value || '00';
+      let seconds = document.getElementById(zonePrefix + '_seconds').value || '00';
+      
+      // Ensure minutes and seconds have leading zeros
+      minutes = parseInt(minutes) < 10 && minutes.length < 2 ? '0' + minutes : minutes;
+      seconds = parseInt(seconds) < 10 && seconds.length < 2 ? '0' + seconds : seconds;
+      
+      return hours + ':' + minutes + ':' + seconds;
+    }
+    
+    // Format decimal minutes to h:mm:ss
+    function formatDecimalToTime(decimalMinutes) {
+      if (!decimalMinutes) return '0:00:00';
+      
+      const totalMinutes = decimalMinutes;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = Math.floor(totalMinutes % 60);
+      const seconds = Math.round((totalMinutes % 1) * 60);
+      
+      return hours + ':' + 
+             (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+             (seconds < 10 ? '0' + seconds : seconds);
+    }
+
+    // Enhanced form submission with reCAPTCHA
+    document.getElementById('runningForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (isLoading) return;
+
+      // Check reCAPTCHA first
+      const recaptchaResponse = grecaptcha.getResponse();
+      const recaptchaError = document.getElementById('recaptcha-error');
+      
+      if (!recaptchaResponse) {
+        recaptchaError.style.display = 'block';
+        recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      } else {
+        recaptchaError.style.display = 'none';
+      }
+
+      const form = e.target;
+      setLoadingState(true);
+      
+      try {
+        // Ensure all time inputs have proper formatting
+        document.querySelectorAll('.time-segment').forEach(input => {
+          if (!input.value) {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
+            }
+          } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+            const value = parseInt(input.value) || 0;
+            input.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        // Get time values from segments
+        const z2Decimal = getTimeValue('z2');
+        const z4Decimal = getTimeValue('z4');
+        const z5Decimal = getTimeValue('z5');
+        
+        // Validate that at least some time was entered
+        if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+          showMessage('Please enter at least some training time.', 'error');
+          setLoadingState(false);
+          return;
+        }
+        
+        // Get formatted time strings
+        const z2Time = getTimeString('z2');
+        const z4Time = getTimeString('z4');
+        const z5Time = getTimeString('z5');
+        
+        const formData = {
+          name: form.name.value,
+          z2: z2Decimal.toFixed(2),
+          z4: z4Decimal.toFixed(2),
+          z5: z5Decimal.toFixed(2),
+          z2_display: z2Time,
+          z4_display: z4Time,
+          z5_display: z5Time,
+          recaptcha: recaptchaResponse // Add reCAPTCHA response
+        };
+
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/addRun`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          showMessage(result.message, 'success');
+          
+          // Reset form including reCAPTCHA
+          const selectedName = form.name.value;
+          
+          document.querySelectorAll('.time-segment').forEach(input => {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
+            }
+          });
+          
+          form.name.value = selectedName;
+          grecaptcha.reset(); // Reset reCAPTCHA
+          
+          loadRanking();
+          setTimeout(() => loadActivities(showingAllActivities), 1000);
+        } else {
+          showMessage('Error: ' + result.error, 'error');
+          grecaptcha.reset(); // Reset reCAPTCHA on error
+        }
+      } catch (error) {
+        showMessage('Network error: ' + error.message, 'error');
+        grecaptcha.reset(); // Reset reCAPTCHA on error
+        console.error("Form submission error:", error);
+      } finally {
+        setLoadingState(false);
+      }
+    });
+
+    // Enhanced ranking load function
+    async function loadRanking() {
+      const tbody = document.querySelector('#rankingTable tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getRanking`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const ranking = await response.json();
+
+        if (!ranking || ranking.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        ranking.forEach((player, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+            <td class="name-cell">${player.name}</td>
+            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
+            <td>${player.runCount || 0}</td>
+            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ4)}</td>
+            <td>${formatDecimalToTime(player.totalZ5)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Ranking load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Enhanced activities load function
+    async function loadActivities(loadAll) {
+      const tbody = document.querySelector('#activitiesTable tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+      
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getActivities`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const activities = await response.json();
+
+        if (!activities || activities.length === 0) {
+          const message = !activities ? "No activities data received." : "No activities recorded yet.";
+          tbody.innerHTML = `<tr><td colspan="6" class="loading-message">${message}</td></tr>`;
+          return;
+        }
+        
+        // Limit to 10 most recent if not showing all
+        let displayActivities = activities;
+        if (!loadAll && Array.isArray(activities)) {
+          displayActivities = activities.slice(0, 10);
+        }
+        
+        tbody.innerHTML = '';
+        
+        displayActivities.forEach(function(activity) {
+          const z2Display = formatDecimalToTime(activity.z2);
+          const z4Display = formatDecimalToTime(activity.z4);
+          const z5Display = formatDecimalToTime(activity.z5);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${activity.date || "Unknown"}</td>
+            <td class="name-cell">${activity.name || "Unknown"}</td>
+            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
+            <td>${z2Display}</td>
+            <td>${z4Display}</td>
+            <td>${z5Display}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Activities load error:", error);
+        tbody.innerHTML = `<tr><td colspan="6" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Activity link parsing
+    document.getElementById('parseActivityBtn')?.addEventListener('click', async function() {
+      const activityUrl = document.getElementById('activityLink').value.trim();
+      
+      if (!activityUrl) {
+        showMessage('Please enter an activity URL', 'error');
+        return;
+      }
+
+      if (!activityUrl.includes('flow.polar.com') && !activityUrl.includes('connect.garmin.com')) {
+        showMessage('Please enter a valid Polar or Garmin activity URL', 'error');
+        return;
+      }
+
+      this.disabled = true;
+      this.textContent = 'Parsing...';
+
+      try {
+        const response = await fetch('/.netlify/functions/parseActivity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ activityUrl })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          displayActivityPreview(result.data);
+          showMessage('Activity parsed successfully! Review the data below.', 'success');
+        } else {
+          showMessage('Error: ' + result.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Parse error: ' + error.message, 'error');
+      } finally {
+        this.disabled = false;
+        this.textContent = 'Parse Activity';
+      }
+    });
+
+    function displayActivityPreview(data) {
+      // Populate preview section
+      document.getElementById('previewName').textContent = data.name || 'Unknown';
+      document.getElementById('previewDate').textContent = data.date || 'Unknown';
+      document.getElementById('previewDuration').textContent = data.duration || '0:00:00';
+      document.getElementById('previewZ2').textContent = formatDecimalToTime(data.z2 || 0);
+      document.getElementById('previewZ4').textContent = formatDecimalToTime(data.z4 || 0);
+      document.getElementById('previewZ5').textContent = formatDecimalToTime(data.z5 || 0);
+      
+      const totalPoints = (data.z2 * 0.5) + (data.z4 * 1) + (data.z5 * 2);
+      document.getElementById('previewPoints').textContent = totalPoints.toFixed(1);
+      
+      // Show preview section
+      document.getElementById('activityPreview').style.display = 'block';
+      
+      // Store parsed data for later use
+      window.parsedActivityData = data;
+    }
+
+    // Use imported data button
+    document.getElementById('useImportedData')?.addEventListener('click', function() {
+      if (window.parsedActivityData) {
+        const data = window.parsedActivityData;
+        
+        // Fill in the manual time inputs with parsed data
+        fillTimeInputs('z2', data.z2 || 0);
+        fillTimeInputs('z4', data.z4 || 0);
+        fillTimeInputs('z5', data.z5 || 0);
+        
+        // Hide preview and clear URL
+        document.getElementById('activityPreview').style.display = 'none';
+        document.getElementById('activityLink').value = '';
+        
+        showMessage('Activity data loaded into form. You can adjust if needed.', 'success');
+      }
+    });
+
+    // Cancel import button
+    document.getElementById('cancelImport')?.addEventListener('click', function() {
+      document.getElementById('activityPreview').style.display = 'none';
+      document.getElementById('activityLink').value = '';
+      window.parsedActivityData = null;
+    });
+
+    function fillTimeInputs(zonePrefix, decimalMinutes) {
+      const hours = Math.floor(decimalMinutes / 60);
+      const minutes = Math.floor(decimalMinutes % 60);
+      const seconds = Math.round((decimalMinutes % 1) * 60);
+      
+      document.getElementById(zonePrefix + '_hours').value = hours;
+      document.getElementById(zonePrefix + '_minutes').value = minutes.toString().padStart(2, '0');
+      document.getElementById(zonePrefix + '_seconds').value = seconds.toString().padStart(2, '0');
+    }
+  </script>
+</body>
+</html>
