@@ -4,7 +4,7 @@ const challenges = [
     id: 'running-challenge-2025',
     title: 'Ultimate Running Challenge 2025',
     description: 'Push your limits with our comprehensive running challenge. Track zones, compete with friends, and achieve your personal best.',
-    status: 'active',
+    status: 'ended',
     startDate: '2025-08-01',
     endDate: '2025-09-30',
     participants: 4,

@@ -4,7 +4,7 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Running Challenge 2024 - FitChallenge</title>
+  <title>Running Challenge 2025 - FitChallenge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -596,6 +596,31 @@
       gap: 10px;
       margin-bottom: 20px;
     }
+
+    .challenge-completed {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-color);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .challenge-completed h3 {
+      color: var(--error-color);
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .form-disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     /* Mobile: Stack zones vertically with tighter spacing */
     @media screen and (max-width: 768px) {
       .running-stats {
@@ -966,11 +991,23 @@
       </a>
       <h1>
         <i class="fas fa-running"></i>
-        Running Challenge 2024
+        Running Challenge 2025
       </h1>
       <div></div> <!-- Spacer for flexbox -->
     </div>
   </nav>
+
+<!-- Challenge Completed Notice -->
+  <div class="container">
+    <div class="challenge-completed">
+      <h3>
+        <i class="fas fa-flag-checkered"></i>
+        Challenge Completed!
+      </h3>
+      <p>The Running Challenge 2025 has been completed. No new entries are being accepted.</p>
+      <p>Thank you to all participants! Check out the final rankings below.</p>
+    </div>
+  </div>
 
   <div class="container">
     <div class="desktop-layout">
@@ -1629,6 +1666,36 @@
       document.getElementById(zonePrefix + '_minutes').value = minutes.toString().padStart(2, '0');
       document.getElementById(zonePrefix + '_seconds').value = seconds.toString().padStart(2, '0');
     }
+
+    // Add this at the end of your existing JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+      // Disable the form
+      const form = document.getElementById('runningForm');
+      const timeSection = document.querySelector('.time-section .card-section');
+      
+      if (form && timeSection) {
+        form.classList.add('form-disabled');
+        
+        // Update the form title
+        const formTitle = timeSection.querySelector('h2');
+        if (formTitle) {
+          formTitle.innerHTML = '<i class="fas fa-lock"></i>Challenge <span>Completed</span>';
+        }
+        
+        // Disable all form inputs
+        const inputs = form.querySelectorAll('input, select, button');
+        inputs.forEach(input => {
+          input.disabled = true;
+        });
+        
+        // Hide reCAPTCHA
+        const recaptcha = form.querySelector('.g-recaptcha');
+        if (recaptcha) {
+          recaptcha.style.display = 'none';
+        }
+      }
+    });
+
   </script>
 </body>
 </html>
