@@ -3,7 +3,7 @@ const challenges = [
   {
     id: 'running-challenge-2025',
     title: 'Ultimate Running Challenge 2025',
-    description: 'Push your limits with our comprehensive running challenge. Track zones, compete with friends, and achieve your personal best.',
+    description: 'Push your limits with our zone challenge 2.0. Track your zones and compete with friends.',
     status: 'ended',
     startDate: '2025-08-01',
     endDate: '2025-09-30',
@@ -25,7 +25,7 @@ const challenges = [
     type: 'running',
     url: '#',
     difficulty: 'Intermediate',
-    duration: '9 months',
+    duration: '2 months',
     icon: 'fas fa-bicycle'
   },
   {
