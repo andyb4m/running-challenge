@@ -1,28 +1,28 @@
 // Updated challenge data - removed yoga, updated completed challenge
 const challenges = [
   {
-    id: 'running-challenge-2024',
-    title: 'Ultimate Running Challenge 2024',
+    id: 'running-challenge-2025',
+    title: 'Ultimate Running Challenge 2025',
     description: 'Push your limits with our comprehensive running challenge. Track zones, compete with friends, and achieve your personal best.',
     status: 'active',
-    startDate: '2024-01-01',
-    endDate: '2024-12-31',
-    participants: 12,
+    startDate: '2025-08-01',
+    endDate: '2025-09-30',
+    participants: 4,
     type: 'running',
     url: '/challenge/running/',
     difficulty: 'All Levels',
-    duration: '12 months',
+    duration: '2 months',
     icon: 'fas fa-running'
   },
   {
-    id: 'cycling-challenge-2024',
-    title: 'Cycling Adventure Challenge',
-    description: 'Explore new routes and push your cycling limits. Perfect for road cyclists and mountain bikers alike.',
+    id: 'running-challenge-2025-winteredition',
+    title: 'Ending the year with a BANG',
+    description: 'Push your running limits. Perfect for hobby runners and professional OCR athletes alike.',
     status: 'upcoming',
-    startDate: '2024-03-01',
-    endDate: '2024-11-30',
+    startDate: '2025-11-01',
+    endDate: '2025-12-31',
     participants: 0,
-    type: 'cycling',
+    type: 'running',
     url: '#',
     difficulty: 'Intermediate',
     duration: '9 months',
@@ -33,8 +33,8 @@ const challenges = [
     title: 'Running Challenge Zone 2',
     description: 'Completed running challenge focused on zone 2 training and endurance building.',
     status: 'ended',
-    startDate: '2023-11-01',
-    endDate: '2023-12-31',
+    startDate: '2025-05-01',
+    endDate: '2025-6-31',
     participants: 3,
     type: 'running',
     url: '#',
@@ -42,15 +42,6 @@ const challenges = [
     duration: '2 months',
     icon: 'fas fa-running'
   }
-];
-
-// Sample leaderboard data from your running challenge
-const leaderboardData = [
-  { name: 'Alex Martinez', score: 2450, rank: 1 },
-  { name: 'Sarah Kim', score: 2380, rank: 2 },
-  { name: 'Mike Johnson', score: 2290, rank: 3 },
-  { name: 'Emma Wilson', score: 2180, rank: 4 },
-  { name: 'David Chen', score: 2050, rank: 5 }
 ];
 
 function loadChallenges() {
