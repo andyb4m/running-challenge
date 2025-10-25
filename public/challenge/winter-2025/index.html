@@ -10,30 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
-      authDomain: "running-challenge-app.firebaseapp.com",
-      projectId: "running-challenge-app",
-      storageBucket: "running-challenge-app.appspot.com",
-      messagingSenderId: "1092527848130",
-      appId: "1:1092527848130:web:a6d3c8a7d8b5c9e2f4g5h6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    window.db = db;
-    window.firestoreModules = { collection, addDoc, getDocs, query, orderBy, onSnapshot };
-  </script>
 
   <style>
     :root {
-      /* Primary Colors - Updated to match home page */
+      /* Primary Colors */
       --primary-color: #6366f1;
       --primary-dark: #4f46e5;
       --primary-light: #8b5cf6;
@@ -234,10 +214,6 @@
         display: flex;
         flex-direction: column;
       }
-      
-      .time-section .card-section .running-stats {
-        flex: 1;
-      }
     }
     
     h2 {
@@ -364,6 +340,88 @@
       background-color: rgba(239, 68, 68, 0.1);
       color: var(--error-color);
       border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    #message.warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Activity Type Selection */
+    .activity-type-selection {
+      margin-bottom: 20px;
+    }
+
+    .activity-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .activity-type-btn {
+      padding: var(--spacing-md);
+      background: var(--background-dark);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-normal);
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .activity-type-btn:hover {
+      border-color: var(--winter-accent);
+      color: var(--text-primary);
+    }
+
+    .activity-type-btn.active {
+      background: var(--winter-accent);
+      border-color: var(--winter-accent);
+      color: white;
+    }
+
+    .activity-type-btn i {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      font-size: 18px;
+    }
+
+    /* Zone training section */
+    .zone-training {
+      display: block;
+    }
+
+    .zone-training.hidden {
+      display: none;
+    }
+
+    /* Simple activity section */
+    .simple-activity {
+      display: none;
+    }
+
+    .simple-activity.visible {
+      display: block;
+    }
+
+    .simple-activity-info {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success-color);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .simple-activity-info.others {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--warning-color);
     }
 
     /* reCAPTCHA styling */
@@ -597,6 +655,16 @@
         gap: 12px;
         margin-bottom: 20px;
       }
+
+      .activity-types {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .activity-types {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -621,7 +689,7 @@
       <!-- Time Input Section -->
       <div class="time-section">
         <div class="card-section">
-          <h2><i class="fas fa-stopwatch"></i>Log Your <span>Time</span></h2>
+          <h2><i class="fas fa-plus-circle"></i>Log Your <span>Activity</span></h2>
           
           <form id="runningForm">
             <div class="form-group">
@@ -633,74 +701,101 @@
                   <option value="Batz">Batz</option>
                   <option value="Hans">Hans</option>
                   <option value="Eleana">Eleana</option>
-                  <option value="Jakob">Eleana</option>
-                  <option value="Caro">Eleana</option>
                 </select>
               </div>
             </div>
-           
-            <div class="running-stats">
-              <div class="form-group stat-card">
-                <label for="z2_hours">Zone 2 Time</label>
-                <div class="time-segments">
-                  <div class="time-segment-container">
-                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
-                    <span class="time-segment-label">h</span>
-                  </div>
-                  <span class="time-separator">:</span>
-                  <div class="time-segment-container">
-                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
-                    <span class="time-segment-label">m</span>
-                  </div>
-                  <span class="time-separator">:</span>
-                  <div class="time-segment-container">
-                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
-                    <span class="time-segment-label">s</span>
-                  </div>
-                </div>
-                <span class="stat-label">×0.5 points per minute</span>
+
+            <!-- Activity Type Selection -->
+            <div class="form-group activity-type-selection">
+              <label>Activity Type</label>
+              <div class="activity-types">
+                <button type="button" class="activity-type-btn active" data-type="zone-training">
+                  <i class="fas fa-running"></i>
+                  Zone Training
+                </button>
+                <button type="button" class="activity-type-btn" data-type="others">
+                  <i class="fas fa-dumbbell"></i>
+                  Others
+                </button>
+                <button type="button" class="activity-type-btn" data-type="recovery">
+                  <i class="fas fa-spa"></i>
+                  Recovery
+                </button>
               </div>
-              
-              <div class="form-group stat-card">
-                <label for="z4_hours">Zone 4 Time</label>
-                <div class="time-segments">
-                  <div class="time-segment-container">
-                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
-                    <span class="time-segment-label">h</span>
+            </div>
+
+            <!-- Zone Training Section -->
+            <div class="zone-training" id="zoneTraining">
+              <div class="running-stats">
+                <div class="form-group stat-card">
+                  <label for="z2_hours">Zone 2 Time</label>
+                  <div class="time-segments">
+                    <div class="time-segment-container">
+                      <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
+                      <span class="time-segment-label">h</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
+                      <span class="time-segment-label">m</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
+                      <span class="time-segment-label">s</span>
+                    </div>
                   </div>
-                  <span class="time-separator">:</span>
-                  <div class="time-segment-container">
-                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
-                    <span class="time-segment-label">m</span>
-                  </div>
-                  <span class="time-separator">:</span>
-                  <div class="time-segment-container">
-                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
-                    <span class="time-segment-label">s</span>
-                  </div>
+                  <span class="stat-label">×0.5 points per minute</span>
                 </div>
-                <span class="stat-label">×1 point per minute</span>
+                
+                <div class="form-group stat-card">
+                  <label for="z4_hours">Zone 4 Time</label>
+                  <div class="time-segments">
+                    <div class="time-segment-container">
+                      <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
+                      <span class="time-segment-label">h</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
+                      <span class="time-segment-label">m</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
+                      <span class="time-segment-label">s</span>
+                    </div>
+                  </div>
+                  <span class="stat-label">×1.56 points per minute</span>
+                </div>
+                
+                <div class="form-group stat-card">
+                  <label for="z5_hours">Zone 5 Time</label>
+                  <div class="time-segments">
+                    <div class="time-segment-container">
+                      <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
+                      <span class="time-segment-label">h</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
+                      <span class="time-segment-label">m</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
+                      <span class="time-segment-label">s</span>
+                    </div>
+                  </div>
+                  <span class="stat-label">×2.76 points per minute</span>
+                </div>
               </div>
-              
-              <div class="form-group stat-card">
-                <label for="z5_hours">Zone 5 Time</label>
-                <div class="time-segments">
-                  <div class="time-segment-container">
-                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
-                    <span class="time-segment-label">h</span>
-                  </div>
-                  <span class="time-separator">:</span>
-                  <div class="time-segment-container">
-                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
-                    <span class="time-segment-label">m</span>
-                  </div>
-                  <span class="time-separator">:</span>
-                  <div class="time-segment-container">
-                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
-                    <span class="time-segment-label">s</span>
-                  </div>
-                </div>
-                <span class="stat-label">×2 points per minute</span>
+            </div>
+
+            <!-- Simple Activity Section -->
+            <div class="simple-activity" id="simpleActivity">
+              <div class="simple-activity-info" id="activityInfo">
+                <p><strong>Recovery Activity:</strong> 5 points (once per week)</p>
               </div>
             </div>
             
@@ -712,9 +807,9 @@
               </div>
             </div>
             
-            <button type="submit">
+            <button type="submit" id="submitBtn">
               <i class="fas fa-fire"></i>
-              Submit Your BANG Time!
+              Submit Your BANG Activity!
             </button>
             <div id="message" role="status" aria-live="polite"></div>
           </form>
@@ -733,7 +828,7 @@
                   <th scope="col">Rank</th>
                   <th scope="col">Runner</th>
                   <th scope="col">Points</th>
-                  <th scope="col">Runs</th>
+                  <th scope="col">Activities</th>
                   <th scope="col">Z2</th>
                   <th scope="col">Z4</th>
                   <th scope="col">Z5</th>
@@ -755,7 +850,7 @@
           <div class="section-header">
             <h2><i class="fas fa-list"></i>Recent <span>Activities</span></h2>
             <div>
-              <button type="button" id="viewAllBtn" class="view-all-btn">View All Runs</button>
+              <button type="button" id="viewAllBtn" class="view-all-btn">View All Activities</button>
             </div>
           </div>
           
@@ -765,6 +860,7 @@
                 <tr>
                   <th scope="col">Date</th>
                   <th scope="col">Runner</th>
+                  <th scope="col">Type</th>
                   <th scope="col">Points</th>
                   <th scope="col">Z2</th>
                   <th scope="col">Z4</th>
@@ -773,7 +869,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="loading-message">Loading activities...</td>
+                  <td colspan="7" class="loading-message">Loading activities...</td>
                 </tr>
               </tbody>
             </table>
@@ -784,12 +880,13 @@
   </div>
 
   <script>
-    // Configuration - Updated collection name for winter challenge
-    const COLLECTION_NAME = 'winter-challenge-2025';
+    // Configuration
+    const FUNCTIONS_BASE_URL = '/.netlify/functions';
     
     // State management
     let showingAllActivities = false;
     let isLoading = false;
+    let selectedActivityType = 'zone-training';
     
     // Utility functions
     const showMessage = (message, type = 'info') => {
@@ -807,15 +904,16 @@
     
     const setLoadingState = (loading) => {
       isLoading = loading;
-      const submitBtn = document.querySelector('button[type="submit"]');
+      const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) {
         submitBtn.disabled = loading;
-        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-fire"></i> Submit Your BANG Time!';
+        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-fire"></i> Submit Your BANG Activity!';
       }
     };
     
     // Initial load
     document.addEventListener('DOMContentLoaded', function() {
+      setupActivityTypeSelection();
       loadRanking();
       setupTimeInputs();
       setTimeout(() => loadActivities(false), 1000);
@@ -823,9 +921,41 @@
       document.getElementById('viewAllBtn').addEventListener('click', function() {
         showingAllActivities = !showingAllActivities;
         loadActivities(showingAllActivities);
-        this.textContent = showingAllActivities ? "Show Recent Runs" : "View All Runs";
+        this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
       });
     });
+
+    function setupActivityTypeSelection() {
+      const activityTypeBtns = document.querySelectorAll('.activity-type-btn');
+      const zoneTraining = document.getElementById('zoneTraining');
+      const simpleActivity = document.getElementById('simpleActivity');
+      const activityInfo = document.getElementById('activityInfo');
+
+      activityTypeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          activityTypeBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          selectedActivityType = this.dataset.type;
+
+          if (selectedActivityType === 'zone-training') {
+            zoneTraining.classList.remove('hidden');
+            simpleActivity.classList.remove('visible');
+          } else {
+            zoneTraining.classList.add('hidden');
+            simpleActivity.classList.add('visible');
+            
+            if (selectedActivityType === 'others') {
+              activityInfo.innerHTML = '<p><strong>Others Activity:</strong> 10 points (once per day)</p>';
+              activityInfo.className = 'simple-activity-info others';
+            } else if (selectedActivityType === 'recovery') {
+              activityInfo.innerHTML = '<p><strong>Recovery Activity:</strong> 5 points (once per week)</p>';
+              activityInfo.className = 'simple-activity-info';
+            }
+          }
+        });
+      });
+    }
     
     // Setup time inputs (same as original)
     function setupTimeInputs() {
@@ -869,7 +999,7 @@
       });
     }
     
-    // Time calculation functions (same as original)
+    // Time calculation functions
     function getTimeValue(zonePrefix) {
       const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
       const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
@@ -902,7 +1032,7 @@
              (seconds < 10 ? '0' + seconds : seconds);
     }
 
-    // Form submission - Updated to use new collection
+    // Form submission
     document.getElementById('runningForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -923,75 +1053,87 @@
       setLoadingState(true);
       
       try {
-        document.querySelectorAll('.time-segment').forEach(input => {
-          if (!input.value) {
-            if (input.id.includes('hours')) {
-              input.value = '0';
-            } else {
-              input.value = '00';
-            }
-          } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
-            const value = parseInt(input.value) || 0;
-            input.value = value < 10 ? '0' + value : value;
-          }
-        });
-        
-        const z2Decimal = getTimeValue('z2');
-        const z4Decimal = getTimeValue('z4');
-        const z5Decimal = getTimeValue('z5');
-        
-        if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
-          showMessage('Please enter at least some training time.', 'error');
-          setLoadingState(false);
-          return;
-        }
-        
-        const z2Time = getTimeString('z2');
-        const z4Time = getTimeString('z4');
-        const z5Time = getTimeString('z5');
-        
-        // Calculate points
-        const totalPoints = (z2Decimal * 0.5) + (z4Decimal * 1) + (z5Decimal * 2);
-        
-        // Save to Firebase
-        const { collection, addDoc } = window.firestoreModules;
-        
-        const activityData = {
+        let formData = {
           name: form.name.value,
-          z2: z2Decimal,
-          z4: z4Decimal,
-          z5: z5Decimal,
-          z2_display: z2Time,
-          z4_display: z4Time,
-          z5_display: z5Time,
-          zonePoints: totalPoints,
-          timestamp: new Date(),
-          date: new Date().toLocaleDateString('en-GB')
+          activityType: selectedActivityType,
+          recaptcha: recaptchaResponse
         };
 
-        await addDoc(collection(window.db, COLLECTION_NAME), activityData);
-        
-        showMessage('BANG! Your time has been logged successfully! 🔥', 'success');
-        
-        // Reset form
-        const selectedName = form.name.value;
-        
-        document.querySelectorAll('.time-segment').forEach(input => {
-          if (input.id.includes('hours')) {
-            input.value = '0';
-          } else {
-            input.value = '00';
+        if (selectedActivityType === 'zone-training') {
+          document.querySelectorAll('.time-segment').forEach(input => {
+            if (!input.value) {
+              if (input.id.includes('hours')) {
+                input.value = '0';
+              } else {
+                input.value = '00';
+              }
+            } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+              const value = parseInt(input.value) || 0;
+              input.value = value < 10 ? '0' + value : value;
+            }
+          });
+          
+          const z2Decimal = getTimeValue('z2');
+          const z4Decimal = getTimeValue('z4');
+          const z5Decimal = getTimeValue('z5');
+          
+          if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+            showMessage('Please enter at least some training time.', 'error');
+            setLoadingState(false);
+            return;
           }
+          
+          const z2Time = getTimeString('z2');
+          const z4Time = getTimeString('z4');
+          const z5Time = getTimeString('z5');
+          
+          formData = {
+            ...formData,
+            z2: z2Decimal.toFixed(2),
+            z4: z4Decimal.toFixed(2),
+            z5: z5Decimal.toFixed(2),
+            z2_display: z2Time,
+            z4_display: z4Time,
+            z5_display: z5Time
+          };
+        }
+
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/addWinterActivity`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
         });
+
+        const result = await response.json();
         
-        form.name.value = selectedName;
-        grecaptcha.reset();
-        
-        loadRanking();
-        setTimeout(() => loadActivities(showingAllActivities), 1000);
-        
+        if (response.ok) {
+          showMessage(result.message, 'success');
+          
+          const selectedName = form.name.value;
+          
+          if (selectedActivityType === 'zone-training') {
+            document.querySelectorAll('.time-segment').forEach(input => {
+              if (input.id.includes('hours')) {
+                input.value = '0';
+              } else {
+                input.value = '00';
+              }
+            });
+          }
+          
+          form.name.value = selectedName;
+          grecaptcha.reset();
+          
+          loadRanking();
+          setTimeout(() => loadActivities(showingAllActivities), 1000);
+        } else {
+          showMessage('Error: ' + result.error, result.error.includes('already') ? 'warning' : 'error');
+          grecaptcha.reset();
+        }
       } catch (error) {
-        showMessage('Error logging activity: ' + error.message, 'error');
+        showMessage('Network error: ' + error.message, 'error');
         grecaptcha.reset();
         console.error("Form submission error:", error);
       } finally {
@@ -999,62 +1141,34 @@
       }
     });
 
-    // Load ranking - Updated to use new collection
+    // Load ranking
     async function loadRanking() {
       const tbody = document.querySelector('#rankingTable tbody');
       tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
 
       try {
-        const { collection, getDocs, query, orderBy } = window.firestoreModules;
-        const q = query(collection(window.db, COLLECTION_NAME), orderBy('timestamp', 'desc'));
-        const querySnapshot = await getDocs(q);
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getWinterRanking`);
         
-        const playerStats = {};
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const playerName = data.name;
-          
-          if (!playerStats[playerName]) {
-            playerStats[playerName] = {
-              name: playerName,
-              totalZ2: 0,
-              totalZ4: 0,
-              totalZ5: 0,
-              totalPoints: 0,
-              runCount: 0,
-              lastActivity: data.timestamp
-            };
-          }
-          
-          playerStats[playerName].totalZ2 += data.z2 || 0;
-          playerStats[playerName].totalZ4 += data.z4 || 0;
-          playerStats[playerName].totalZ5 += data.z5 || 0;
-          playerStats[playerName].totalPoints += data.zonePoints || 0;
-          playerStats[playerName].runCount += 1;
-          
-          if (data.timestamp > playerStats[playerName].lastActivity) {
-            playerStats[playerName].lastActivity = data.timestamp;
-          }
-        });
+        const ranking = await response.json();
 
-        const sortedPlayers = Object.values(playerStats)
-          .sort((a, b) => b.totalPoints - a.totalPoints);
-
-        if (sortedPlayers.length === 0) {
+        if (!ranking || ranking.length === 0) {
           tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
           return;
         }
         
         tbody.innerHTML = '';
         
-        sortedPlayers.forEach((player, index) => {
+        ranking.forEach((player, index) => {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
             <td class="name-cell">${player.name}</td>
             <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
-            <td>${player.runCount || 0}</td>
+            <td>${player.activityCount || 0}</td>
             <td>${formatDecimalToTime(player.totalZ2)}</td>
             <td>${formatDecimalToTime(player.totalZ4)}</td>
             <td>${formatDecimalToTime(player.totalZ5)}</td>
@@ -1067,23 +1181,23 @@
       }
     }
 
-    // Load activities - Updated to use new collection
+    // Load activities
     async function loadActivities(loadAll) {
       const tbody = document.querySelector('#activitiesTable tbody');
-      tbody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading activities...</td></tr>';
       
       try {
-        const { collection, getDocs, query, orderBy } = window.firestoreModules;
-        const q = query(collection(window.db, COLLECTION_NAME), orderBy('timestamp', 'desc'));
-        const querySnapshot = await getDocs(q);
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getWinterActivities`);
         
-        const activities = [];
-        querySnapshot.forEach((doc) => {
-          activities.push(doc.data());
-        });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const activities = await response.json();
 
-        if (activities.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="loading-message">No activities recorded yet. Be the first!</td></tr>';
+        if (!activities || activities.length === 0) {
+          const message = !activities ? "No activities data received." : "No activities recorded yet.";
+          tbody.innerHTML = `<tr><td colspan="7" class="loading-message">${message}</td></tr>`;
           return;
         }
         
@@ -1095,15 +1209,20 @@
         tbody.innerHTML = '';
         
         displayActivities.forEach(function(activity) {
-          const z2Display = formatDecimalToTime(activity.z2);
-          const z4Display = formatDecimalToTime(activity.z4);
-          const z5Display = formatDecimalToTime(activity.z5);
+          const z2Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z2) : '-';
+          const z4Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z4) : '-';
+          const z5Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z5) : '-';
+          
+          let activityTypeDisplay = 'Zone Training';
+          if (activity.activityType === 'others') activityTypeDisplay = 'Others';
+          if (activity.activityType === 'recovery') activityTypeDisplay = 'Recovery';
           
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${activity.date || "Unknown"}</td>
             <td class="name-cell">${activity.name || "Unknown"}</td>
-            <td class="points-cell">${(activity.zonePoints || 0).toFixed(1)}</td>
+            <td>${activityTypeDisplay}</td>
+            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
             <td>${z2Display}</td>
             <td>${z4Display}</td>
             <td>${z5Display}</td>
@@ -1112,17 +1231,8 @@
         });
       } catch (error) {
         console.error("Activities load error:", error);
-        tbody.innerHTML = `<tr><td colspan="6" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
       }
-    }
-
-    // Real-time updates
-    if (window.firestoreModules) {
-      const { collection, onSnapshot } = window.firestoreModules;
-      onSnapshot(collection(window.db, COLLECTION_NAME), (snapshot) => {
-        loadRanking();
-        loadActivities(showingAllActivities);
-      });
     }
   </script>
 </body>
