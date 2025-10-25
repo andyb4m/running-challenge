@@ -18,15 +18,15 @@ const challenges = [
     id: 'running-challenge-2025-winteredition',
     title: 'Ending the year with a BANG',
     description: 'Push your running limits. Perfect for hobby runners and professional OCR athletes alike.',
-    status: 'upcoming',
+    status: 'active',
     startDate: '2025-11-01',
     endDate: '2025-12-31',
     participants: 0,
     type: 'running',
-    url: '#',
+    url: '/challenge/winter-2025/',
     difficulty: 'Intermediate',
     duration: '2 months',
-    icon: 'fas fa-bicycle'
+    icon: 'fas fa-fire'
   },
   {
     id: 'running-challenge-zone-2',
@@ -34,7 +34,7 @@ const challenges = [
     description: 'Completed running challenge focused on zone 2 training and endurance building.',
     status: 'ended',
     startDate: '2025-05-01',
-    endDate: '2025-6-31',
+    endDate: '2025-6-30',
     participants: 3,
     type: 'running',
     url: '#',

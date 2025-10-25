@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Winter Challenge 2025 - Ending the year with a BANG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
+      authDomain: "running-challenge-app.firebaseapp.com",
+      projectId: "running-challenge-app",
+      storageBucket: "running-challenge-app.appspot.com",
+      messagingSenderId: "1092527848130",
+      appId: "1:1092527848130:web:a6d3c8a7d8b5c9e2f4g5h6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.db = db;
+    window.firestoreModules = { collection, addDoc, getDocs, query, orderBy, onSnapshot };
+  </script>
+
+  <style>
+    :root {
+      /* Primary Colors - Updated to match home page */
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #8b5cf6;
+      --secondary-color: #06d6a0;
+      --secondary-dark: #059669;
+      
+      /* Winter theme colors */
+      --winter-accent: #ef4444;
+      --winter-light: #f87171;
+      --winter-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      
+      /* Background Colors */
+      --background-dark: #0f0f23;
+      --background-secondary: #1a1a2e;
+      --card-background: #16213e;
+      --card-hover: #1e2749;
+      
+      /* Text Colors */
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      /* Border & Accent Colors */
+      --border-color: #334155;
+      --border-light: #475569;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+      
+      /* Gradients */
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --gradient-secondary: linear-gradient(135deg, #06d6a0 0%, #059669 100%);
+      --gradient-hero: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      
+      /* Spacing */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      
+      /* Border Radius */
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-2xl: 1.5rem;
+      
+      /* Transitions */
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+      
+      /* Legacy variables for compatibility */
+      --dark-bg: var(--background-dark);
+      --card-bg: var(--card-background);
+      --purple-accent: var(--winter-accent);
+      --purple-light: var(--winter-light);
+      --purple-gradient: var(--winter-gradient);
+      --border-radius: var(--radius-xl);
+      --shadow-default: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      --transition-default: var(--transition-normal);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .challenge-nav {
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-lg) 0;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .challenge-nav .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-md);
+    }
+
+    .back-link:hover {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-light);
+    }
+
+    .challenge-nav h1 {
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-weight: 700;
+    }
+
+    .challenge-nav h1 i {
+      color: var(--winter-accent);
+    }
+    
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    /* Mobile-first card sections */
+    .card-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow-default);
+      margin-bottom: 20px;
+      width: 100%;
+      transition: var(--transition-default);
+      border: 1px solid var(--border-color);
+    }
+    
+    .card-section:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--winter-accent);
+      transform: translateY(-4px);
+    }
+    
+    /* Desktop grid layout */
+    @media screen and (min-width: 992px) {
+      .card-section {
+        padding: 25px;
+      }
+      
+      .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto !important;
+        gap: 20px !important;
+      }
+      
+      .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+      }
+      
+      .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+      }
+      
+      .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+      }
+      
+      .card-section {
+        margin-bottom: 0;
+      }
+      
+      .time-section .card-section,
+      .ranking-section .card-section {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section .running-stats {
+        flex: 1;
+      }
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    h2 span {
+      color: var(--purple-accent);
+    }
+
+    h2 i {
+      color: var(--winter-accent);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Form controls */
+    select, input {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--background-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--purple-accent);
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: var(--transition-default);
+    }
+    
+    select {
+      background-color: var(--card-bg);
+      cursor: pointer;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--purple-gradient);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: var(--transition-default);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--purple-light);
+      min-height: 24px;
+      padding: 8px;
+      border-radius: 6px;
+      transition: var(--transition-default);
+    }
+    
+    #message.success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    #message.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error-color);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* reCAPTCHA styling */
+    .g-recaptcha {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 10px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 600px;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    
+    .data-table th {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .rank-cell {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .rank-1:after {
+      content: "🏆";
+      margin-left: 5px;
+    }
+    
+    .name-cell {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .points-cell {
+      color: var(--purple-accent);
+      font-weight: 600;
+    }
+
+    .loading-message {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .running-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      text-align: center;
+      transition: var(--transition-default);
+    }
+    
+    .stat-card:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: var(--winter-accent);
+    }
+    
+    /* Time inputs */
+    .time-segments {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .time-segment {
+      width: 30px;
+      height: 36px;
+      text-align: center;
+      background-color: var(--background-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px 2px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    .time-segment:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    .time-segment::-webkit-inner-spin-button, 
+    .time-segment::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+    
+    .time-separator {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: bold;
+      padding: 0 1px;
+    }
+    
+    .time-segment-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .time-segment-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 8px;
+      line-height: 1.2;
+    }
+    
+    .stat-card label {
+      font-size: 11px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .view-all-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--purple-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: var(--transition-default);
+      text-decoration: none;
+    }
+
+    .view-all-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Mobile adjustments */
+    @media screen and (max-width: 768px) {
+      .challenge-nav .nav-container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+      }
+      
+      .container {
+        padding: 0 var(--spacing-md);
+      }
+
+      .running-stats {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="challenge-nav">
+    <div class="nav-container">
+      <a href="/" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Back to Challenges
+      </a>
+      <h1>
+        <i class="fas fa-fire"></i>
+        Ending the year with a BANG
+      </h1>
+      <div></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="desktop-layout">
+      <!-- Time Input Section -->
+      <div class="time-section">
+        <div class="card-section">
+          <h2><i class="fas fa-stopwatch"></i>Log Your <span>Time</span></h2>
+          
+          <form id="runningForm">
+            <div class="form-group">
+              <label for="name">Select Runner</label>
+              <div class="select-wrapper">
+                <select id="name" name="name" required>
+                  <option value="">Choose your name</option>
+                  <option value="Andy">Andy</option>
+                  <option value="Batz">Batz</option>
+                  <option value="Hans">Hans</option>
+                  <option value="Eleana">Eleana</option>
+                  <option value="Jakob">Eleana</option>
+                  <option value="Caro">Eleana</option>
+                </select>
+              </div>
+            </div>
+           
+            <div class="running-stats">
+              <div class="form-group stat-card">
+                <label for="z2_hours">Zone 2 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×0.5 points per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z4_hours">Zone 4 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×1 point per minute</span>
+              </div>
+              
+              <div class="form-group stat-card">
+                <label for="z5_hours">Zone 5 Time</label>
+                <div class="time-segments">
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
+                    <span class="time-segment-label">h</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
+                    <span class="time-segment-label">m</span>
+                  </div>
+                  <span class="time-separator">:</span>
+                  <div class="time-segment-container">
+                    <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
+                    <span class="time-segment-label">s</span>
+                  </div>
+                </div>
+                <span class="stat-label">×2 points per minute</span>
+              </div>
+            </div>
+            
+            <!-- reCAPTCHA Widget -->
+            <div class="form-group">
+              <div class="g-recaptcha" data-sitekey="6Lek7LYrAAAAABXlOK8N5KAEr5d6_-BfqOFeGJZ4"></div>
+              <div id="recaptcha-error" class="error-message" style="display: none;">
+                Please complete the reCAPTCHA verification.
+              </div>
+            </div>
+            
+            <button type="submit">
+              <i class="fas fa-fire"></i>
+              Submit Your BANG Time!
+            </button>
+            <div id="message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Ranking Section -->
+      <div class="ranking-section">
+        <div class="card-section">
+          <h2><i class="fas fa-trophy"></i>Current <span>Ranking</span></h2>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="rankingTable" role="table" aria-label="Current ranking">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Runs</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="loading-message">Loading ranking data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activities Section -->
+      <div class="activities-section">
+        <div class="card-section">
+          <div class="section-header">
+            <h2><i class="fas fa-list"></i>Recent <span>Activities</span></h2>
+            <div>
+              <button type="button" id="viewAllBtn" class="view-all-btn">View All Runs</button>
+            </div>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="activitiesTable" role="table" aria-label="Recent activities">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6" class="loading-message">Loading activities...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration - Updated collection name for winter challenge
+    const COLLECTION_NAME = 'winter-challenge-2025';
+    
+    // State management
+    let showingAllActivities = false;
+    let isLoading = false;
+    
+    // Utility functions
+    const showMessage = (message, type = 'info') => {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.textContent = '';
+          messageDiv.className = '';
+        }, 3000);
+      }
+    };
+    
+    const setLoadingState = (loading) => {
+      isLoading = loading;
+      const submitBtn = document.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = loading;
+        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-fire"></i> Submit Your BANG Time!';
+      }
+    };
+    
+    // Initial load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadRanking();
+      setupTimeInputs();
+      setTimeout(() => loadActivities(false), 1000);
+      
+      document.getElementById('viewAllBtn').addEventListener('click', function() {
+        showingAllActivities = !showingAllActivities;
+        loadActivities(showingAllActivities);
+        this.textContent = showingAllActivities ? "Show Recent Runs" : "View All Runs";
+      });
+    });
+    
+    // Setup time inputs (same as original)
+    function setupTimeInputs() {
+      const timeSegments = document.querySelectorAll('.time-segment');
+      
+      timeSegments.forEach(input => {
+        input.addEventListener('input', function(e) {
+          this.value = this.value.replace(/[^\d]/g, '');
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          if (value > max) {
+            this.value = max;
+          }
+          
+          const isHoursField = this.id.includes('hours');
+          const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
+          
+          if ((isMinutesOrSecondsField && this.value.length >= 2) || 
+              (isHoursField && this.value.length >= 2)) {
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            }
+          }
+        });
+        
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            this.value = this.id.includes('hours') ? '0' : '00';
+          } else if ((this.id.includes('minutes') || this.id.includes('seconds'))) {
+            const value = parseInt(this.value) || 0;
+            this.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        input.addEventListener('focus', function() {
+          this.select();
+        });
+      });
+    }
+    
+    // Time calculation functions (same as original)
+    function getTimeValue(zonePrefix) {
+      const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
+      const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
+      const seconds = parseInt(document.getElementById(zonePrefix + '_seconds').value) || 0;
+      
+      return (hours * 60) + minutes + (seconds / 60);
+    }
+    
+    function getTimeString(zonePrefix) {
+      let hours = document.getElementById(zonePrefix + '_hours').value || '0';
+      let minutes = document.getElementById(zonePrefix + '_minutes').value || '00';
+      let seconds = document.getElementById(zonePrefix + '_seconds').value || '00';
+      
+      minutes = parseInt(minutes) < 10 && minutes.length < 2 ? '0' + minutes : minutes;
+      seconds = parseInt(seconds) < 10 && seconds.length < 2 ? '0' + seconds : seconds;
+      
+      return hours + ':' + minutes + ':' + seconds;
+    }
+    
+    function formatDecimalToTime(decimalMinutes) {
+      if (!decimalMinutes) return '0:00:00';
+      
+      const totalMinutes = decimalMinutes;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = Math.floor(totalMinutes % 60);
+      const seconds = Math.round((totalMinutes % 1) * 60);
+      
+      return hours + ':' + 
+             (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+             (seconds < 10 ? '0' + seconds : seconds);
+    }
+
+    // Form submission - Updated to use new collection
+    document.getElementById('runningForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (isLoading) return;
+
+      const recaptchaResponse = grecaptcha.getResponse();
+      const recaptchaError = document.getElementById('recaptcha-error');
+      
+      if (!recaptchaResponse) {
+        recaptchaError.style.display = 'block';
+        recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      } else {
+        recaptchaError.style.display = 'none';
+      }
+
+      const form = e.target;
+      setLoadingState(true);
+      
+      try {
+        document.querySelectorAll('.time-segment').forEach(input => {
+          if (!input.value) {
+            if (input.id.includes('hours')) {
+              input.value = '0';
+            } else {
+              input.value = '00';
+            }
+          } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+            const value = parseInt(input.value) || 0;
+            input.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        const z2Decimal = getTimeValue('z2');
+        const z4Decimal = getTimeValue('z4');
+        const z5Decimal = getTimeValue('z5');
+        
+        if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+          showMessage('Please enter at least some training time.', 'error');
+          setLoadingState(false);
+          return;
+        }
+        
+        const z2Time = getTimeString('z2');
+        const z4Time = getTimeString('z4');
+        const z5Time = getTimeString('z5');
+        
+        // Calculate points
+        const totalPoints = (z2Decimal * 0.5) + (z4Decimal * 1) + (z5Decimal * 2);
+        
+        // Save to Firebase
+        const { collection, addDoc } = window.firestoreModules;
+        
+        const activityData = {
+          name: form.name.value,
+          z2: z2Decimal,
+          z4: z4Decimal,
+          z5: z5Decimal,
+          z2_display: z2Time,
+          z4_display: z4Time,
+          z5_display: z5Time,
+          zonePoints: totalPoints,
+          timestamp: new Date(),
+          date: new Date().toLocaleDateString('en-GB')
+        };
+
+        await addDoc(collection(window.db, COLLECTION_NAME), activityData);
+        
+        showMessage('BANG! Your time has been logged successfully! 🔥', 'success');
+        
+        // Reset form
+        const selectedName = form.name.value;
+        
+        document.querySelectorAll('.time-segment').forEach(input => {
+          if (input.id.includes('hours')) {
+            input.value = '0';
+          } else {
+            input.value = '00';
+          }
+        });
+        
+        form.name.value = selectedName;
+        grecaptcha.reset();
+        
+        loadRanking();
+        setTimeout(() => loadActivities(showingAllActivities), 1000);
+        
+      } catch (error) {
+        showMessage('Error logging activity: ' + error.message, 'error');
+        grecaptcha.reset();
+        console.error("Form submission error:", error);
+      } finally {
+        setLoadingState(false);
+      }
+    });
+
+    // Load ranking - Updated to use new collection
+    async function loadRanking() {
+      const tbody = document.querySelector('#rankingTable tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+
+      try {
+        const { collection, getDocs, query, orderBy } = window.firestoreModules;
+        const q = query(collection(window.db, COLLECTION_NAME), orderBy('timestamp', 'desc'));
+        const querySnapshot = await getDocs(q);
+        
+        const playerStats = {};
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const playerName = data.name;
+          
+          if (!playerStats[playerName]) {
+            playerStats[playerName] = {
+              name: playerName,
+              totalZ2: 0,
+              totalZ4: 0,
+              totalZ5: 0,
+              totalPoints: 0,
+              runCount: 0,
+              lastActivity: data.timestamp
+            };
+          }
+          
+          playerStats[playerName].totalZ2 += data.z2 || 0;
+          playerStats[playerName].totalZ4 += data.z4 || 0;
+          playerStats[playerName].totalZ5 += data.z5 || 0;
+          playerStats[playerName].totalPoints += data.zonePoints || 0;
+          playerStats[playerName].runCount += 1;
+          
+          if (data.timestamp > playerStats[playerName].lastActivity) {
+            playerStats[playerName].lastActivity = data.timestamp;
+          }
+        });
+
+        const sortedPlayers = Object.values(playerStats)
+          .sort((a, b) => b.totalPoints - a.totalPoints);
+
+        if (sortedPlayers.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        sortedPlayers.forEach((player, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+            <td class="name-cell">${player.name}</td>
+            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
+            <td>${player.runCount || 0}</td>
+            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ4)}</td>
+            <td>${formatDecimalToTime(player.totalZ5)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Ranking load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Load activities - Updated to use new collection
+    async function loadActivities(loadAll) {
+      const tbody = document.querySelector('#activitiesTable tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading activities...</td></tr>';
+      
+      try {
+        const { collection, getDocs, query, orderBy } = window.firestoreModules;
+        const q = query(collection(window.db, COLLECTION_NAME), orderBy('timestamp', 'desc'));
+        const querySnapshot = await getDocs(q);
+        
+        const activities = [];
+        querySnapshot.forEach((doc) => {
+          activities.push(doc.data());
+        });
+
+        if (activities.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="loading-message">No activities recorded yet. Be the first!</td></tr>';
+          return;
+        }
+        
+        let displayActivities = activities;
+        if (!loadAll && Array.isArray(activities)) {
+          displayActivities = activities.slice(0, 10);
+        }
+        
+        tbody.innerHTML = '';
+        
+        displayActivities.forEach(function(activity) {
+          const z2Display = formatDecimalToTime(activity.z2);
+          const z4Display = formatDecimalToTime(activity.z4);
+          const z5Display = formatDecimalToTime(activity.z5);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${activity.date || "Unknown"}</td>
+            <td class="name-cell">${activity.name || "Unknown"}</td>
+            <td class="points-cell">${(activity.zonePoints || 0).toFixed(1)}</td>
+            <td>${z2Display}</td>
+            <td>${z4Display}</td>
+            <td>${z5Display}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Activities load error:", error);
+        tbody.innerHTML = `<tr><td colspan="6" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Real-time updates
+    if (window.firestoreModules) {
+      const { collection, onSnapshot } = window.firestoreModules;
+      onSnapshot(collection(window.db, COLLECTION_NAME), (snapshot) => {
+        loadRanking();
+        loadActivities(showingAllActivities);
+      });
+    }
+  </script>
+</body>
+</html>
