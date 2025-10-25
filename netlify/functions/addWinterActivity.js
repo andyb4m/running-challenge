@@ -1,13 +1,10 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin (same as your existing functions)
+// Initialize Firebase Admin (same as your running challenge)
 if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
@@ -28,13 +25,20 @@ const ACTIVITY_POINTS = {
 
 // Verify reCAPTCHA
 async function verifyRecaptcha(token) {
+  if (!token) return false;
+  
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+  if (!secretKey) return false;
   
   try {
-    const response = await fetch(verifyURL, { method: 'POST' });
+    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${secretKey}&response=${token}`
+    });
+    
     const data = await response.json();
-    return data.success;
+    return data.success === true;
   } catch (error) {
     console.error('reCAPTCHA verification error:', error);
     return false;
@@ -43,13 +47,13 @@ async function verifyRecaptcha(token) {
 
 // Date utility functions
 const getDateString = (date = new Date()) => {
-  return date.toISOString().split('T')[0]; // YYYY-MM-DD format
+  return date.toISOString().split('T')[0];
 };
 
 const getWeekStart = (date = new Date()) => {
   const d = new Date(date);
   const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
   const monday = new Date(d.setDate(diff));
   return getDateString(monday);
 };
@@ -57,47 +61,49 @@ const getWeekStart = (date = new Date()) => {
 const getWeekEnd = (date = new Date()) => {
   const d = new Date(date);
   const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? 0 : 7); // Adjust when day is Sunday
+  const diff = d.getDate() - day + (day === 0 ? 0 : 7);
   const sunday = new Date(d.setDate(diff));
   return getDateString(sunday);
 };
 
 // Check if activity is allowed
 async function checkActivityAllowed(playerName, activityType) {
-  if (activityType === 'others') {
-    // Check if already submitted today
-    const today = getDateString();
-    const snapshot = await db.collection(COLLECTION_NAME)
-      .where('name', '==', playerName)
-      .where('activityType', '==', 'others')
-      .where('dateString', '==', today)
-      .get();
-    return snapshot.empty;
-  } else if (activityType === 'recovery') {
-    // Check if already submitted this week
-    const weekStart = getWeekStart();
-    const weekEnd = getWeekEnd();
-    const snapshot = await db.collection(COLLECTION_NAME)
-      .where('name', '==', playerName)
-      .where('activityType', '==', 'recovery')
-      .where('dateString', '>=', weekStart)
-      .where('dateString', '<=', weekEnd)
-      .get();
-    return snapshot.empty;
+  try {
+    if (activityType === 'others') {
+      const today = getDateString();
+      const snapshot = await db.collection(COLLECTION_NAME)
+        .where('name', '==', playerName)
+        .where('activityType', '==', 'others')
+        .where('dateString', '==', today)
+        .limit(1)
+        .get();
+      return snapshot.empty;
+    } else if (activityType === 'recovery') {
+      const weekStart = getWeekStart();
+      const weekEnd = getWeekEnd();
+      const snapshot = await db.collection(COLLECTION_NAME)
+        .where('name', '==', playerName)
+        .where('activityType', '==', 'recovery')
+        .where('dateString', '>=', weekStart)
+        .where('dateString', '<=', weekEnd)
+        .limit(1)
+        .get();
+      return snapshot.empty;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error checking activity allowed:', error);
+    return true; // Allow on error to not block users
   }
-  
-  return true; // Zone training is always allowed
 }
 
 exports.handler = async (event, context) => {
-  // Set CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
   };
 
-  // Handle preflight request
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
@@ -114,7 +120,7 @@ exports.handler = async (event, context) => {
     const data = JSON.parse(event.body);
     const { name, activityType, recaptcha } = data;
 
-    // Verify required fields
+    // Basic validation
     if (!name || !activityType) {
       return {
         statusCode: 400,
@@ -124,14 +130,6 @@ exports.handler = async (event, context) => {
     }
 
     // Verify reCAPTCHA
-    if (!recaptcha) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'reCAPTCHA verification required' }),
-      };
-    }
-
     const isRecaptchaValid = await verifyRecaptcha(recaptcha);
     if (!isRecaptchaValid) {
       return {
@@ -143,7 +141,6 @@ exports.handler = async (event, context) => {
 
     // Check if activity is allowed
     const isAllowed = await checkActivityAllowed(name, activityType);
-    
     if (!isAllowed) {
       let errorMessage = '';
       if (activityType === 'others') {
@@ -182,7 +179,6 @@ exports.handler = async (event, context) => {
         };
       }
       
-      // Calculate points with new multipliers
       const totalPoints = (z2Decimal * POINT_MULTIPLIERS.z2) + 
                          (z4Decimal * POINT_MULTIPLIERS.z4) + 
                          (z5Decimal * POINT_MULTIPLIERS.z5);
@@ -192,14 +188,13 @@ exports.handler = async (event, context) => {
         z2: z2Decimal,
         z4: z4Decimal,
         z5: z5Decimal,
-        z2_display,
-        z4_display,
-        z5_display,
+        z2_display: z2_display || '0:00:00',
+        z4_display: z4_display || '0:00:00',
+        z5_display: z5_display || '0:00:00',
         zonePoints: totalPoints
       };
     } else {
-      // Simple activity (others or recovery)
-      activityData.zonePoints = ACTIVITY_POINTS[activityType];
+      activityData.zonePoints = ACTIVITY_POINTS[activityType] || 0;
       activityData.z2 = 0;
       activityData.z4 = 0;
       activityData.z5 = 0;
