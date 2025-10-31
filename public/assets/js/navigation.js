@@ -21,7 +21,7 @@ const challenges = [
     status: 'active',
     startDate: '2025-11-01',
     endDate: '2025-12-31',
-    participants: 0,
+    participants: 6,
     type: 'running',
     url: '/challenge/winter-2025/',
     difficulty: 'Intermediate',

@@ -462,16 +462,19 @@
     
     .data-table th,
     .data-table td {
-      padding: 12px 8px;
+      padding: 8px 6px;
       text-align: left;
       border-bottom: 1px solid var(--border-color);
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
     }
     
     .data-table th {
       font-weight: 500;
       color: var(--text-primary);
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border-bottom: 2px solid var(--border-color);
