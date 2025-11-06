@@ -197,7 +197,7 @@
         grid-column: 1 / span 2 !important;
         grid-row: 2 !important;
       }
-      
+     
       .card-section {
         margin-bottom: 0;
       }
@@ -669,6 +669,95 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Analytics section */
+    .analytics-section {
+    grid-column: 1 / span 2 !important;
+    grid-row: 2 !important;
+    }
+
+    .activities-section {
+    grid-column: 1 / span 2 !important;
+    grid-row: 3 !important;
+    }
+
+    /* Analytics table specific styling */
+    #analyticsTable th:nth-child(1), #analyticsTable td:nth-child(1) { width: 80px; } /* Runner */
+    #analyticsTable th:nth-child(2), #analyticsTable td:nth-child(2) { width: 60px; } /* Zone */
+    #analyticsTable th:nth-child(3), #analyticsTable td:nth-child(3) { width: 60px; } /* Others */
+    #analyticsTable th:nth-child(4), #analyticsTable td:nth-child(4) { width: 70px; } /* Recovery */
+    #analyticsTable th:nth-child(5), #analyticsTable td:nth-child(5) { width: 70px; } /* Zone 2 */
+    #analyticsTable th:nth-child(6), #analyticsTable td:nth-child(6) { width: 70px; } /* Zone 4+5 */
+    #analyticsTable th:nth-child(7), #analyticsTable td:nth-child(7) { width: 80px; } /* Ratio */
+
+    .analytics-info {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--primary-color);
+    font-size: 13px;
+    text-align: center;
+    }
+
+    .analytics-info i {
+    margin-right: 5px;
+    }
+
+    /* Ratio styling */
+    .ratio-good {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    }
+
+    .ratio-poor {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--error-color);
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    }
+
+    .ratio-neutral {
+    color: var(--text-secondary);
+    padding: 4px 6px;
+    font-weight: 500;
+    }
+
+    /* Update desktop grid layout */
+    @media screen and (min-width: 992px) {
+    .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto auto !important;
+        gap: 20px !important;
+    }
+    
+    .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+    
+    .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+    
+    .analytics-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+    }
+    
+    .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 3 !important;
+    }
+}
+
   </style>
 </head>
 <body>
@@ -849,6 +938,39 @@
         </div>
       </div>
       
+<!-- NEW: Analytics Section -->
+<div class="analytics-section">
+  <div class="card-section">
+    <h2><i class="fas fa-chart-line"></i>Training <span>Analytics</span></h2>
+    
+    <div class="table-wrapper">
+      <table class="data-table" id="analyticsTable" role="table" aria-label="Training analytics">
+        <thead>
+          <tr>
+            <th scope="col">Runner</th>
+            <th scope="col">Zone</th>
+            <th scope="col">Others</th>
+            <th scope="col">Recovery</th>
+            <th scope="col">Zone 2</th>
+            <th scope="col">Zone 4+5</th>
+            <th scope="col">Ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="7" class="loading-message">Loading analytics...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="analytics-info">
+      <p><i class="fas fa-info-circle"></i> <strong>80/20 Rule:</strong> Optimal training consists of ~80% low intensity (Zone 2) and ~20% high intensity (Zone 4+5)</p>
+    </div>
+  </div>
+</div>
+
+
       <!-- Recent Activities Section -->
       <div class="activities-section">
         <div class="card-section">
@@ -917,11 +1039,16 @@
     };
     
     // Initial load
+    
     document.addEventListener('DOMContentLoaded', function() {
       setupActivityTypeSelection();
       loadRanking();
       setupTimeInputs();
-      setTimeout(() => loadActivities(false), 1000);
+      setTimeout(() => {
+        loadActivities(false);
+        loadAnalytics(); // Add this line
+        }, 1000);
+      
       
       document.getElementById('viewAllBtn').addEventListener('click', function() {
         showingAllActivities = !showingAllActivities;
@@ -1132,7 +1259,10 @@
           grecaptcha.reset();
           
           loadRanking();
-          setTimeout(() => loadActivities(showingAllActivities), 1000);
+          setTimeout(() => {
+            loadActivities(showingAllActivities);
+            loadAnalytics();
+        }, 1000);
         } else {
           showMessage('Error: ' + result.error, result.error.includes('already') ? 'warning' : 'error');
           grecaptcha.reset();
@@ -1239,6 +1369,106 @@
         tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
       }
     }
+
+    // Load analytics
+    async function loadAnalytics() {
+    const tbody = document.querySelector('#analyticsTable tbody');
+    tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading analytics...</td></tr>';
+
+    try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getWinterRanking`);
+        
+        if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const ranking = await response.json();
+
+        if (!ranking || ranking.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet.</td></tr>';
+        return;
+        }
+
+        // Get detailed activity counts
+        const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getWinterActivities`);
+        const activities = await activitiesResponse.json();
+        
+        // Calculate activity type counts for each player
+        const playerAnalytics = {};
+        
+        ranking.forEach(player => {
+        playerAnalytics[player.name] = {
+            name: player.name,
+            totalZ2: player.totalZ2 || 0,
+            totalZ4: player.totalZ4 || 0,
+            totalZ5: player.totalZ5 || 0,
+            zoneCount: 0,
+            othersCount: 0,
+            recoveryCount: 0
+        };
+        });
+
+        // Count activity types
+        if (activities && Array.isArray(activities)) {
+        activities.forEach(activity => {
+            if (playerAnalytics[activity.name]) {
+            if (activity.activityType === 'zone-training') {
+                playerAnalytics[activity.name].zoneCount++;
+            } else if (activity.activityType === 'others') {
+                playerAnalytics[activity.name].othersCount++;
+            } else if (activity.activityType === 'recovery') {
+                playerAnalytics[activity.name].recoveryCount++;
+            }
+            }
+        });
+        }
+        
+        tbody.innerHTML = '';
+        
+        // Sort by total training time (Z2 + Z4 + Z5)
+        const sortedAnalytics = Object.values(playerAnalytics)
+        .sort((a, b) => (b.totalZ2 + b.totalZ4 + b.totalZ5) - (a.totalZ2 + a.totalZ4 + a.totalZ5));
+        
+        sortedAnalytics.forEach(player => {
+        const totalLowIntensity = player.totalZ2; // Zone 2 only (we don't track Zone 1)
+        const totalHighIntensity = player.totalZ4 + player.totalZ5; // Zone 4 + 5
+        const totalTrainingTime = totalLowIntensity + totalHighIntensity;
+        
+        let ratioDisplay = '-';
+        let ratioClass = 'ratio-neutral';
+        
+        if (totalTrainingTime > 0) {
+            const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
+            const highPercentage = (totalHighIntensity / totalTrainingTime) * 100;
+            
+            ratioDisplay = `${Math.round(lowPercentage)}/${Math.round(highPercentage)}`;
+            
+            // Check if ratio is close to 80/20 (allow some tolerance)
+            if (lowPercentage >= 75 && lowPercentage <= 85) {
+            ratioClass = 'ratio-good';
+            } else {
+            ratioClass = 'ratio-poor';
+            }
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="name-cell">${player.name}</td>
+            <td>${player.zoneCount}</td>
+            <td>${player.othersCount}</td>
+            <td>${player.recoveryCount}</td>
+            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ4 + player.totalZ5)}</td>
+            <td><span class="${ratioClass}">${ratioDisplay}</span></td>
+        `;
+        tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Analytics load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading analytics: ${error.message}</td></tr>`;
+    }
+    }
+
   </script>
 </body>
 </html>
