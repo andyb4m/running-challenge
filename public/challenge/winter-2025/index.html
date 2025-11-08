@@ -1455,6 +1455,13 @@
         
         sortedAnalytics.forEach(player => {
         const recoveryTime = player.recoveryCount * 0.5; // 30 minutes = 0.5 hours
+        // ADD THESE DEBUG LINES:
+        console.log(`${player.name}:`, {
+            recoveryCount: player.recoveryCount,
+            recoveryTime: recoveryTime,
+            totalZ2: player.totalZ2,
+            combinedLowIntensity: player.totalZ2 + recoveryTime
+        });
         const totalLowIntensity = player.totalZ2 + recoveryTime; // Zone 2 + recovery
         const totalHighIntensity = player.totalZ4 + player.totalZ5; // Zone 4 + 5
         const totalTrainingTime = totalLowIntensity + totalHighIntensity;
