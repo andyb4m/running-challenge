@@ -972,7 +972,7 @@
             <th scope="col">Zone</th>
             <th scope="col">Others</th>
             <th scope="col">Recovery</th>
-            <th scope="col">Zone 2</th>
+            <th scope="col">Low Int. 2</th>
             <th scope="col">Zone 4+5</th>
             <th scope="col">Ratio</th>
           </tr>
@@ -986,7 +986,7 @@
     </div>
     
     <div class="analytics-info">
-      <p><i class="fas fa-info-circle"></i> <strong>80/20 Rule:</strong> Optimal training consists of ~80% low intensity (Zone 2) and ~20% high intensity (Zone 4+5)</p>
+      <p><i class="fas fa-info-circle"></i> <strong>80/20 Rule:</strong> Optimal training consists of ~80% low intensity (Zone 2 + Recovery) and ~20% high intensity (Zone 4+5)</p>
     </div>
   </div>
 </div>
@@ -1454,7 +1454,8 @@
         .sort((a, b) => (b.totalZ2 + b.totalZ4 + b.totalZ5) - (a.totalZ2 + a.totalZ4 + a.totalZ5));
         
         sortedAnalytics.forEach(player => {
-        const totalLowIntensity = player.totalZ2; // Zone 2 only (we don't track Zone 1)
+        const recoveryTime = player.recoveryCount * 0.5; // 30 minutes = 0.5 hours
+        const totalLowIntensity = player.totalZ2 + recoveryTime; // Zone 2 + recovery
         const totalHighIntensity = player.totalZ4 + player.totalZ5; // Zone 4 + 5
         const totalTrainingTime = totalLowIntensity + totalHighIntensity;
         
@@ -1481,7 +1482,7 @@
             <td>${player.zoneCount}</td>
             <td>${player.othersCount}</td>
             <td>${player.recoveryCount}</td>
-            <td>${formatDecimalToTime(player.totalZ2)}</td>
+            <td>${formatDecimalToTime(player.totalZ2 + recoveryTime)}</td>
             <td>${formatDecimalToTime(player.totalZ4 + player.totalZ5)}</td>
             <td><span class="${ratioClass}">${ratioDisplay}</span></td>
         `;
