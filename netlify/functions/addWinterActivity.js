@@ -23,26 +23,10 @@ const ACTIVITY_POINTS = {
   recovery: 5
 };
 
-// Verify reCAPTCHA
-async function verifyRecaptcha(token) {
-  if (!token) return false;
-  
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secretKey) return false;
-  
-  try {
-    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `secret=${secretKey}&response=${token}`
-    });
-    
-    const data = await response.json();
-    return data.success === true;
-  } catch (error) {
-    console.error('reCAPTCHA verification error:', error);
-    return false;
-  }
+// Check honeypot (anti-spam)
+function checkHoneypot(honeypotValue) {
+  // Honeypot should be empty for legitimate users
+  return honeypotValue === '' || honeypotValue === undefined || honeypotValue === null;
 }
 
 // Date utility functions
@@ -118,7 +102,7 @@ exports.handler = async (event, context) => {
 
   try {
     const data = JSON.parse(event.body);
-    const { name, activityType, recaptcha } = data;
+    const { name, activityType, honeypot } = data;
 
     // Basic validation
     if (!name || !activityType) {
@@ -129,13 +113,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Verify reCAPTCHA
-    const isRecaptchaValid = await verifyRecaptcha(recaptcha);
-    if (!isRecaptchaValid) {
+    // Check honeypot (anti-spam)
+    if (!checkHoneypot(honeypot)) {
+      // Bot detected - return generic error or silently fail
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'reCAPTCHA verification failed' }),
+        body: JSON.stringify({ error: 'Invalid request' }),
       };
     }
 

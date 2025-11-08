@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
   <style>
     :root {
@@ -758,6 +757,30 @@
     }
 }
 
+    /* Honeypot field - hidden from users but visible to bots */
+    .honeypot-field {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    }
+
+    .honeypot-field input {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 1px !important;
+    color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    }
+
   </style>
 </head>
 <body>
@@ -797,6 +820,12 @@
                   <option value="Jakob">Jakob</option>
                 </select>
               </div>
+            </div>
+
+            <!-- HONEYPOT FIELD -->
+            <div class="honeypot-field">
+                <label for="website">Website (leave blank):</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
             </div>
 
             <!-- Activity Type Selection -->
@@ -892,15 +921,7 @@
                 <p><strong>Recovery Activity:</strong> 5 points (once per week)</p>
               </div>
             </div>
-            
-            <!-- reCAPTCHA Widget -->
-            <div class="form-group">
-              <div class="g-recaptcha" data-sitekey="6Lek7LYrAAAAABXlOK8N5KAEr5d6_-BfqOFeGJZ4"></div>
-              <div id="recaptcha-error" class="error-message" style="display: none;">
-                Please complete the reCAPTCHA verification.
-              </div>
-            </div>
-            
+                        
             <button type="submit" id="submitBtn">
               <i class="fas fa-fire"></i>
               Submit Your BANG Activity!
@@ -1166,115 +1187,118 @@
 
     // Form submission
     document.getElementById('runningForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+        e.preventDefault();
 
-      if (isLoading) return;
+        if (isLoading) return;
 
-      const recaptchaResponse = grecaptcha.getResponse();
-      const recaptchaError = document.getElementById('recaptcha-error');
-      
-      if (!recaptchaResponse) {
-        recaptchaError.style.display = 'block';
-        recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      } else {
-        recaptchaError.style.display = 'none';
-      }
-
-      const form = e.target;
-      setLoadingState(true);
-      
-      try {
-        let formData = {
-          name: form.name.value,
-          activityType: selectedActivityType,
-          recaptcha: recaptchaResponse
-        };
-
-        if (selectedActivityType === 'zone-training') {
-          document.querySelectorAll('.time-segment').forEach(input => {
-            if (!input.value) {
-              if (input.id.includes('hours')) {
-                input.value = '0';
-              } else {
-                input.value = '00';
-              }
-            } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
-              const value = parseInt(input.value) || 0;
-              input.value = value < 10 ? '0' + value : value;
-            }
-          });
-          
-          const z2Decimal = getTimeValue('z2');
-          const z4Decimal = getTimeValue('z4');
-          const z5Decimal = getTimeValue('z5');
-          
-          if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
-            showMessage('Please enter at least some training time.', 'error');
-            setLoadingState(false);
+        // Check honeypot field
+        const honeypotValue = document.getElementById('website').value;
+        if (honeypotValue !== '') {
+            // Bot detected - silently fail or show generic error
+            showMessage('Please try again later.', 'error');
             return;
-          }
-          
-          const z2Time = getTimeString('z2');
-          const z4Time = getTimeString('z4');
-          const z5Time = getTimeString('z5');
-          
-          formData = {
-            ...formData,
-            z2: z2Decimal.toFixed(2),
-            z4: z4Decimal.toFixed(2),
-            z5: z5Decimal.toFixed(2),
-            z2_display: z2Time,
-            z4_display: z4Time,
-            z5_display: z5Time
-          };
         }
 
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/addWinterActivity`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-
-        const result = await response.json();
+        const form = e.target;
+        setLoadingState(true);
         
-        if (response.ok) {
-          showMessage(result.message, 'success');
-          
-          const selectedName = form.name.value;
-          
-          if (selectedActivityType === 'zone-training') {
+        try {
+            let formData = {
+            name: form.name.value,
+            activityType: selectedActivityType,
+            honeypot: honeypotValue // Send empty value to verify on backend
+            };
+
+            if (selectedActivityType === 'zone-training') {
             document.querySelectorAll('.time-segment').forEach(input => {
-              if (input.id.includes('hours')) {
-                input.value = '0';
-              } else {
-                input.value = '00';
-              }
+                if (!input.value) {
+                if (input.id.includes('hours')) {
+                    input.value = '0';
+                } else {
+                    input.value = '00';
+                }
+                } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+                const value = parseInt(input.value) || 0;
+                input.value = value < 10 ? '0' + value : value;
+                }
             });
-          }
-          
-          form.name.value = selectedName;
-          grecaptcha.reset();
-          
-          loadRanking();
-          setTimeout(() => {
-            loadActivities(showingAllActivities);
-            loadAnalytics();
-        }, 1000);
-        } else {
-          showMessage('Error: ' + result.error, result.error.includes('already') ? 'warning' : 'error');
-          grecaptcha.reset();
+            
+            const z2Decimal = getTimeValue('z2');
+            const z4Decimal = getTimeValue('z4');
+            const z5Decimal = getTimeValue('z5');
+            
+            if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+                showMessage('Please enter at least some training time.', 'error');
+                setLoadingState(false);
+                return;
+            }
+            
+            const z2Time = getTimeString('z2');
+            const z4Time = getTimeString('z4');
+            const z5Time = getTimeString('z5');
+            
+            formData = {
+                ...formData,
+                z2: z2Decimal.toFixed(2),
+                z4: z4Decimal.toFixed(2),
+                z5: z5Decimal.toFixed(2),
+                z2_display: z2Time,
+                z4_display: z4Time,
+                z5_display: z5Time
+            };
+            }
+
+            const response = await fetch(`${FUNCTIONS_BASE_URL}/addWinterActivity`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+            });
+
+            let result;
+            try {
+            result = await response.json();
+            } catch (parseError) {
+            throw new Error(`Server returned invalid response (Status: ${response.status})`);
+            }
+            
+            if (response.ok) {
+            showMessage(result.message || 'Activity logged successfully!', 'success');
+            
+            const selectedName = form.name.value;
+            
+            if (selectedActivityType === 'zone-training') {
+                document.querySelectorAll('.time-segment').forEach(input => {
+                if (input.id.includes('hours')) {
+                    input.value = '0';
+                } else {
+                    input.value = '00';
+                }
+                });
+            }
+            
+            form.name.value = selectedName;
+            // No need to reset reCAPTCHA anymore
+            
+            loadRanking();
+            setTimeout(() => {
+                loadActivities(showingAllActivities);
+                loadAnalytics();
+            }, 1000);
+            } else {
+            const errorMessage = result?.error || `Server error (${response.status})`;
+            const messageType = (errorMessage.toLowerCase().includes('already') || 
+                                errorMessage.toLowerCase().includes('only')) ? 'warning' : 'error';
+            showMessage('Error: ' + errorMessage, messageType);
+            }
+        } catch (error) {
+            console.error("Form submission error:", error);
+            showMessage('Network error: ' + error.message, 'error');
+        } finally {
+            setLoadingState(false);
         }
-      } catch (error) {
-        showMessage('Network error: ' + error.message, 'error');
-        grecaptcha.reset();
-        console.error("Form submission error:", error);
-      } finally {
-        setLoadingState(false);
-      }
-    });
+        });
 
     // Load ranking
     async function loadRanking() {
