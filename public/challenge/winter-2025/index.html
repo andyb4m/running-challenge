@@ -168,7 +168,13 @@
       border-color: var(--winter-accent);
       transform: translateY(-4px);
     }
-    
+
+    /* Hide number input spinners in Firefox */
+    input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield; /* Add this line for compatibility */
+    }
+
     /* Desktop grid layout */
     @media screen and (min-width: 992px) {
       .card-section {
@@ -668,6 +674,7 @@
         grid-template-columns: 1fr;
       }
     }
+    
 
     /* Analytics section */
     .analytics-section {
