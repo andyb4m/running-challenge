@@ -18,7 +18,7 @@ const challenges = [
     id: 'running-challenge-2025-winteredition',
     title: 'Ending the year with a BANG',
     description: 'Push your running limits. Perfect for hobby runners and professional OCR athletes alike.',
-    status: 'active',
+    status: 'ended',
     startDate: '2025-11-01',
     endDate: '2025-12-31',
     participants: 6,
