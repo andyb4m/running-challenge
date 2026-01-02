@@ -1,13 +1,10 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin (same as your existing functions)
+// Initialize Firebase Admin (same as your running challenge)
 if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
@@ -52,7 +49,7 @@ exports.handler = async (event, context) => {
           totalZ5: 0,
           totalPoints: 0,
           activityCount: 0,
-          lastActivity: data.timestamp
+          lastActivity: null
         };
       }
 
@@ -62,7 +59,7 @@ exports.handler = async (event, context) => {
       playerStats[playerName].totalPoints += data.zonePoints || 0;
       playerStats[playerName].activityCount += 1;
 
-      if (data.timestamp && data.timestamp.toDate() > playerStats[playerName].lastActivity?.toDate()) {
+      if (data.timestamp) {
         playerStats[playerName].lastActivity = data.timestamp;
       }
     });
@@ -82,7 +79,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Internal server error' }),
+      body: JSON.stringify({ error: 'Internal server error: ' + error.message }),
     };
   }
 };
