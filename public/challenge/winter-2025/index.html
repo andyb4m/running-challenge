@@ -1533,6 +1533,35 @@
     }
     }
 
+    // Add this at the end of your existing JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+      // Disable the form
+      const form = document.getElementById('runningForm');
+      const timeSection = document.querySelector('.time-section .card-section');
+      
+      if (form && timeSection) {
+        form.classList.add('form-disabled');
+        
+        // Update the form title
+        const formTitle = timeSection.querySelector('h2');
+        if (formTitle) {
+          formTitle.innerHTML = '<i class="fas fa-lock"></i>Challenge <span>Completed</span>';
+        }
+        
+        // Disable all form inputs
+        const inputs = form.querySelectorAll('input, select, button');
+        inputs.forEach(input => {
+          input.disabled = true;
+        });
+        
+        // Hide reCAPTCHA
+        const recaptcha = form.querySelector('.g-recaptcha');
+        if (recaptcha) {
+          recaptcha.style.display = 'none';
+        }
+      }
+    });
+
   </script>
 </body>
 </html>
