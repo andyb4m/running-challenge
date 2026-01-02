@@ -537,6 +537,25 @@
       background-color: rgba(255, 255, 255, 0.05);
       border-color: var(--winter-accent);
     }
+
+    .challenge-completed {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-color);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .challenge-completed h3 {
+      color: var(--error-color);
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
     
     /* Time inputs */
     .time-segments {
@@ -805,6 +824,18 @@
       <div></div>
     </div>
   </nav>
+
+<!-- Challenge Completed Notice -->
+  <div class="container">
+    <div class="challenge-completed">
+      <h3>
+        <i class="fas fa-flag-checkered"></i>
+        Challenge Completed!
+      </h3>
+      <p>The Running Challenge 2025 has been completed. No new entries are being accepted.</p>
+      <p>Thank you to all participants! Check out the final rankings below.</p>
+    </div>
+  </div>
 
   <div class="container">
     <div class="desktop-layout">
