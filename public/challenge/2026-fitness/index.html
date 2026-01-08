@@ -1286,25 +1286,29 @@
             });
             
             const z2Decimal = getTimeValue('z2');
+            const z3Decimal = getTimeValue('z3');
             const z4Decimal = getTimeValue('z4');
             const z5Decimal = getTimeValue('z5');
             
-            if (z2Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+            if (z2Decimal === 0 && z3Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
                 showMessage('Please enter at least some training time.', 'error');
                 setLoadingState(false);
                 return;
             }
             
             const z2Time = getTimeString('z2');
+            const z3Time = getTimeString('z3');
             const z4Time = getTimeString('z4');
             const z5Time = getTimeString('z5');
             
             formData = {
                 ...formData,
                 z2: z2Decimal.toFixed(2),
+                z3: z3Decimal.toFixed(2),
                 z4: z4Decimal.toFixed(2),
                 z5: z5Decimal.toFixed(2),
                 z2_display: z2Time,
+                z3_display: z3Time,
                 z4_display: z4Time,
                 z5_display: z5Time
             };
@@ -1432,6 +1436,7 @@
         
         displayActivities.forEach(function(activity) {
           const z2Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z2) : '-';
+          const z3Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z3) : '-';
           const z4Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z4) : '-';
           const z5Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z5) : '-';
           
@@ -1446,6 +1451,7 @@
             <td>${activityTypeDisplay}</td>
             <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
             <td>${z2Display}</td>
+            <td>${z3Display}</td>
             <td>${z4Display}</td>
             <td>${z5Display}</td>
           `;
