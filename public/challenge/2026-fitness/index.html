@@ -811,15 +811,31 @@
     }
 
      .chart-section {
-    grid-column: 1 / span 2 !important;
-    grid-row: 3 !important;
-  }
+        grid-column: 1 / span 2 !important;
+        grid-row: 3 !important;
+    }
     
     .activities-section {
         grid-column: 1 / span 2 !important;
         grid-row: 3 !important;
     }
-    
+
+    .card-section {
+        margin-bottom: 0;
+    }
+  
+    .time-section .card-section,
+    .ranking-section .card-section {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+  
+    .time-section .card-section form {
+       flex: 1;
+       display: flex;
+       flex-direction: column;
+    }
 }
 
     /* Honeypot field - hidden from users but visible to bots */
