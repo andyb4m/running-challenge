@@ -1796,14 +1796,17 @@ document.addEventListener('DOMContentLoaded', function() {
     loadRanking();
     loadActivities(false);
     loadAnalytics();
-    loadProgressChart(); // This is correct
+    loadProgressChart(); 
   }, 1000);
   
-  document.getElementById('viewAllBtn').addEventListener('click', function() {
-    showingAllActivities = !showingAllActivities;
-    loadActivities(showingAllActivities);
-    this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
-  });
+  const viewAllBtn = document.getElementById('viewAllBtn');
+  if (viewAllBtn) {
+    viewAllBtn.addEventListener('click', function() {
+      showingAllActivities = !showingAllActivities;
+      loadActivities(showingAllActivities); // This should work now
+      this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
+    });
+  }
 });
 
 // Update form submission success to reload chart
