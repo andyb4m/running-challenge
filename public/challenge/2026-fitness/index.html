@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
   <style>
     :root {
@@ -753,12 +755,43 @@
     font-weight: 500;
     }
 
+    /* Chart section styling */
+    .chart-section {
+      grid-column: 1 / span 2 !important;
+      grid-row: 3 !important;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .chart-info {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-md);
+      color: var(--primary-color);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .chart-info i {
+      margin-right: 5px;
+    }
+
     /* Update desktop grid layout */
     @media screen and (min-width: 992px) {
     .desktop-layout {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        grid-template-rows: auto auto auto !important;
+        grid-template-rows: auto auto auto auto !important;
         gap: 20px !important;
     }
     
@@ -776,11 +809,17 @@
         grid-column: 1 / span 2 !important;
         grid-row: 2 !important;
     }
+
+     .chart-section {
+    grid-column: 1 / span 2 !important;
+    grid-row: 3 !important;
+  }
     
     .activities-section {
         grid-column: 1 / span 2 !important;
         grid-row: 3 !important;
     }
+    
 }
 
     /* Honeypot field - hidden from users but visible to bots */
@@ -978,7 +1017,7 @@
             <!-- Simple Activity Section -->
             <div class="simple-activity" id="simpleActivity">
               <div class="simple-activity-info" id="activityInfo">
-                <p><strong>Recovery Activity:</strong> 5 points (once per week)</p>
+                <p><strong>Recovery Activity:</strong> 10 points (once per week)</p>
               </div>
             </div>
                         
@@ -1052,6 +1091,20 @@
   </div>
 </div>
 
+<!-- NEW: Progress Chart Section -->
+<div class="chart-section">
+  <div class="card-section">
+    <h2><i class="fas fa-chart-area"></i>Progress <span>Chart</span></h2>
+    
+    <div class="chart-container">
+      <canvas id="progressChart" width="400" height="200"></canvas>
+    </div>
+    
+    <div class="chart-info">
+      <p><i class="fas fa-info-circle"></i> <strong>Progress over time:</strong> X-axis shows time, Y-axis shows total points accumulated</p>
+    </div>
+  </div>
+</div>
 
       <!-- Recent Activities Section -->
       <div class="activities-section">
@@ -1164,7 +1217,7 @@
               activityInfo.innerHTML = '<p><strong>Others Activity:</strong> 10 points (once per day)</p>';
               activityInfo.className = 'simple-activity-info others';
             } else if (selectedActivityType === 'recovery') {
-              activityInfo.innerHTML = '<p><strong>Recovery Activity:</strong> 5 points (once per week)</p>';
+              activityInfo.innerHTML = '<p><strong>Recovery Activity:</strong> 10 points (once per week)</p>';
               activityInfo.className = 'simple-activity-info';
             }
           }
@@ -1563,6 +1616,165 @@
         tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading analytics: ${error.message}</td></tr>`;
     }
     }
+
+    // Add this variable at the top with other state management
+let progressChart = null;
+
+// Add this function
+async function loadProgressChart() {
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const activities = await response.json();
+
+    if (!activities || activities.length === 0) {
+      return;
+    }
+
+    // Process data for chart
+    const playerData = {};
+    
+    // Initialize players
+    const uniquePlayers = [...new Set(activities.map(a => a.name))];
+    uniquePlayers.forEach(player => {
+      playerData[player] = [];
+    });
+
+    // Sort activities by date
+    const sortedActivities = activities.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    
+    // Calculate cumulative points for each player
+    const runningTotals = {};
+    uniquePlayers.forEach(player => runningTotals[player] = 0);
+
+    sortedActivities.forEach(activity => {
+      runningTotals[activity.name] += activity.zonePoints;
+      
+      playerData[activity.name].push({
+        x: new Date(activity.timestamp),
+        y: runningTotals[activity.name]
+      });
+    });
+
+    // Chart colors for different players
+    const colors = [
+      '#ef4444', '#06d6a0', '#6366f1', '#f59e0b', 
+      '#8b5cf6', '#10b981', '#f97316', '#3b82f6'
+    ];
+
+    const datasets = uniquePlayers.map((player, index) => ({
+      label: player,
+      data: playerData[player],
+      borderColor: colors[index % colors.length],
+      backgroundColor: colors[index % colors.length] + '20',
+      borderWidth: 3,
+      fill: false,
+      tension: 0.1,
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }));
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (progressChart) {
+      progressChart.destroy();
+    }
+
+    progressChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff',
+              font: {
+                family: 'Inter'
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              displayFormats: {
+                day: 'MMM DD'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Zeit',
+              color: '#94a3b8',
+              font: {
+                family: 'Inter',
+                size: 14
+              }
+            },
+            ticks: {
+              color: '#94a3b8'
+            },
+            grid: {
+              color: '#334155'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Gesamtpunkte',
+              color: '#94a3b8',
+              font: {
+                family: 'Inter',
+                size: 14
+              }
+            },
+            ticks: {
+              color: '#94a3b8'
+            },
+            grid: {
+              color: '#334155'
+            }
+          }
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Chart load error:", error);
+  }
+}
+
+// Update the DOMContentLoaded event listener to include the chart
+document.addEventListener('DOMContentLoaded', function() {
+  setupActivityTypeSelection();
+  loadRanking();
+  setupTimeInputs();
+  setTimeout(() => {
+    loadActivities(false);
+    loadAnalytics();
+    loadProgressChart(); // Add this line
+  }, 1000);
+  
+  document.getElementById('viewAllBtn').addEventListener('click', function() {
+    showingAllActivities = !showingAllActivities;
+    loadActivities(showingAllActivities);
+    this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
+  });
+});
+
+// Update form submission success to reload chart
+// In the form submission success block, add:
+loadProgressChart();
 
     /*
     // Add this at the end of your existing JavaScript
