@@ -1195,14 +1195,17 @@
     
     document.addEventListener('DOMContentLoaded', function() {
       setupActivityTypeSelection();
-      loadRanking();
       setupTimeInputs();
+      
+      // Load all dashboard components
       setTimeout(() => {
+        loadRanking();
         loadActivities(false);
-        loadAnalytics(); // Add this line
-        }, 1000);
+        loadAnalytics();
+        loadProgressChart();
+      }, 1000);
       
-      
+      // Set up the View All button
       document.getElementById('viewAllBtn').addEventListener('click', function() {
         showingAllActivities = !showingAllActivities;
         loadActivities(showingAllActivities);
@@ -1785,7 +1788,6 @@ async function loadProgressChart() {
     console.error("Chart load error:", error);
   }
 }
-
 
 
 // Update form submission success to reload chart
