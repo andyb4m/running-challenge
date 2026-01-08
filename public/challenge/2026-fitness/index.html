@@ -19,7 +19,7 @@
       --secondary-color: #06d6a0;
       --secondary-dark: #059669;
       
-      /* Winter theme colors */
+      /* Fitness theme colors */
       --winter-accent: #ef4444;
       --winter-light: #f87171;
       --winter-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
@@ -1287,7 +1287,7 @@
             };
             }
 
-            const response = await fetch(`${FUNCTIONS_BASE_URL}/addWinterActivity`, {
+            const response = await fetch(`${FUNCTIONS_BASE_URL}/addFitnessActivity`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1345,7 +1345,7 @@
       tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
 
       try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getWinterRanking`);
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1385,7 +1385,7 @@
       tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading activities...</td></tr>';
       
       try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getWinterActivities`);
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1439,7 +1439,7 @@
     tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading analytics...</td></tr>';
 
     try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getWinterRanking`);
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
         
         if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1453,7 +1453,7 @@
         }
 
         // Get detailed activity counts
-        const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getWinterActivities`);
+        const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
         const activities = await activitiesResponse.json();
         
         // Calculate activity type counts for each player
