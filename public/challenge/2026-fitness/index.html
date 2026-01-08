@@ -1636,7 +1636,6 @@
     // Add this variable at the top with other state management
 let progressChart = null;
 
-// Add this function
 async function loadProgressChart() {
   try {
     const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
@@ -1648,8 +1647,11 @@ async function loadProgressChart() {
     const activities = await response.json();
 
     if (!activities || activities.length === 0) {
+      console.log("No activities found for chart");
       return;
     }
+
+    console.log("Chart data:", activities); // Debug log
 
     // Process data for chart
     const playerData = {};
@@ -1660,21 +1662,31 @@ async function loadProgressChart() {
       playerData[player] = [];
     });
 
-    // Sort activities by date
-    const sortedActivities = activities.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    // Sort activities by timestamp
+    const sortedActivities = activities.sort((a, b) => {
+      const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+      const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+      return dateA - dateB;
+    });
     
     // Calculate cumulative points for each player
     const runningTotals = {};
     uniquePlayers.forEach(player => runningTotals[player] = 0);
 
     sortedActivities.forEach(activity => {
-      runningTotals[activity.name] += activity.zonePoints;
+      const points = parseFloat(activity.zonePoints) || 0; // Use 'zonePoints' not 'zonePoints'
+      runningTotals[activity.name] += points;
+      
+      // Handle Firebase timestamp
+      const activityDate = activity.timestamp?.toDate ? activity.timestamp.toDate() : new Date(activity.timestamp);
       
       playerData[activity.name].push({
-        x: new Date(activity.timestamp),
+        x: activityDate,
         y: runningTotals[activity.name]
       });
     });
+
+    console.log("Processed chart data:", playerData); // Debug log
 
     // Chart colors for different players
     const colors = [
@@ -1725,7 +1737,7 @@ async function loadProgressChart() {
             time: {
               unit: 'day',
               displayFormats: {
-                day: 'MMM DD'
+                day: 'dd/MM'
               }
             },
             title: {
@@ -1745,6 +1757,7 @@ async function loadProgressChart() {
             }
           },
           y: {
+            beginAtZero: true,
             title: {
               display: true,
               text: 'Gesamtpunkte',
@@ -1764,6 +1777,8 @@ async function loadProgressChart() {
         }
       }
     });
+
+    console.log("Chart created successfully"); // Debug log
 
   } catch (error) {
     console.error("Chart load error:", error);
