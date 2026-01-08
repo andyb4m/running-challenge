@@ -1786,28 +1786,7 @@ async function loadProgressChart() {
   }
 }
 
-// Update the DOMContentLoaded event listener to include the chart
-document.addEventListener('DOMContentLoaded', function() {
-  setupActivityTypeSelection();
-  setupTimeInputs();
-  
-  // Load all dashboard components
-  setTimeout(() => {
-    loadRanking();
-    loadActivities(false);
-    loadAnalytics();
-    loadProgressChart(); 
-  }, 1000);
-  
-  const viewAllBtn = document.getElementById('viewAllBtn');
-  if (viewAllBtn) {
-    viewAllBtn.addEventListener('click', function() {
-      showingAllActivities = !showingAllActivities;
-      loadActivities(showingAllActivities); // This should work now
-      this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
-    });
-  }
-});
+
 
 // Update form submission success to reload chart
 // In the form submission success block, add:loadProgressChart();
