@@ -1064,6 +1064,7 @@
                   <th scope="col">Z3</th>
                   <th scope="col">Z4</th>
                   <th scope="col">Z5</th>
+                  <th scope="col">Bonus</th>
                 </tr>
               </thead>
               <tbody>
@@ -1439,46 +1440,92 @@
         }
         });
 
-    // Load ranking
-    async function loadRanking() {
-      const tbody = document.querySelector('#rankingTable tbody');
-      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading ranking data...</td></tr>';
+// Load ranking
+async function loadRanking() {
+  const tbody = document.querySelector('#rankingTable tbody');
+  tbody.innerHTML = '<tr><td colspan="9" class="loading-message">Loading ranking data...</td></tr>';
 
-      try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const ranking = await response.json();
-
-        if (!ranking || ranking.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet. Be the first to submit!</td></tr>';
-          return;
-        }
-        
-        tbody.innerHTML = '';
-        
-        ranking.forEach((player, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
-            <td class="name-cell">${player.name}</td>
-            <td class="points-cell">${player.totalPoints.toFixed(1)}</td>
-            <td>${player.activityCount || 0}</td>
-            <td>${formatDecimalToTime(player.totalZ2)}</td>
-            <td>${formatDecimalToTime(player.totalZ3)}</td>
-            <td>${formatDecimalToTime(player.totalZ4)}</td>
-            <td>${formatDecimalToTime(player.totalZ5)}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (error) {
-        console.error("Ranking load error:", error);
-        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
-      }
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+    
+    const ranking = await response.json();
+
+    if (!ranking || ranking.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+      return;
+    }
+
+    // Get activities to calculate recovery time for each player
+    const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
+    const activities = await activitiesResponse.json();
+    
+    // Calculate recovery time for each player
+    const playerRecovery = {};
+    if (activities && Array.isArray(activities)) {
+      activities.forEach(activity => {
+        if (activity.activityType === 'recovery') {
+          if (!playerRecovery[activity.name]) playerRecovery[activity.name] = 0;
+          playerRecovery[activity.name] += 30; // 30 minutes per recovery
+        }
+      });
+    }
+    
+    // Calculate bonus for each player and update their points
+    const updatedRanking = ranking.map(player => {
+      const recoveryTime = playerRecovery[player.name] || 0;
+      const totalLowIntensity = (player.totalZ2 || 0) + (player.totalZ3 || 0) + recoveryTime;
+      const totalHighIntensity = (player.totalZ4 || 0) + (player.totalZ5 || 0);
+      const totalTrainingTime = totalLowIntensity + totalHighIntensity;
+      
+      let bonusApplied = false;
+      let finalPoints = player.totalPoints;
+      
+      if (totalTrainingTime > 0) {
+        const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
+        
+        // Apply bonus if low intensity is 70-85%
+        if (lowPercentage >= 70 && lowPercentage <= 85) {
+          bonusApplied = true;
+          finalPoints = player.totalPoints * 1.15;
+        }
+      }
+      
+      return {
+        ...player,
+        bonusApplied,
+        finalPoints
+      };
+    });
+
+    // Sort by final points (with bonus)
+    updatedRanking.sort((a, b) => b.finalPoints - a.finalPoints);
+    
+    tbody.innerHTML = '';
+    
+    updatedRanking.forEach((player, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+        <td class="name-cell">${player.name}</td>
+        <td class="points-cell">${player.finalPoints.toFixed(1)}</td>
+        <td>${player.activityCount || 0}</td>
+        <td>${formatDecimalToTime(player.totalZ2)}</td>
+        <td>${formatDecimalToTime(player.totalZ3)}</td>
+        <td>${formatDecimalToTime(player.totalZ4)}</td>
+        <td>${formatDecimalToTime(player.totalZ5)}</td>
+        <td>${player.bonusApplied ? '<span style="color: var(--success-color);">⭐ +15%</span>' : '-'}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Ranking load error:", error);
+    tbody.innerHTML = `<tr><td colspan="9" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
+  }
+}
 
     // Load activities
     async function loadActivities(loadAll) {
@@ -1788,10 +1835,6 @@ async function loadProgressChart() {
     console.error("Chart load error:", error);
   }
 }
-
-
-// Update form submission success to reload chart
-// In the form submission success block, add:loadProgressChart();
 
     /*
     // Add this at the end of your existing JavaScript
