@@ -1477,7 +1477,7 @@ async function loadRanking() {
     // Calculate bonus for each player and update their points
     const updatedRanking = ranking.map(player => {
       const recoveryTime = playerRecovery[player.name] || 0;
-      const totalLowIntensity = (player.totalZ2 || 0) + (player.totalZ3 || 0) + recoveryTime;
+      const totalLowIntensity = (player.totalZ2 || 0) + recoveryTime;
       const totalHighIntensity = (player.totalZ4 || 0) + (player.totalZ5 || 0);
       const totalTrainingTime = totalLowIntensity + totalHighIntensity;
       
@@ -1517,7 +1517,7 @@ async function loadRanking() {
         <td>${formatDecimalToTime(player.totalZ3)}</td>
         <td>${formatDecimalToTime(player.totalZ4)}</td>
         <td>${formatDecimalToTime(player.totalZ5)}</td>
-        <td>${player.bonusApplied ? '<span style="color: var(--success-color);">⭐ +15%</span>' : '-'}</td>
+        <td>${player.bonusApplied ? '<span style="color: var(--success-color);">⭐+15%</span>' : '-'}</td>
       `;
       tbody.appendChild(row);
     });
