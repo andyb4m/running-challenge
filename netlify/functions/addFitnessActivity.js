@@ -20,8 +20,8 @@ const POINT_MULTIPLIERS = {
 };
 
 const ACTIVITY_POINTS = {
-  others: 10,
-  recovery: 10
+  others: 20,
+  recovery: 30
 };
 
 // Check honeypot (anti-spam)
