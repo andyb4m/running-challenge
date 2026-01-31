@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chinese New Year Challenge 2026 - Get Fit or Die</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+
+  <style>
+    :root {
+      /* Primary Colors */
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #8b5cf6;
+      --secondary-color: #06d6a0;
+      --secondary-dark: #059669;
+      
+      /* Fitness theme colors */
+      --winter-accent: #ef4444;
+      --winter-light: #f87171;
+      --winter-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      
+      /* Background Colors */
+      --background-dark: #0f0f23;
+      --background-secondary: #1a1a2e;
+      --card-background: #16213e;
+      --card-hover: #1e2749;
+      
+      /* Text Colors */
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      /* Border & Accent Colors */
+      --border-color: #334155;
+      --border-light: #475569;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+      
+      /* Gradients */
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --gradient-secondary: linear-gradient(135deg, #06d6a0 0%, #059669 100%);
+      --gradient-hero: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      
+      /* Spacing */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      
+      /* Border Radius */
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-2xl: 1.5rem;
+      
+      /* Transitions */
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+      
+      /* Legacy variables for compatibility */
+      --dark-bg: var(--background-dark);
+      --card-bg: var(--card-background);
+      --purple-accent: var(--winter-accent);
+      --purple-light: var(--winter-light);
+      --purple-gradient: var(--winter-gradient);
+      --border-radius: var(--radius-xl);
+      --shadow-default: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      --transition-default: var(--transition-normal);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .challenge-nav {
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-lg) 0;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .challenge-nav .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-md);
+    }
+
+    .back-link:hover {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-light);
+    }
+
+    .challenge-nav h1 {
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-weight: 700;
+    }
+
+    .challenge-nav h1 i {
+      color: var(--winter-accent);
+    }
+    
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    /* Mobile-first card sections */
+    .card-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow-default);
+      margin-bottom: 20px;
+      width: 100%;
+      transition: var(--transition-default);
+      border: 1px solid var(--border-color);
+    }
+    
+    .card-section:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--winter-accent);
+      transform: translateY(-4px);
+    }
+
+    /* Hide number input spinners in Firefox */
+    input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield; /* Add this line for compatibility */
+    }
+
+    /* Desktop grid layout */
+    @media screen and (min-width: 992px) {
+      .card-section {
+        padding: 25px;
+      }
+      
+      .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto !important;
+        gap: 20px !important;
+      }
+      
+      .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+      }
+      
+      .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+      }
+      
+      .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+      }
+     
+      .card-section {
+        margin-bottom: 0;
+      }
+      
+      .time-section .card-section,
+      .ranking-section .card-section {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .time-section .card-section form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    h2 span {
+      color: var(--purple-accent);
+    }
+
+    h2 i {
+      color: var(--winter-accent);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Form controls */
+    select, input {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--background-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--purple-accent);
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: var(--transition-default);
+    }
+    
+    select {
+      background-color: var(--card-bg);
+      cursor: pointer;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--purple-gradient);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: var(--transition-default);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--purple-light);
+      min-height: 24px;
+      padding: 8px;
+      border-radius: 6px;
+      transition: var(--transition-default);
+    }
+    
+    #message.success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    #message.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error-color);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    #message.warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Activity Type Selection */
+    .activity-type-selection {
+      margin-bottom: 20px;
+    }
+
+    .activity-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .activity-type-btn {
+      padding: var(--spacing-md);
+      background: var(--background-dark);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-normal);
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .activity-type-btn:hover {
+      border-color: var(--winter-accent);
+      color: var(--text-primary);
+    }
+
+    .activity-type-btn.active {
+      background: var(--winter-accent);
+      border-color: var(--winter-accent);
+      color: white;
+    }
+
+    .activity-type-btn i {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      font-size: 18px;
+    }
+
+    /* Zone training section */
+    .zone-training {
+      display: block;
+    }
+
+    .zone-training.hidden {
+      display: none;
+    }
+
+    /* Simple activity section */
+    .simple-activity {
+      display: none;
+    }
+
+    .simple-activity.visible {
+      display: block;
+    }
+
+    .simple-activity-info {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success-color);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .simple-activity-info.others {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--warning-color);
+    }
+
+    /* reCAPTCHA styling */
+    .g-recaptcha {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 10px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 600px;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 8px 6px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
+    }
+    
+    .data-table th {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .rank-cell {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .rank-1:after {
+      content: "🏆";
+      margin-left: 5px;
+    }
+    
+    .name-cell {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .points-cell {
+      color: var(--purple-accent);
+      font-weight: 600;
+    }
+
+    .loading-message {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .running-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      text-align: center;
+      transition: var(--transition-default);
+    }
+    
+    .stat-card:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: var(--winter-accent);
+    }
+
+    .challenge-completed {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-color);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .challenge-completed h3 {
+      color: var(--error-color);
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+    
+    /* Time inputs */
+    .time-segments {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .time-segment {
+      width: 30px;
+      height: 36px;
+      text-align: center;
+      background-color: var(--background-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px 2px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: var(--transition-default);
+    }
+    
+    .time-segment:focus {
+      outline: none;
+      border-color: var(--purple-accent);
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    .time-segment::-webkit-inner-spin-button, 
+    .time-segment::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+    
+    .time-separator {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: bold;
+      padding: 0 1px;
+    }
+    
+    .time-segment-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .time-segment-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 8px;
+      line-height: 1.2;
+    }
+    
+    .stat-card label {
+      font-size: 11px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .view-all-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--purple-light);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: var(--transition-default);
+      text-decoration: none;
+    }
+
+    .view-all-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Mobile adjustments */
+    @media screen and (max-width: 768px) {
+      .challenge-nav .nav-container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+      }
+      
+      .container {
+        padding: 0 var(--spacing-md);
+      }
+
+      .running-stats {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .activity-types {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .activity-types {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+
+    /* Analytics section */
+    .analytics-section {
+    grid-column: 1 / span 2 !important;
+    grid-row: 2 !important;
+    }
+
+    .activities-section {
+    grid-column: 1 / span 2 !important;
+    grid-row: 3 !important;
+    }
+
+    /* Analytics table specific styling */
+    #analyticsTable th:nth-child(1), #analyticsTable td:nth-child(1) { width: 80px; } /* Runner */
+    #analyticsTable th:nth-child(2), #analyticsTable td:nth-child(2) { width: 60px; } /* Zone */
+    #analyticsTable th:nth-child(3), #analyticsTable td:nth-child(3) { width: 60px; } /* Others */
+    #analyticsTable th:nth-child(4), #analyticsTable td:nth-child(4) { width: 70px; } /* Recovery */
+    #analyticsTable th:nth-child(5), #analyticsTable td:nth-child(5) { width: 70px; } /* Zone 2 */
+    #analyticsTable th:nth-child(6), #analyticsTable td:nth-child(6) { width: 70px; } /* Zone 4+5 */
+    #analyticsTable th:nth-child(7), #analyticsTable td:nth-child(7) { width: 80px; } /* Ratio */
+
+    .analytics-info {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--primary-color);
+    font-size: 13px;
+    text-align: center;
+    }
+
+    .analytics-info i {
+    margin-right: 5px;
+    }
+
+    /* Ratio styling */
+    .ratio-good {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    }
+
+    .ratio-poor {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--error-color);
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    }
+
+    .ratio-neutral {
+    color: var(--text-secondary);
+    padding: 4px 6px;
+    font-weight: 500;
+    }
+
+    /* Chart section styling */
+    .chart-section {
+      grid-column: 1 / span 2 !important;
+      grid-row: 3 !important;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .chart-info {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-md);
+      color: var(--primary-color);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .chart-info i {
+      margin-right: 5px;
+    }
+
+    /* Update desktop grid layout */
+    @media screen and (min-width: 992px) {
+    .desktop-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto auto auto !important;
+        gap: 20px !important;
+    }
+    
+    .ranking-section {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+    
+    .time-section {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+    
+    .analytics-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+    }
+
+     .chart-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 3 !important;
+    }
+    
+    .activities-section {
+        grid-column: 1 / span 2 !important;
+        grid-row: 4 !important;
+    }
+
+    .card-section {
+        margin-bottom: 0;
+    }
+  
+    .time-section .card-section,
+    .ranking-section .card-section {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+  
+    .time-section .card-section form {
+       flex: 1;
+       display: flex;
+       flex-direction: column;
+    }
+}
+
+    /* Honeypot field - hidden from users but visible to bots */
+    .honeypot-field {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    }
+
+    .honeypot-field input {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 1px !important;
+    color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="challenge-nav">
+    <div class="nav-container">
+      <a href="/" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Back to Challenges
+      </a>
+      <h1>
+        <i class="fas fa-fire"></i>
+        Starting the year with a Fitness BANG
+      </h1>
+      <div></div>
+    </div>
+  </nav>
+
+<!-- Challenge Completed Notice 
+  <div class="container">
+    <div class="challenge-completed">
+      <h3>
+        <i class="fas fa-flag-checkered"></i>
+        Challenge Completed!
+      </h3>
+      <p>The Running Challenge 2025 has been completed. No new entries are being accepted.</p>
+      <p>Thank you to all participants! Check out the final ranking below.</p>
+    </div>
+  </div> -->
+
+  <div class="container">
+    <div class="desktop-layout">
+      <!-- Time Input Section -->
+      <div class="time-section">
+        <div class="card-section">
+          <h2><i class="fas fa-plus-circle"></i>Log Your <span>Activity</span></h2>
+          
+          <form id="runningForm">
+            <div class="form-group">
+              <label for="name">Select Runner</label>
+              <div class="select-wrapper">
+                <select id="name" name="name" required>
+                  <option value="">Choose your name</option>
+                  <option value="Andy">Andy</option>
+                  <option value="Batz">Batz</option>
+                  <option value="Caro">Caro</option>
+                  <option value="Eleana">Eleana</option>
+                  <option value="Hans">Hans</option>
+                  <option value="Jakob">Jakob</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- HONEYPOT FIELD -->
+            <div class="honeypot-field">
+                <label for="website">Website (leave blank):</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <!-- Activity Type Selection -->
+            <div class="form-group activity-type-selection">
+              <label>Activity Type</label>
+              <div class="activity-types">
+                <button type="button" class="activity-type-btn active" data-type="zone-training">
+                  <i class="fas fa-running"></i>
+                  Zone Training
+                </button>
+                <button type="button" class="activity-type-btn" data-type="others">
+                  <i class="fas fa-dumbbell"></i>
+                  Others
+                </button>
+                <button type="button" class="activity-type-btn" data-type="recovery">
+                  <i class="fas fa-spa"></i>
+                  Recovery
+                </button>
+              </div>
+            </div>
+
+            <!-- Zone Training Section -->
+            <div class="zone-training" id="zoneTraining">
+              <div class="running-stats">
+                <div class="form-group stat-card">
+                  <label for="z2_hours">Zone 2 Time</label>
+                  <div class="time-segments">
+                    <div class="time-segment-container">
+                      <input type="number" id="z2_hours" name="z2_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 2 hours">
+                      <span class="time-segment-label">h</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z2_minutes" name="z2_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 minutes">
+                      <span class="time-segment-label">m</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z2_seconds" name="z2_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 2 seconds">
+                      <span class="time-segment-label">s</span>
+                    </div>
+                  </div>
+                  <span class="stat-label">×1 points per minute</span>
+                </div>
+                
+                <div class="form-group stat-card">
+                    <label for="z3_hours">Zone 3 Time</label>
+                    <div class="time-segments">
+                      <div class="time-segment-container">
+                        <input type="number" id="z3_hours" name="z3_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 3 hours">
+                        <span class="time-segment-label">h</span>
+                      </div>
+                      <span class="time-separator">:</span>
+                      <div class="time-segment-container">
+                        <input type="number" id="z3_minutes" name="z3_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 3 minutes">
+                        <span class="time-segment-label">m</span>
+                      </div>
+                      <span class="time-separator">:</span>
+                      <div class="time-segment-container">
+                        <input type="number" id="z3_seconds" name="z3_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 3 seconds">
+                        <span class="time-segment-label">s</span>
+                      </div>
+                    </div>
+                    <span class="stat-label">×0.5 points per minute</span>
+                  </div>
+
+                <div class="form-group stat-card">
+                  <label for="z4_hours">Zone 4 Time</label>
+                  <div class="time-segments">
+                    <div class="time-segment-container">
+                      <input type="number" id="z4_hours" name="z4_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 4 hours">
+                      <span class="time-segment-label">h</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z4_minutes" name="z4_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 minutes">
+                      <span class="time-segment-label">m</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z4_seconds" name="z4_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 4 seconds">
+                      <span class="time-segment-label">s</span>
+                    </div>
+                  </div>
+                  <span class="stat-label">×1.5 points per minute</span>
+                </div>
+                
+                <div class="form-group stat-card">
+                  <label for="z5_hours">Zone 5 Time</label>
+                  <div class="time-segments">
+                    <div class="time-segment-container">
+                      <input type="number" id="z5_hours" name="z5_hours" min="0" max="99" class="time-segment" placeholder="0" inputmode="numeric" aria-label="Zone 5 hours">
+                      <span class="time-segment-label">h</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z5_minutes" name="z5_minutes" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 minutes">
+                      <span class="time-segment-label">m</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment-container">
+                      <input type="number" id="z5_seconds" name="z5_seconds" min="0" max="59" class="time-segment" placeholder="00" inputmode="numeric" aria-label="Zone 5 seconds">
+                      <span class="time-segment-label">s</span>
+                    </div>
+                  </div>
+                  <span class="stat-label">×2.0 points per minute</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Simple Activity Section -->
+            <div class="simple-activity" id="simpleActivity">
+              <div class="simple-activity-info" id="activityInfo">
+                <p><strong>Recovery Activity:</strong> 10 points (once per week)</p>
+              </div>
+            </div>
+                        
+            <button type="submit" id="submitBtn">
+              <i class="fas fa-fire"></i>
+              Submit and get fit!
+            </button>
+            <div id="message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Ranking Section -->
+      <div class="ranking-section">
+        <div class="card-section">
+          <h2><i class="fas fa-trophy"></i>Current <span>Ranking</span></h2>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="rankingTable" role="table" aria-label="Current ranking">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Activities</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z3</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                  <th scope="col">Bonus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="loading-message">Loading ranking data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+<!-- NEW: Analytics Section -->
+<div class="analytics-section">
+  <div class="card-section">
+    <h2><i class="fas fa-chart-line"></i>Training <span>Analytics</span></h2>
+    
+    <div class="table-wrapper">
+      <table class="data-table" id="analyticsTable" role="table" aria-label="Training analytics">
+        <thead>
+          <tr>
+            <th scope="col">Runner</th>
+            <th scope="col">Zone</th>
+            <th scope="col">Others</th>
+            <th scope="col">Recovery</th>
+            <th scope="col">Low Int.</th>
+            <th scope="col">Zone 4+5</th>
+            <th scope="col">Ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="7" class="loading-message">Loading analytics...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="analytics-info">
+      <p><i class="fas fa-info-circle"></i> <strong>80/20 Rule:</strong> Optimal training consists of ~80% low intensity (Zone 2 + Recovery) and ~20% high intensity (Zone 4+5)</p>
+    </div>
+  </div>
+</div>
+
+<!-- NEW: Progress Chart Section -->
+<div class="chart-section">
+  <div class="card-section">
+    <h2><i class="fas fa-chart-area"></i>Progress <span>Chart</span></h2>
+    
+    <div class="chart-container">
+      <canvas id="progressChart" width="400" height="200"></canvas>
+    </div>
+    
+    <div class="chart-info">
+      <p><i class="fas fa-info-circle"></i> <strong>Progress over time:</strong> X-axis shows time, Y-axis shows total points accumulated</p>
+    </div>
+  </div>
+</div>
+
+      <!-- Recent Activities Section -->
+      <div class="activities-section">
+        <div class="card-section">
+          <div class="section-header">
+            <h2><i class="fas fa-list"></i>Recent <span>Activities</span></h2>
+            <div>
+              <button type="button" id="viewAllBtn" class="view-all-btn">View All Activities</button>
+            </div>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="data-table" id="activitiesTable" role="table" aria-label="Recent activities">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Runner</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Z2</th>
+                  <th scope="col">Z3</th>
+                  <th scope="col">Z4</th>
+                  <th scope="col">Z5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="loading-message">Loading activities...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const FUNCTIONS_BASE_URL = '/.netlify/functions';
+    
+    // State management
+    let showingAllActivities = false;
+    let isLoading = false;
+    let selectedActivityType = 'zone-training';
+    
+    // Utility functions
+    const showMessage = (message, type = 'info') => {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.textContent = '';
+          messageDiv.className = '';
+        }, 3000);
+      }
+    };
+    
+    const setLoadingState = (loading) => {
+      isLoading = loading;
+      const submitBtn = document.getElementById('submitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = loading;
+        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-fire"></i> Submit Your BANG Activity!';
+      }
+    };
+    
+    // Initial load
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      setupActivityTypeSelection();
+      setupTimeInputs();
+      
+      // Load all dashboard components
+      setTimeout(() => {
+        loadRanking();
+        loadActivities(false);
+        loadAnalytics();
+        loadProgressChart();
+      }, 1000);
+      
+      // Set up the View All button
+      document.getElementById('viewAllBtn').addEventListener('click', function() {
+        showingAllActivities = !showingAllActivities;
+        loadActivities(showingAllActivities);
+        this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
+      });
+    });
+
+    function setupActivityTypeSelection() {
+      const activityTypeBtns = document.querySelectorAll('.activity-type-btn');
+      const zoneTraining = document.getElementById('zoneTraining');
+      const simpleActivity = document.getElementById('simpleActivity');
+      const activityInfo = document.getElementById('activityInfo');
+
+      activityTypeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          activityTypeBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          selectedActivityType = this.dataset.type;
+
+          if (selectedActivityType === 'zone-training') {
+            zoneTraining.classList.remove('hidden');
+            simpleActivity.classList.remove('visible');
+          } else {
+            zoneTraining.classList.add('hidden');
+            simpleActivity.classList.add('visible');
+            
+            if (selectedActivityType === 'others') {
+              activityInfo.innerHTML = '<p><strong>Others Activity:</strong> 20 points (once per day)</p>';
+              activityInfo.className = 'simple-activity-info others';
+            } else if (selectedActivityType === 'recovery') {
+              activityInfo.innerHTML = '<p><strong>Recovery Activity:</strong> 30 points (once per week)</p>';
+              activityInfo.className = 'simple-activity-info';
+            }
+          }
+        });
+      });
+    }
+    
+    // Setup time inputs (same as original)
+    function setupTimeInputs() {
+      const timeSegments = document.querySelectorAll('.time-segment');
+      
+      timeSegments.forEach(input => {
+        input.addEventListener('input', function(e) {
+          this.value = this.value.replace(/[^\d]/g, '');
+          const value = parseInt(this.value) || 0;
+          const max = parseInt(this.getAttribute('max'));
+          
+          if (value > max) {
+            this.value = max;
+          }
+          
+          const isHoursField = this.id.includes('hours');
+          const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
+          
+          if ((isMinutesOrSecondsField && this.value.length >= 2) || 
+              (isHoursField && this.value.length >= 2)) {
+            const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            }
+          }
+        });
+        
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            this.value = this.id.includes('hours') ? '0' : '00';
+          } else if ((this.id.includes('minutes') || this.id.includes('seconds'))) {
+            const value = parseInt(this.value) || 0;
+            this.value = value < 10 ? '0' + value : value;
+          }
+        });
+        
+        input.addEventListener('focus', function() {
+          this.select();
+        });
+      });
+    }
+    
+    // Time calculation functions
+    function getTimeValue(zonePrefix) {
+      const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
+      const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
+      const seconds = parseInt(document.getElementById(zonePrefix + '_seconds').value) || 0;
+      
+      return (hours * 60) + minutes + (seconds / 60);
+    }
+    
+    function getTimeString(zonePrefix) {
+      let hours = document.getElementById(zonePrefix + '_hours').value || '0';
+      let minutes = document.getElementById(zonePrefix + '_minutes').value || '00';
+      let seconds = document.getElementById(zonePrefix + '_seconds').value || '00';
+      
+      minutes = parseInt(minutes) < 10 && minutes.length < 2 ? '0' + minutes : minutes;
+      seconds = parseInt(seconds) < 10 && seconds.length < 2 ? '0' + seconds : seconds;
+      
+      return hours + ':' + minutes + ':' + seconds;
+    }
+    
+    function formatDecimalToTime(decimalMinutes) {
+      if (!decimalMinutes) return '0:00:00';
+      
+      const totalMinutes = decimalMinutes;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = Math.floor(totalMinutes % 60);
+      const seconds = Math.round((totalMinutes % 1) * 60);
+      
+      return hours + ':' + 
+             (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+             (seconds < 10 ? '0' + seconds : seconds);
+    }
+
+    // Form submission
+    document.getElementById('runningForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (isLoading) return;
+
+        // Check honeypot field
+        const honeypotValue = document.getElementById('website').value;
+        if (honeypotValue !== '') {
+            // Bot detected - silently fail or show generic error
+            showMessage('Please try again later.', 'error');
+            return;
+        }
+
+        const form = e.target;
+        setLoadingState(true);
+        
+        try {
+            let formData = {
+            name: form.name.value,
+            activityType: selectedActivityType,
+            honeypot: honeypotValue // Send empty value to verify on backend
+            };
+
+            if (selectedActivityType === 'zone-training') {
+            document.querySelectorAll('.time-segment').forEach(input => {
+                if (!input.value) {
+                if (input.id.includes('hours')) {
+                    input.value = '0';
+                } else {
+                    input.value = '00';
+                }
+                } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+                const value = parseInt(input.value) || 0;
+                input.value = value < 10 ? '0' + value : value;
+                }
+            });
+            
+            const z2Decimal = getTimeValue('z2');
+            const z3Decimal = getTimeValue('z3');
+            const z4Decimal = getTimeValue('z4');
+            const z5Decimal = getTimeValue('z5');
+            
+            if (z2Decimal === 0 && z3Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+                showMessage('Please enter at least some training time.', 'error');
+                setLoadingState(false);
+                return;
+            }
+            
+            const z2Time = getTimeString('z2');
+            const z3Time = getTimeString('z3');
+            const z4Time = getTimeString('z4');
+            const z5Time = getTimeString('z5');
+            
+            formData = {
+                ...formData,
+                z2: z2Decimal.toFixed(2),
+                z3: z3Decimal.toFixed(2),
+                z4: z4Decimal.toFixed(2),
+                z5: z5Decimal.toFixed(2),
+                z2_display: z2Time,
+                z3_display: z3Time,
+                z4_display: z4Time,
+                z5_display: z5Time
+            };
+            }
+
+            const response = await fetch(`${FUNCTIONS_BASE_URL}/addFitnessActivity`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+            });
+
+            let result;
+            try {
+            result = await response.json();
+            } catch (parseError) {
+            throw new Error(`Server returned invalid response (Status: ${response.status})`);
+            }
+            
+            if (response.ok) {
+            showMessage(result.message || 'Activity logged successfully!', 'success');
+            
+            const selectedName = form.name.value;
+            
+            if (selectedActivityType === 'zone-training') {
+                document.querySelectorAll('.time-segment').forEach(input => {
+                if (input.id.includes('hours')) {
+                    input.value = '0';
+                } else {
+                    input.value = '00';
+                }
+                });
+            }
+            
+            form.name.value = selectedName;
+            // No need to reset reCAPTCHA anymore
+            
+            loadRanking();
+            setTimeout(() => {
+                loadActivities(showingAllActivities);
+                loadAnalytics();
+            }, 1000);
+            } else {
+            const errorMessage = result?.error || `Server error (${response.status})`;
+            const messageType = (errorMessage.toLowerCase().includes('already') || 
+                                errorMessage.toLowerCase().includes('only')) ? 'warning' : 'error';
+            showMessage('Error: ' + errorMessage, messageType);
+            }
+        } catch (error) {
+            console.error("Form submission error:", error);
+            showMessage('Network error: ' + error.message, 'error');
+        } finally {
+            setLoadingState(false);
+        }
+        });
+
+// Load ranking
+async function loadRanking() {
+  const tbody = document.querySelector('#rankingTable tbody');
+  tbody.innerHTML = '<tr><td colspan="9" class="loading-message">Loading ranking data...</td></tr>';
+
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const ranking = await response.json();
+
+    if (!ranking || ranking.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+      return;
+    }
+
+    // Get activities to calculate recovery time for each player
+    const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
+    const activities = await activitiesResponse.json();
+    
+    // Calculate recovery time for each player
+    const playerRecovery = {};
+    if (activities && Array.isArray(activities)) {
+      activities.forEach(activity => {
+        if (activity.activityType === 'recovery') {
+          if (!playerRecovery[activity.name]) playerRecovery[activity.name] = 0;
+          playerRecovery[activity.name] += 30; // 30 minutes per recovery
+        }
+      });
+    }
+    
+    // Calculate bonus for each player and update their points
+    const updatedRanking = ranking.map(player => {
+      const recoveryTime = playerRecovery[player.name] || 0;
+      const totalLowIntensity = (player.totalZ2 || 0) + recoveryTime;
+      const totalHighIntensity = (player.totalZ4 || 0) + (player.totalZ5 || 0);
+      const totalTrainingTime = totalLowIntensity + totalHighIntensity;
+      
+      let bonusApplied = false;
+      let finalPoints = player.totalPoints;
+      
+      if (totalTrainingTime > 0) {
+        const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
+        
+        // Apply bonus if low intensity is 70-85%
+        if (lowPercentage >= 70 && lowPercentage <= 85) {
+          bonusApplied = true;
+          finalPoints = player.totalPoints * 1.15;
+        }
+      }
+      
+      return {
+        ...player,
+        bonusApplied,
+        finalPoints
+      };
+    });
+
+    // Sort by final points (with bonus)
+    updatedRanking.sort((a, b) => b.finalPoints - a.finalPoints);
+    
+    tbody.innerHTML = '';
+    
+    updatedRanking.forEach((player, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+        <td class="name-cell">${player.name}</td>
+        <td class="points-cell">${player.finalPoints.toFixed(1)}</td>
+        <td>${player.activityCount || 0}</td>
+        <td>${formatDecimalToTime(player.totalZ2)}</td>
+        <td>${formatDecimalToTime(player.totalZ3)}</td>
+        <td>${formatDecimalToTime(player.totalZ4)}</td>
+        <td>${formatDecimalToTime(player.totalZ5)}</td>
+        <td>${player.bonusApplied ? '<span style="color: var(--success-color);">⭐+15%</span>' : '-'}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Ranking load error:", error);
+    tbody.innerHTML = `<tr><td colspan="9" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
+  }
+}
+
+    // Load activities
+    async function loadActivities(loadAll) {
+      const tbody = document.querySelector('#activitiesTable tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading activities...</td></tr>';
+      
+      try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const activities = await response.json();
+
+        if (!activities || activities.length === 0) {
+          const message = !activities ? "No activities data received." : "No activities recorded yet.";
+          tbody.innerHTML = `<tr><td colspan="7" class="loading-message">${message}</td></tr>`;
+          return;
+        }
+        
+        let displayActivities = activities;
+        if (!loadAll && Array.isArray(activities)) {
+          displayActivities = activities.slice(0, 10);
+        }
+        
+        tbody.innerHTML = '';
+        
+        displayActivities.forEach(function(activity) {
+          const z2Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z2) : '-';
+          const z3Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z3) : '-';
+          const z4Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z4) : '-';
+          const z5Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z5) : '-';
+          
+          let activityTypeDisplay = 'Zone Training';
+          if (activity.activityType === 'others') activityTypeDisplay = 'Others';
+          if (activity.activityType === 'recovery') activityTypeDisplay = 'Recovery';
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${activity.date || "Unknown"}</td>
+            <td class="name-cell">${activity.name || "Unknown"}</td>
+            <td>${activityTypeDisplay}</td>
+            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
+            <td>${z2Display}</td>
+            <td>${z3Display}</td>
+            <td>${z4Display}</td>
+            <td>${z5Display}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Activities load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Load analytics
+    async function loadAnalytics() {
+    const tbody = document.querySelector('#analyticsTable tbody');
+    tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading analytics...</td></tr>';
+
+    try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
+        
+        if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const ranking = await response.json();
+
+        if (!ranking || ranking.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet.</td></tr>';
+        return;
+        }
+
+        // Get detailed activity counts
+        const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
+        const activities = await activitiesResponse.json();
+        
+        // Calculate activity type counts for each player
+        const playerAnalytics = {};
+        
+        ranking.forEach(player => {
+        playerAnalytics[player.name] = {
+            name: player.name,
+            totalZ2: player.totalZ2 || 0,
+            totalZ3: player.totalZ3 || 0,
+            totalZ4: player.totalZ4 || 0,
+            totalZ5: player.totalZ5 || 0,
+            zoneCount: 0,
+            othersCount: 0,
+            recoveryCount: 0
+        };
+        });
+
+        // Count activity types
+        if (activities && Array.isArray(activities)) {
+        activities.forEach(activity => {
+            if (playerAnalytics[activity.name]) {
+            if (activity.activityType === 'zone-training') {
+                playerAnalytics[activity.name].zoneCount++;
+            } else if (activity.activityType === 'others') {
+                playerAnalytics[activity.name].othersCount++;
+            } else if (activity.activityType === 'recovery') {
+                playerAnalytics[activity.name].recoveryCount++;
+            }
+            }
+        });
+        }
+        
+        tbody.innerHTML = '';
+        
+        // Sort by total training time (Z2 + Z3 + Z4 + Z5)
+        const sortedAnalytics = Object.values(playerAnalytics)
+        .sort((a, b) => (b.totalZ2 + b.totalZ3 + b.totalZ4 + b.totalZ5) - (a.totalZ2 + b.totalZ3 + a.totalZ4 + a.totalZ5));
+        
+        sortedAnalytics.forEach(player => {
+        const recoveryTime = player.recoveryCount * 30; // 30 minutes
+        const totalLowIntensity = player.totalZ2 + recoveryTime; // Zone 2 + recovery
+        const totalHighIntensity = player.totalZ4 + player.totalZ5; // Zone 4 + 5
+        const totalTrainingTime = totalLowIntensity + totalHighIntensity;
+        
+        let ratioDisplay = '-';
+        let ratioClass = 'ratio-neutral';
+        
+        if (totalTrainingTime > 0) {
+            const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
+            const highPercentage = (totalHighIntensity / totalTrainingTime) * 100;
+            
+            ratioDisplay = `${Math.round(lowPercentage)}/${Math.round(highPercentage)}`;
+            
+            // Check if ratio is close to 80/20 (allow some tolerance)
+            if (lowPercentage >= 75 && lowPercentage <= 85) {
+            ratioClass = 'ratio-good';
+            } else {
+            ratioClass = 'ratio-poor';
+            }
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="name-cell">${player.name}</td>
+            <td>${player.zoneCount}</td>
+            <td>${player.othersCount}</td>
+            <td>${player.recoveryCount}</td>
+            <td>${formatDecimalToTime(player.totalZ2 + recoveryTime)}</td>
+            <td>${formatDecimalToTime(player.totalZ4 + player.totalZ5)}</td>
+            <td><span class="${ratioClass}">${ratioDisplay}</span></td>
+        `;
+        tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Analytics load error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading analytics: ${error.message}</td></tr>`;
+    }
+    }
+
+    // Add this variable at the top with other state management
+let progressChart = null;
+
+async function loadProgressChart() {
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const activities = await response.json();
+
+    if (!activities || activities.length === 0) {
+      console.log("No activities found for chart");
+      return;
+    }
+
+    console.log("Chart data:", activities); // Debug log
+
+    // Process data for chart
+    const playerData = {};
+    
+    // Initialize players
+    const uniquePlayers = [...new Set(activities.map(a => a.name))];
+    uniquePlayers.forEach(player => {
+      playerData[player] = [];
+    });
+
+    // Sort activities by timestamp
+    const sortedActivities = activities.sort((a, b) => {
+      const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+      const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+      return dateA - dateB;
+    });
+    
+    // Calculate cumulative points for each player
+    const runningTotals = {};
+    uniquePlayers.forEach(player => runningTotals[player] = 0);
+
+    sortedActivities.forEach(activity => {
+      const points = parseFloat(activity.zonePoints) || 0; // Use 'zonePoints' not 'zonePoints'
+      runningTotals[activity.name] += points;
+      
+      // Handle Firebase timestamp
+      const activityDate = activity.timestamp?.toDate ? activity.timestamp.toDate() : new Date(activity.timestamp);
+      
+      playerData[activity.name].push({
+        x: activityDate,
+        y: runningTotals[activity.name]
+      });
+    });
+
+    console.log("Processed chart data:", playerData); // Debug log
+
+    // Chart colors for different players
+    const colors = [
+      '#ef4444', '#06d6a0', '#6366f1', '#f59e0b', 
+      '#8b5cf6', '#10b981', '#f97316', '#3b82f6'
+    ];
+
+    const datasets = uniquePlayers.map((player, index) => ({
+      label: player,
+      data: playerData[player],
+      borderColor: colors[index % colors.length],
+      backgroundColor: colors[index % colors.length] + '20',
+      borderWidth: 3,
+      fill: false,
+      tension: 0.1,
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }));
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (progressChart) {
+      progressChart.destroy();
+    }
+
+    progressChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff',
+              font: {
+                family: 'Inter'
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              displayFormats: {
+                day: 'dd/MM'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Zeit',
+              color: '#94a3b8',
+              font: {
+                family: 'Inter',
+                size: 14
+              }
+            },
+            ticks: {
+              color: '#94a3b8'
+            },
+            grid: {
+              color: '#334155'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Gesamtpunkte',
+              color: '#94a3b8',
+              font: {
+                family: 'Inter',
+                size: 14
+              }
+            },
+            ticks: {
+              color: '#94a3b8'
+            },
+            grid: {
+              color: '#334155'
+            }
+          }
+        }
+      }
+    });
+
+    console.log("Chart created successfully"); // Debug log
+
+  } catch (error) {
+    console.error("Chart load error:", error);
+  }
+}
+
+    /*
+    // Add this at the end of your existing JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+      // Disable the form
+      const form = document.getElementById('runningForm');
+      const timeSection = document.querySelector('.time-section .card-section');
+      
+      if (form && timeSection) {
+        form.classList.add('form-disabled');
+        
+        // Update the form title
+        const formTitle = timeSection.querySelector('h2');
+        if (formTitle) {
+          formTitle.innerHTML = '<i class="fas fa-lock"></i>Challenge <span>Completed</span>';
+        }
+        
+        // Disable all form inputs
+        const inputs = form.querySelectorAll('input, select, button');
+        inputs.forEach(input => {
+          input.disabled = true;
+        });
+        
+        // Hide reCAPTCHA
+        const recaptcha = form.querySelector('.g-recaptcha');
+        if (recaptcha) {
+          recaptcha.style.display = 'none';
+        }
+      }
+    });*/
+
+  </script>
+</body>
+</html>

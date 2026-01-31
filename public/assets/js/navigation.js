@@ -1,6 +1,20 @@
 // Updated challenge data - removed yoga, updated completed challenge
 const challenges = [
   {
+    id: 'fitness-challenge-2026',
+    title: 'Chines New Year Challenge 2026 - Get Fit or Die',
+    description: 'Push your limits with our fitness challenge. Track your zones and compete with friends.',
+    status: 'active',
+    startDate: '2026-02-01',
+    endDate: '2026-03-30',
+    participants: 6,
+    type: 'running',
+    url: '/challenge/2026-fitness/',
+    difficulty: 'All Levels',
+    duration: '2 months',
+    icon: 'fas fa-running'
+  },
+  {
     id: 'running-challenge-2025',
     title: 'Ultimate Running Challenge 2025',
     description: 'Push your limits with our zone challenge 2.0. Track your zones and compete with friends.',
