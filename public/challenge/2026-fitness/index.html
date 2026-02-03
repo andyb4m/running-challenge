@@ -1659,7 +1659,7 @@ async function loadRanking() {
             ratioDisplay = `${Math.round(lowPercentage)}/${Math.round(highPercentage)}`;
             
             // Check if ratio is close to 80/20 (allow some tolerance)
-            if (lowPercentage >= 75 && lowPercentage <= 85) {
+            if (lowPercentage >= 70 && lowPercentage <= 85) {
             ratioClass = 'ratio-good';
             } else {
             ratioClass = 'ratio-poor';
