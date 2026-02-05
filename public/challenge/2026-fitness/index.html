@@ -1425,6 +1425,7 @@
             setTimeout(() => {
                 loadActivities(showingAllActivities);
                 loadAnalytics();
+                loadProgressChart();
             }, 1000);
             } else {
             const errorMessage = result?.error || `Server error (${response.status})`;
