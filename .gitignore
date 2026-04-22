@@ -64,6 +64,19 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.local
+.env.*.local
 
 # dataconnect generated files
 .dataconnect
+
+# Next.js
+.next/
+out/
+
+# Vitest coverage
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
