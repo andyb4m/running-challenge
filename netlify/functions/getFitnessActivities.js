@@ -9,7 +9,7 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-const COLLECTION_NAME = 'fitness-challenge-2026';
+const COLLECTION_NAME = 'summerfit-2026';
 
 exports.handler = async (event, context) => {
   const headers = {

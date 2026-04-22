@@ -4,7 +4,7 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Chinese New Year Challenge 2026 - Get Fit or Die</title>
+  <title>SummerFit Challenge 2026 - Train Hard, Shine Bright</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,23 +15,23 @@
 
   <style>
     :root {
-      /* Primary Colors */
-      --primary-color: #6366f1;
-      --primary-dark: #4f46e5;
-      --primary-light: #8b5cf6;
-      --secondary-color: #06d6a0;
-      --secondary-dark: #059669;
+      /* Primary Colors - Ocean / turquoise */
+      --primary-color: #06b6d4;
+      --primary-dark: #0891b2;
+      --primary-light: #22d3ee;
+      --secondary-color: #fbbf24;
+      --secondary-dark: #f59e0b;
       
-      /* Fitness theme colors */
-      --winter-accent: #ef4444;
-      --winter-light: #f87171;
-      --winter-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      /* Summer theme colors - sunset coral */
+      --summer-accent: #f97316;
+      --summer-light: #fb923c;
+      --summer-gradient: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
       
-      /* Background Colors */
-      --background-dark: #0f0f23;
-      --background-secondary: #1a1a2e;
-      --card-background: #16213e;
-      --card-hover: #1e2749;
+      /* Background Colors - warm dusk */
+      --background-dark: #0c1629;
+      --background-secondary: #16213a;
+      --card-background: #1b2a48;
+      --card-hover: #223456;
       
       /* Text Colors */
       --text-primary: #ffffff;
@@ -47,9 +47,9 @@
       --info-color: #3b82f6;
       
       /* Gradients */
-      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      --gradient-secondary: linear-gradient(135deg, #06d6a0 0%, #059669 100%);
-      --gradient-hero: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      --gradient-secondary: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      --gradient-hero: linear-gradient(135deg, #0c1629 0%, #16213a 50%, #1b2a48 100%);
       
       /* Spacing */
       --spacing-xs: 0.25rem;
@@ -74,9 +74,9 @@
       /* Legacy variables for compatibility */
       --dark-bg: var(--background-dark);
       --card-bg: var(--card-background);
-      --purple-accent: var(--winter-accent);
-      --purple-light: var(--winter-light);
-      --purple-gradient: var(--winter-gradient);
+      --purple-accent: var(--summer-accent);
+      --purple-light: var(--summer-light);
+      --purple-gradient: var(--summer-gradient);
       --border-radius: var(--radius-xl);
       --shadow-default: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
       --transition-default: var(--transition-normal);
@@ -144,7 +144,7 @@
     }
 
     .challenge-nav h1 i {
-      color: var(--winter-accent);
+      color: var(--summer-accent);
     }
     
     .container {
@@ -168,7 +168,7 @@
     
     .card-section:hover {
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-      border-color: var(--winter-accent);
+      border-color: var(--summer-accent);
       transform: translateY(-4px);
     }
 
@@ -239,7 +239,7 @@
     }
 
     h2 i {
-      color: var(--winter-accent);
+      color: var(--summer-accent);
     }
     
     .form-group {
@@ -272,7 +272,7 @@
     select:focus, input:focus {
       outline: none;
       border-color: var(--purple-accent);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
     }
 
     .select-wrapper {
@@ -318,7 +318,7 @@
     
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
     }
     
     button:disabled {
@@ -382,13 +382,13 @@
     }
 
     .activity-type-btn:hover {
-      border-color: var(--winter-accent);
+      border-color: var(--summer-accent);
       color: var(--text-primary);
     }
 
     .activity-type-btn.active {
-      background: var(--winter-accent);
-      border-color: var(--winter-accent);
+      background: var(--summer-accent);
+      border-color: var(--summer-accent);
       color: white;
     }
 
@@ -538,7 +538,7 @@
     
     .stat-card:hover {
       background-color: rgba(255, 255, 255, 0.05);
-      border-color: var(--winter-accent);
+      border-color: var(--summer-accent);
     }
 
     .challenge-completed {
@@ -558,6 +558,29 @@
       align-items: center;
       justify-content: center;
       gap: var(--spacing-sm);
+    }
+
+    .challenge-upcoming {
+      background: rgba(6, 182, 212, 0.1);
+      border: 2px solid rgba(6, 182, 212, 0.35);
+      color: var(--primary-light);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .challenge-upcoming h3 {
+      color: var(--primary-light);
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .challenge-upcoming p {
+      margin-bottom: var(--spacing-sm);
     }
     
     /* Time inputs */
@@ -589,7 +612,7 @@
     .time-segment:focus {
       outline: none;
       border-color: var(--purple-accent);
-      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.25);
       background-color: rgba(255, 255, 255, 0.08);
     }
     
@@ -639,9 +662,9 @@
     .view-all-btn {
       display: inline-block;
       padding: 8px 16px;
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(249, 115, 22, 0.12);
       color: var(--purple-light);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      border: 1px solid rgba(249, 115, 22, 0.35);
       border-radius: var(--radius-sm);
       font-size: 14px;
       font-weight: 500;
@@ -653,8 +676,8 @@
     }
 
     .view-all-btn:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(249, 115, 22, 0.22);
+      border-color: rgba(249, 115, 22, 0.55);
       transform: translateY(-1px);
     }
 
@@ -875,22 +898,22 @@
         Back to Challenges
       </a>
       <h1>
-        <i class="fas fa-fire"></i>
-        Starting the year with a Fitness BANG
+        <i class="fas fa-sun"></i>
+        SummerFit — Train Hard, Shine Bright
       </h1>
       <div></div>
     </div>
   </nav>
 
-<!-- Challenge Completed Notice -->
+<!-- Challenge Pre-launch Notice -->
   <div class="container">
-    <div class="challenge-completed">
+    <div class="challenge-upcoming">
       <h3>
-        <i class="fas fa-flag-checkered"></i>
-        Challenge Completed!
+        <i class="fas fa-hourglass-half"></i>
+        Challenge Starting Soon!
       </h3>
-      <p>The Fitness Challenge 2026 has been completed. No new entries are being accepted.</p>
-      <p>Thank you to all participants! Check out the final ranking below.</p>
+      <p>The SummerFit Challenge 2026 is set to kick off at the beginning of May.</p>
+      <p>The form is currently disabled — check back soon to start logging your activities!</p>
     </div>
   </div>
 
@@ -1164,18 +1187,28 @@
   <script>
     // Configuration
     const FUNCTIONS_BASE_URL = '/.netlify/functions';
-    
+
     // State management
     let showingAllActivities = false;
     let isLoading = false;
     let selectedActivityType = 'zone-training';
-    
+
+    // Dashboard data cache — avoids redundant Firestore reads.
+    // Both getFitnessRanking and getFitnessActivities are fetched ONCE per
+    // loadDashboard() call and shared across all four renderers below.
+    const DASHBOARD_CACHE_TTL_MS = 15000; // 15 seconds
+    let dashboardCache = {
+      ranking: null,
+      activities: null,
+      fetchedAt: 0
+    };
+
     // Utility functions
     const showMessage = (message, type = 'info') => {
       const messageDiv = document.getElementById('message');
       messageDiv.textContent = message;
       messageDiv.className = type;
-      
+
       if (type === 'success') {
         setTimeout(() => {
           messageDiv.textContent = '';
@@ -1183,34 +1216,95 @@
         }, 3000);
       }
     };
-    
+
     const setLoadingState = (loading) => {
       isLoading = loading;
       const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) {
         submitBtn.disabled = loading;
-        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-fire"></i> Submit Your BANG Activity!';
+        submitBtn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Submitting...' : '<i class="fas fa-sun"></i> Submit Your Summer Activity!';
       }
     };
-    
-    // Initial load
-    
+
+    // ---------------------------------------------------------------
+    //  Single data-fetching entry point
+    // ---------------------------------------------------------------
+    // Previously the dashboard fired getFitnessActivities x4 and
+    // getFitnessRanking x2 on every page load (6 function calls / many
+    // full-collection reads). Now both endpoints are hit once, in
+    // parallel, and cached for DASHBOARD_CACHE_TTL_MS so that rapid
+    // interactions (toggle "View All", quick resubmit) don't refetch.
+    async function fetchDashboardData(forceRefresh = false) {
+      const now = Date.now();
+      const cacheIsFresh =
+        dashboardCache.ranking &&
+        dashboardCache.activities &&
+        (now - dashboardCache.fetchedAt) < DASHBOARD_CACHE_TTL_MS;
+
+      if (!forceRefresh && cacheIsFresh) {
+        return dashboardCache;
+      }
+
+      const [rankingRes, activitiesRes] = await Promise.all([
+        fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`),
+        fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`)
+      ]);
+
+      if (!rankingRes.ok) {
+        throw new Error(`Ranking HTTP ${rankingRes.status}: ${rankingRes.statusText}`);
+      }
+      if (!activitiesRes.ok) {
+        throw new Error(`Activities HTTP ${activitiesRes.status}: ${activitiesRes.statusText}`);
+      }
+
+      const [ranking, activities] = await Promise.all([
+        rankingRes.json(),
+        activitiesRes.json()
+      ]);
+
+      dashboardCache = { ranking, activities, fetchedAt: now };
+      return dashboardCache;
+    }
+
+    // Re-renders every dashboard panel from a single data fetch.
+    async function loadDashboard(forceRefresh = false) {
+      try {
+        const { ranking, activities } = await fetchDashboardData(forceRefresh);
+        renderRanking(ranking, activities);
+        renderActivities(activities, showingAllActivities);
+        renderAnalytics(ranking, activities);
+        renderProgressChart(activities);
+      } catch (error) {
+        console.error('Dashboard load error:', error);
+        const errorHtml = `<tr><td colspan="9" class="loading-message error-state">Error loading dashboard: ${error.message}</td></tr>`;
+        const rankingTbody = document.querySelector('#rankingTable tbody');
+        const activitiesTbody = document.querySelector('#activitiesTable tbody');
+        const analyticsTbody = document.querySelector('#analyticsTable tbody');
+        if (rankingTbody) rankingTbody.innerHTML = errorHtml;
+        if (activitiesTbody) activitiesTbody.innerHTML = errorHtml;
+        if (analyticsTbody) analyticsTbody.innerHTML = errorHtml;
+      }
+    }
+
+    // ---------------------------------------------------------------
+    //  Initial load + event wiring
+    // ---------------------------------------------------------------
     document.addEventListener('DOMContentLoaded', function() {
       setupActivityTypeSelection();
       setupTimeInputs();
-      
-      // Load all dashboard components
-      setTimeout(() => {
-        loadRanking();
-        loadActivities(false);
-        loadAnalytics();
-        loadProgressChart();
-      }, 1000);
-      
-      // Set up the View All button
+
+      // One call that pulls ranking + activities and renders every panel.
+      setTimeout(() => loadDashboard(), 1000);
+
+      // "View All" toggle: re-render from the cached activities — NO network call.
       document.getElementById('viewAllBtn').addEventListener('click', function() {
         showingAllActivities = !showingAllActivities;
-        loadActivities(showingAllActivities);
+        if (dashboardCache.activities) {
+          renderActivities(dashboardCache.activities, showingAllActivities);
+        } else {
+          // Cache not warmed yet (e.g. first load failed); fall back to a fetch.
+          loadDashboard();
+        }
         this.textContent = showingAllActivities ? "Show Recent Activities" : "View All Activities";
       });
     });
@@ -1225,7 +1319,7 @@
         btn.addEventListener('click', function() {
           activityTypeBtns.forEach(b => b.classList.remove('active'));
           this.classList.add('active');
-          
+
           selectedActivityType = this.dataset.type;
 
           if (selectedActivityType === 'zone-training') {
@@ -1234,7 +1328,7 @@
           } else {
             zoneTraining.classList.add('hidden');
             simpleActivity.classList.add('visible');
-            
+
             if (selectedActivityType === 'others') {
               activityInfo.innerHTML = '<p><strong>Others Activity:</strong> 20 points (once per day)</p>';
               activityInfo.className = 'simple-activity-info others';
@@ -1246,25 +1340,25 @@
         });
       });
     }
-    
+
     // Setup time inputs (same as original)
     function setupTimeInputs() {
       const timeSegments = document.querySelectorAll('.time-segment');
-      
+
       timeSegments.forEach(input => {
         input.addEventListener('input', function(e) {
           this.value = this.value.replace(/[^\d]/g, '');
           const value = parseInt(this.value) || 0;
           const max = parseInt(this.getAttribute('max'));
-          
+
           if (value > max) {
             this.value = max;
           }
-          
+
           const isHoursField = this.id.includes('hours');
           const isMinutesOrSecondsField = this.id.includes('minutes') || this.id.includes('seconds');
-          
-          if ((isMinutesOrSecondsField && this.value.length >= 2) || 
+
+          if ((isMinutesOrSecondsField && this.value.length >= 2) ||
               (isHoursField && this.value.length >= 2)) {
             const nextInput = this.parentElement.nextElementSibling?.nextElementSibling?.querySelector('input');
             if (nextInput) {
@@ -1273,7 +1367,7 @@
             }
           }
         });
-        
+
         input.addEventListener('blur', function() {
           if (!this.value) {
             this.value = this.id.includes('hours') ? '0' : '00';
@@ -1282,583 +1376,459 @@
             this.value = value < 10 ? '0' + value : value;
           }
         });
-        
+
         input.addEventListener('focus', function() {
           this.select();
         });
       });
     }
-    
+
     // Time calculation functions
     function getTimeValue(zonePrefix) {
       const hours = parseInt(document.getElementById(zonePrefix + '_hours').value) || 0;
       const minutes = parseInt(document.getElementById(zonePrefix + '_minutes').value) || 0;
       const seconds = parseInt(document.getElementById(zonePrefix + '_seconds').value) || 0;
-      
+
       return (hours * 60) + minutes + (seconds / 60);
     }
-    
+
     function getTimeString(zonePrefix) {
       let hours = document.getElementById(zonePrefix + '_hours').value || '0';
       let minutes = document.getElementById(zonePrefix + '_minutes').value || '00';
       let seconds = document.getElementById(zonePrefix + '_seconds').value || '00';
-      
+
       minutes = parseInt(minutes) < 10 && minutes.length < 2 ? '0' + minutes : minutes;
       seconds = parseInt(seconds) < 10 && seconds.length < 2 ? '0' + seconds : seconds;
-      
+
       return hours + ':' + minutes + ':' + seconds;
     }
-    
+
     function formatDecimalToTime(decimalMinutes) {
       if (!decimalMinutes) return '0:00:00';
-      
+
       const totalMinutes = decimalMinutes;
       const hours = Math.floor(totalMinutes / 60);
       const minutes = Math.floor(totalMinutes % 60);
       const seconds = Math.round((totalMinutes % 1) * 60);
-      
-      return hours + ':' + 
-             (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+
+      return hours + ':' +
+             (minutes < 10 ? '0' + minutes : minutes) + ':' +
              (seconds < 10 ? '0' + seconds : seconds);
     }
 
-    // Form submission
+    // ---------------------------------------------------------------
+    //  Form submission
+    // ---------------------------------------------------------------
     document.getElementById('runningForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+      e.preventDefault();
 
-        if (isLoading) return;
+      if (isLoading) return;
 
-        // Check honeypot field
-        const honeypotValue = document.getElementById('website').value;
-        if (honeypotValue !== '') {
-            // Bot detected - silently fail or show generic error
-            showMessage('Please try again later.', 'error');
-            return;
-        }
-
-        const form = e.target;
-        setLoadingState(true);
-        
-        try {
-            let formData = {
-            name: form.name.value,
-            activityType: selectedActivityType,
-            honeypot: honeypotValue // Send empty value to verify on backend
-            };
-
-            if (selectedActivityType === 'zone-training') {
-            document.querySelectorAll('.time-segment').forEach(input => {
-                if (!input.value) {
-                if (input.id.includes('hours')) {
-                    input.value = '0';
-                } else {
-                    input.value = '00';
-                }
-                } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
-                const value = parseInt(input.value) || 0;
-                input.value = value < 10 ? '0' + value : value;
-                }
-            });
-            
-            const z2Decimal = getTimeValue('z2');
-            const z3Decimal = getTimeValue('z3');
-            const z4Decimal = getTimeValue('z4');
-            const z5Decimal = getTimeValue('z5');
-            
-            if (z2Decimal === 0 && z3Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
-                showMessage('Please enter at least some training time.', 'error');
-                setLoadingState(false);
-                return;
-            }
-            
-            const z2Time = getTimeString('z2');
-            const z3Time = getTimeString('z3');
-            const z4Time = getTimeString('z4');
-            const z5Time = getTimeString('z5');
-            
-            formData = {
-                ...formData,
-                z2: z2Decimal.toFixed(2),
-                z3: z3Decimal.toFixed(2),
-                z4: z4Decimal.toFixed(2),
-                z5: z5Decimal.toFixed(2),
-                z2_display: z2Time,
-                z3_display: z3Time,
-                z4_display: z4Time,
-                z5_display: z5Time
-            };
-            }
-
-            const response = await fetch(`${FUNCTIONS_BASE_URL}/addFitnessActivity`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-            });
-
-            let result;
-            try {
-            result = await response.json();
-            } catch (parseError) {
-            throw new Error(`Server returned invalid response (Status: ${response.status})`);
-            }
-            
-            if (response.ok) {
-            showMessage(result.message || 'Activity logged successfully!', 'success');
-            
-            const selectedName = form.name.value;
-            
-            if (selectedActivityType === 'zone-training') {
-                document.querySelectorAll('.time-segment').forEach(input => {
-                if (input.id.includes('hours')) {
-                    input.value = '0';
-                } else {
-                    input.value = '00';
-                }
-                });
-            }
-            
-            form.name.value = selectedName;
-            // No need to reset reCAPTCHA anymore
-            
-            loadRanking();
-            setTimeout(() => {
-                loadActivities(showingAllActivities);
-                loadAnalytics();
-                loadProgressChart();
-            }, 1000);
-            } else {
-            const errorMessage = result?.error || `Server error (${response.status})`;
-            const messageType = (errorMessage.toLowerCase().includes('already') || 
-                                errorMessage.toLowerCase().includes('only')) ? 'warning' : 'error';
-            showMessage('Error: ' + errorMessage, messageType);
-            }
-        } catch (error) {
-            console.error("Form submission error:", error);
-            showMessage('Network error: ' + error.message, 'error');
-        } finally {
-            setLoadingState(false);
-        }
-        });
-
-// Load ranking
-async function loadRanking() {
-  const tbody = document.querySelector('#rankingTable tbody');
-  tbody.innerHTML = '<tr><td colspan="9" class="loading-message">Loading ranking data...</td></tr>';
-
-  try {
-    const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const ranking = await response.json();
-
-    if (!ranking || ranking.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9" class="loading-message">No data yet. Be the first to submit!</td></tr>';
-      return;
-    }
-
-    // Get activities to calculate recovery time for each player
-    const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
-    const activities = await activitiesResponse.json();
-    
-    // Calculate recovery time for each player
-    const playerRecovery = {};
-    if (activities && Array.isArray(activities)) {
-      activities.forEach(activity => {
-        if (activity.activityType === 'recovery') {
-          if (!playerRecovery[activity.name]) playerRecovery[activity.name] = 0;
-          playerRecovery[activity.name] += 30; // 30 minutes per recovery
-        }
-      });
-    }
-    
-    // Calculate bonus for each player and update their points
-    const updatedRanking = ranking.map(player => {
-      const recoveryTime = playerRecovery[player.name] || 0;
-      const totalLowIntensity = (player.totalZ2 || 0) + recoveryTime;
-      const totalHighIntensity = (player.totalZ4 || 0) + (player.totalZ5 || 0);
-      const totalTrainingTime = totalLowIntensity + totalHighIntensity;
-      
-      let bonusApplied = false;
-      let finalPoints = player.totalPoints;
-      
-      if (totalTrainingTime > 0) {
-        const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
-        
-        // Apply bonus if low intensity is 70-85%
-        if (lowPercentage >= 70 && lowPercentage <= 85) {
-          bonusApplied = true;
-          finalPoints = player.totalPoints * 1.15;
-        }
-      }
-      
-      return {
-        ...player,
-        bonusApplied,
-        finalPoints
-      };
-    });
-
-    // Sort by final points (with bonus)
-    updatedRanking.sort((a, b) => b.finalPoints - a.finalPoints);
-    
-    tbody.innerHTML = '';
-    
-    updatedRanking.forEach((player, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
-        <td class="name-cell">${player.name}</td>
-        <td class="points-cell">${player.finalPoints.toFixed(1)}</td>
-        <td>${player.activityCount || 0}</td>
-        <td>${formatDecimalToTime(player.totalZ2)}</td>
-        <td>${formatDecimalToTime(player.totalZ3)}</td>
-        <td>${formatDecimalToTime(player.totalZ4)}</td>
-        <td>${formatDecimalToTime(player.totalZ5)}</td>
-        <td>${player.bonusApplied ? '<span style="color: var(--success-color);">⭐+15%</span>' : '-'}</td>
-      `;
-      tbody.appendChild(row);
-    });
-  } catch (error) {
-    console.error("Ranking load error:", error);
-    tbody.innerHTML = `<tr><td colspan="9" class="loading-message error-state">Error loading ranking: ${error.message}</td></tr>`;
-  }
-}
-
-    // Load activities
-    async function loadActivities(loadAll) {
-      const tbody = document.querySelector('#activitiesTable tbody');
-      tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading activities...</td></tr>';
-      
-      try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const activities = await response.json();
-
-        if (!activities || activities.length === 0) {
-          const message = !activities ? "No activities data received." : "No activities recorded yet.";
-          tbody.innerHTML = `<tr><td colspan="7" class="loading-message">${message}</td></tr>`;
-          return;
-        }
-        
-        let displayActivities = activities;
-        if (!loadAll && Array.isArray(activities)) {
-          displayActivities = activities.slice(0, 10);
-        }
-        
-        tbody.innerHTML = '';
-        
-        displayActivities.forEach(function(activity) {
-          const z2Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z2) : '-';
-          const z3Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z3) : '-';
-          const z4Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z4) : '-';
-          const z5Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z5) : '-';
-          
-          let activityTypeDisplay = 'Zone Training';
-          if (activity.activityType === 'others') activityTypeDisplay = 'Others';
-          if (activity.activityType === 'recovery') activityTypeDisplay = 'Recovery';
-          
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${activity.date || "Unknown"}</td>
-            <td class="name-cell">${activity.name || "Unknown"}</td>
-            <td>${activityTypeDisplay}</td>
-            <td class="points-cell">${activity.zonePoints.toFixed(1)}</td>
-            <td>${z2Display}</td>
-            <td>${z3Display}</td>
-            <td>${z4Display}</td>
-            <td>${z5Display}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (error) {
-        console.error("Activities load error:", error);
-        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading activities: ${error.message}</td></tr>`;
-      }
-    }
-
-    // Load analytics
-    async function loadAnalytics() {
-    const tbody = document.querySelector('#analyticsTable tbody');
-    tbody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading analytics...</td></tr>';
-
-    try {
-        const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessRanking`);
-        
-        if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const ranking = await response.json();
-
-        if (!ranking || ranking.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet.</td></tr>';
+      // Check honeypot field
+      const honeypotValue = document.getElementById('website').value;
+      if (honeypotValue !== '') {
+        showMessage('Please try again later.', 'error');
         return;
-        }
+      }
 
-        // Get detailed activity counts
-        const activitiesResponse = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
-        const activities = await activitiesResponse.json();
-        
-        // Calculate activity type counts for each player
-        const playerAnalytics = {};
-        
-        ranking.forEach(player => {
-        playerAnalytics[player.name] = {
-            name: player.name,
-            totalZ2: player.totalZ2 || 0,
-            totalZ3: player.totalZ3 || 0,
-            totalZ4: player.totalZ4 || 0,
-            totalZ5: player.totalZ5 || 0,
-            zoneCount: 0,
-            othersCount: 0,
-            recoveryCount: 0
+      const form = e.target;
+      setLoadingState(true);
+
+      try {
+        let formData = {
+          name: form.name.value,
+          activityType: selectedActivityType,
+          honeypot: honeypotValue
         };
+
+        if (selectedActivityType === 'zone-training') {
+          document.querySelectorAll('.time-segment').forEach(input => {
+            if (!input.value) {
+              if (input.id.includes('hours')) {
+                input.value = '0';
+              } else {
+                input.value = '00';
+              }
+            } else if ((input.id.includes('minutes') || input.id.includes('seconds'))) {
+              const value = parseInt(input.value) || 0;
+              input.value = value < 10 ? '0' + value : value;
+            }
+          });
+
+          const z2Decimal = getTimeValue('z2');
+          const z3Decimal = getTimeValue('z3');
+          const z4Decimal = getTimeValue('z4');
+          const z5Decimal = getTimeValue('z5');
+
+          if (z2Decimal === 0 && z3Decimal === 0 && z4Decimal === 0 && z5Decimal === 0) {
+            showMessage('Please enter at least some training time.', 'error');
+            setLoadingState(false);
+            return;
+          }
+
+          const z2Time = getTimeString('z2');
+          const z3Time = getTimeString('z3');
+          const z4Time = getTimeString('z4');
+          const z5Time = getTimeString('z5');
+
+          formData = {
+            ...formData,
+            z2: z2Decimal.toFixed(2),
+            z3: z3Decimal.toFixed(2),
+            z4: z4Decimal.toFixed(2),
+            z5: z5Decimal.toFixed(2),
+            z2_display: z2Time,
+            z3_display: z3Time,
+            z4_display: z4Time,
+            z5_display: z5Time
+          };
+        }
+
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/addFitnessActivity`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
         });
 
-        // Count activity types
-        if (activities && Array.isArray(activities)) {
+        let result;
+        try {
+          result = await response.json();
+        } catch (parseError) {
+          throw new Error(`Server returned invalid response (Status: ${response.status})`);
+        }
+
+        if (response.ok) {
+          showMessage(result.message || 'Activity logged successfully!', 'success');
+
+          const selectedName = form.name.value;
+
+          if (selectedActivityType === 'zone-training') {
+            document.querySelectorAll('.time-segment').forEach(input => {
+              if (input.id.includes('hours')) {
+                input.value = '0';
+              } else {
+                input.value = '00';
+              }
+            });
+          }
+
+          form.name.value = selectedName;
+
+          // One dashboard reload (force refresh) instead of 4 separate calls.
+          setTimeout(() => loadDashboard(true), 500);
+        } else {
+          const errorMessage = result?.error || `Server error (${response.status})`;
+          const messageType = (errorMessage.toLowerCase().includes('already') ||
+                              errorMessage.toLowerCase().includes('only')) ? 'warning' : 'error';
+          showMessage('Error: ' + errorMessage, messageType);
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        showMessage('Network error: ' + error.message, 'error');
+      } finally {
+        setLoadingState(false);
+      }
+    });
+
+    // ---------------------------------------------------------------
+    //  Pure renderers — take data as arguments, no network calls
+    // ---------------------------------------------------------------
+    function renderRanking(ranking, activities) {
+      const tbody = document.querySelector('#rankingTable tbody');
+
+      if (!ranking || ranking.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="loading-message">No data yet. Be the first to submit!</td></tr>';
+        return;
+      }
+
+      // Calculate recovery minutes per player from the activity list
+      const playerRecovery = {};
+      if (activities && Array.isArray(activities)) {
         activities.forEach(activity => {
-            if (playerAnalytics[activity.name]) {
-            if (activity.activityType === 'zone-training') {
-                playerAnalytics[activity.name].zoneCount++;
-            } else if (activity.activityType === 'others') {
-                playerAnalytics[activity.name].othersCount++;
-            } else if (activity.activityType === 'recovery') {
-                playerAnalytics[activity.name].recoveryCount++;
-            }
-            }
+          if (activity.activityType === 'recovery') {
+            if (!playerRecovery[activity.name]) playerRecovery[activity.name] = 0;
+            playerRecovery[activity.name] += 30; // 30 minutes per recovery
+          }
         });
-        }
-        
-        tbody.innerHTML = '';
-        
-        // Sort by total training time (Z2 + Z3 + Z4 + Z5)
-        const sortedAnalytics = Object.values(playerAnalytics)
-        .sort((a, b) => (b.totalZ2 + b.totalZ3 + b.totalZ4 + b.totalZ5) - (a.totalZ2 + b.totalZ3 + a.totalZ4 + a.totalZ5));
-        
-        sortedAnalytics.forEach(player => {
-        const recoveryTime = player.recoveryCount * 30; // 30 minutes
-        const totalLowIntensity = player.totalZ2 + recoveryTime; // Zone 2 + recovery
-        const totalHighIntensity = player.totalZ4 + player.totalZ5; // Zone 4 + 5
+      }
+
+      // Apply the 80/20 bonus
+      const updatedRanking = ranking.map(player => {
+        const recoveryTime = playerRecovery[player.name] || 0;
+        const totalLowIntensity = (player.totalZ2 || 0) + recoveryTime;
+        const totalHighIntensity = (player.totalZ4 || 0) + (player.totalZ5 || 0);
         const totalTrainingTime = totalLowIntensity + totalHighIntensity;
-        
-        let ratioDisplay = '-';
-        let ratioClass = 'ratio-neutral';
-        
+
+        let bonusApplied = false;
+        let finalPoints = player.totalPoints;
+
         if (totalTrainingTime > 0) {
-            const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
-            const highPercentage = (totalHighIntensity / totalTrainingTime) * 100;
-            
-            ratioDisplay = `${Math.round(lowPercentage)}/${Math.round(highPercentage)}`;
-            
-            // Check if ratio is close to 80/20 (allow some tolerance)
-            if (lowPercentage >= 70 && lowPercentage <= 85) {
-            ratioClass = 'ratio-good';
-            } else {
-            ratioClass = 'ratio-poor';
-            }
+          const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
+          if (lowPercentage >= 70 && lowPercentage <= 85) {
+            bonusApplied = true;
+            finalPoints = player.totalPoints * 1.15;
+          }
         }
-        
+
+        return { ...player, bonusApplied, finalPoints };
+      });
+
+      updatedRanking.sort((a, b) => b.finalPoints - a.finalPoints);
+
+      tbody.innerHTML = '';
+      updatedRanking.forEach((player, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="name-cell">${player.name}</td>
-            <td>${player.zoneCount}</td>
-            <td>${player.othersCount}</td>
-            <td>${player.recoveryCount}</td>
-            <td>${formatDecimalToTime(player.totalZ2 + recoveryTime)}</td>
-            <td>${formatDecimalToTime(player.totalZ4 + player.totalZ5)}</td>
-            <td><span class="${ratioClass}">${ratioDisplay}</span></td>
+          <td class="rank-cell ${index === 0 ? 'rank-1' : ''}">${index + 1}</td>
+          <td class="name-cell">${player.name}</td>
+          <td class="points-cell">${player.finalPoints.toFixed(1)}</td>
+          <td>${player.activityCount || 0}</td>
+          <td>${formatDecimalToTime(player.totalZ2)}</td>
+          <td>${formatDecimalToTime(player.totalZ3)}</td>
+          <td>${formatDecimalToTime(player.totalZ4)}</td>
+          <td>${formatDecimalToTime(player.totalZ5)}</td>
+          <td>${player.bonusApplied ? '<span style="color: var(--success-color);">⭐+15%</span>' : '-'}</td>
         `;
         tbody.appendChild(row);
-        });
-    } catch (error) {
-        console.error("Analytics load error:", error);
-        tbody.innerHTML = `<tr><td colspan="7" class="loading-message error-state">Error loading analytics: ${error.message}</td></tr>`;
-    }
-    }
-
-    // Add this variable at the top with other state management
-let progressChart = null;
-
-async function loadProgressChart() {
-  try {
-    const response = await fetch(`${FUNCTIONS_BASE_URL}/getFitnessActivities`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const activities = await response.json();
-
-    if (!activities || activities.length === 0) {
-      console.log("No activities found for chart");
-      return;
-    }
-
-    console.log("Chart data:", activities); // Debug log
-
-    // Process data for chart
-    const playerData = {};
-    
-    // Initialize players
-    const uniquePlayers = [...new Set(activities.map(a => a.name))];
-    uniquePlayers.forEach(player => {
-      playerData[player] = [];
-    });
-
-    // Sort activities by timestamp
-    const sortedActivities = activities.sort((a, b) => {
-      const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
-      const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
-      return dateA - dateB;
-    });
-    
-    // Calculate cumulative points for each player
-    const runningTotals = {};
-    uniquePlayers.forEach(player => runningTotals[player] = 0);
-
-    sortedActivities.forEach(activity => {
-      const points = parseFloat(activity.zonePoints) || 0; // Use 'zonePoints' not 'zonePoints'
-      runningTotals[activity.name] += points;
-      
-      // Handle Firebase timestamp
-      const activityDate = activity.timestamp?.toDate ? activity.timestamp.toDate() : new Date(activity.timestamp);
-      
-      playerData[activity.name].push({
-        x: activityDate,
-        y: runningTotals[activity.name]
       });
-    });
-
-    console.log("Processed chart data:", playerData); // Debug log
-
-    // Chart colors for different players
-    const colors = [
-      '#ef4444', '#06d6a0', '#6366f1', '#f59e0b', 
-      '#8b5cf6', '#10b981', '#f97316', '#3b82f6'
-    ];
-
-    const datasets = uniquePlayers.map((player, index) => ({
-      label: player,
-      data: playerData[player],
-      borderColor: colors[index % colors.length],
-      backgroundColor: colors[index % colors.length] + '20',
-      borderWidth: 3,
-      fill: false,
-      tension: 0.1,
-      pointRadius: 4,
-      pointHoverRadius: 6
-    }));
-
-    const ctx = document.getElementById('progressChart').getContext('2d');
-    
-    // Destroy existing chart if it exists
-    if (progressChart) {
-      progressChart.destroy();
     }
 
-    progressChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        datasets: datasets
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff',
-              font: {
-                family: 'Inter'
-              }
+    function renderActivities(activities, showAll) {
+      const tbody = document.querySelector('#activitiesTable tbody');
+
+      if (!activities || activities.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="loading-message">No activities recorded yet.</td></tr>';
+        return;
+      }
+
+      const displayActivities = showAll ? activities : activities.slice(0, 10);
+
+      tbody.innerHTML = '';
+      displayActivities.forEach(function(activity) {
+        const z2Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z2) : '-';
+        const z3Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z3) : '-';
+        const z4Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z4) : '-';
+        const z5Display = activity.activityType === 'zone-training' ? formatDecimalToTime(activity.z5) : '-';
+
+        let activityTypeDisplay = 'Zone Training';
+        if (activity.activityType === 'others') activityTypeDisplay = 'Others';
+        if (activity.activityType === 'recovery') activityTypeDisplay = 'Recovery';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${activity.date || "Unknown"}</td>
+          <td class="name-cell">${activity.name || "Unknown"}</td>
+          <td>${activityTypeDisplay}</td>
+          <td class="points-cell">${(activity.zonePoints || 0).toFixed(1)}</td>
+          <td>${z2Display}</td>
+          <td>${z3Display}</td>
+          <td>${z4Display}</td>
+          <td>${z5Display}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderAnalytics(ranking, activities) {
+      const tbody = document.querySelector('#analyticsTable tbody');
+
+      if (!ranking || ranking.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="loading-message">No data yet.</td></tr>';
+        return;
+      }
+
+      const playerAnalytics = {};
+      ranking.forEach(player => {
+        playerAnalytics[player.name] = {
+          name: player.name,
+          totalZ2: player.totalZ2 || 0,
+          totalZ3: player.totalZ3 || 0,
+          totalZ4: player.totalZ4 || 0,
+          totalZ5: player.totalZ5 || 0,
+          zoneCount: 0,
+          othersCount: 0,
+          recoveryCount: 0
+        };
+      });
+
+      if (activities && Array.isArray(activities)) {
+        activities.forEach(activity => {
+          if (playerAnalytics[activity.name]) {
+            if (activity.activityType === 'zone-training') {
+              playerAnalytics[activity.name].zoneCount++;
+            } else if (activity.activityType === 'others') {
+              playerAnalytics[activity.name].othersCount++;
+            } else if (activity.activityType === 'recovery') {
+              playerAnalytics[activity.name].recoveryCount++;
             }
           }
-        },
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: 'day',
-              displayFormats: {
-                day: 'dd/MM'
+        });
+      }
+
+      tbody.innerHTML = '';
+
+      // Sort by total training time (Z2 + Z3 + Z4 + Z5)
+      // NOTE: fixed a pre-existing typo here — original compared `b.totalZ3` on
+      // both sides of the subtraction, which gave an unstable sort on Z3.
+      const sortedAnalytics = Object.values(playerAnalytics)
+        .sort((a, b) =>
+          (b.totalZ2 + b.totalZ3 + b.totalZ4 + b.totalZ5) -
+          (a.totalZ2 + a.totalZ3 + a.totalZ4 + a.totalZ5)
+        );
+
+      sortedAnalytics.forEach(player => {
+        const recoveryTime = player.recoveryCount * 30;
+        const totalLowIntensity = player.totalZ2 + recoveryTime;
+        const totalHighIntensity = player.totalZ4 + player.totalZ5;
+        const totalTrainingTime = totalLowIntensity + totalHighIntensity;
+
+        let ratioDisplay = '-';
+        let ratioClass = 'ratio-neutral';
+
+        if (totalTrainingTime > 0) {
+          const lowPercentage = (totalLowIntensity / totalTrainingTime) * 100;
+          const highPercentage = (totalHighIntensity / totalTrainingTime) * 100;
+          ratioDisplay = `${Math.round(lowPercentage)}/${Math.round(highPercentage)}`;
+          ratioClass = (lowPercentage >= 70 && lowPercentage <= 85) ? 'ratio-good' : 'ratio-poor';
+        }
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="name-cell">${player.name}</td>
+          <td>${player.zoneCount}</td>
+          <td>${player.othersCount}</td>
+          <td>${player.recoveryCount}</td>
+          <td>${formatDecimalToTime(player.totalZ2 + recoveryTime)}</td>
+          <td>${formatDecimalToTime(player.totalZ4 + player.totalZ5)}</td>
+          <td><span class="${ratioClass}">${ratioDisplay}</span></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    let progressChart = null;
+
+    function renderProgressChart(activities) {
+      if (!activities || activities.length === 0) {
+        return;
+      }
+
+      const playerData = {};
+      const uniquePlayers = [...new Set(activities.map(a => a.name))];
+      uniquePlayers.forEach(player => { playerData[player] = []; });
+
+      // Don't mutate the cached list
+      const sortedActivities = [...activities].sort((a, b) => {
+        const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+        const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+        return dateA - dateB;
+      });
+
+      const runningTotals = {};
+      uniquePlayers.forEach(player => runningTotals[player] = 0);
+
+      sortedActivities.forEach(activity => {
+        const points = parseFloat(activity.zonePoints) || 0;
+        runningTotals[activity.name] += points;
+        const activityDate = activity.timestamp?.toDate ? activity.timestamp.toDate() : new Date(activity.timestamp);
+        playerData[activity.name].push({
+          x: activityDate,
+          y: runningTotals[activity.name]
+        });
+      });
+
+      // Chart colors - summer palette
+      const colors = [
+        '#f97316', '#06b6d4', '#fbbf24', '#ec4899',
+        '#10b981', '#8b5cf6', '#f43f5e', '#3b82f6'
+      ];
+
+      const datasets = uniquePlayers.map((player, index) => ({
+        label: player,
+        data: playerData[player],
+        borderColor: colors[index % colors.length],
+        backgroundColor: colors[index % colors.length] + '20',
+        borderWidth: 3,
+        fill: false,
+        tension: 0.1,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }));
+
+      const ctx = document.getElementById('progressChart').getContext('2d');
+
+      if (progressChart) {
+        progressChart.destroy();
+      }
+
+      progressChart = new Chart(ctx, {
+        type: 'line',
+        data: { datasets: datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#ffffff',
+                font: { family: 'Inter' }
               }
-            },
-            title: {
-              display: true,
-              text: 'Zeit',
-              color: '#94a3b8',
-              font: {
-                family: 'Inter',
-                size: 14
-              }
-            },
-            ticks: {
-              color: '#94a3b8'
-            },
-            grid: {
-              color: '#334155'
             }
           },
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Gesamtpunkte',
-              color: '#94a3b8',
-              font: {
-                family: 'Inter',
-                size: 14
-              }
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'day',
+                displayFormats: { day: 'dd/MM' }
+              },
+              title: {
+                display: true,
+                text: 'Zeit',
+                color: '#94a3b8',
+                font: { family: 'Inter', size: 14 }
+              },
+              ticks: { color: '#94a3b8' },
+              grid: { color: '#334155' }
             },
-            ticks: {
-              color: '#94a3b8'
-            },
-            grid: {
-              color: '#334155'
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Gesamtpunkte',
+                color: '#94a3b8',
+                font: { family: 'Inter', size: 14 }
+              },
+              ticks: { color: '#94a3b8' },
+              grid: { color: '#334155' }
             }
           }
         }
-      }
-    });
+      });
+    }
 
-    console.log("Chart created successfully"); // Debug log
-
-  } catch (error) {
-    console.error("Chart load error:", error);
-  }
-}
-
-    // Add this at the end of your existing JavaScript
+    // Keep the form disabled until the challenge officially opens in May.
     document.addEventListener('DOMContentLoaded', function() {
-      // Disable the form
       const form = document.getElementById('runningForm');
       const timeSection = document.querySelector('.time-section .card-section');
-      
+
       if (form && timeSection) {
         form.classList.add('form-disabled');
-        
+
         // Update the form title
         const formTitle = timeSection.querySelector('h2');
         if (formTitle) {
-          formTitle.innerHTML = '<i class="fas fa-lock"></i>Challenge <span>Completed</span>';
+          formTitle.innerHTML = '<i class="fas fa-lock"></i>Opens in <span>May</span>';
         }
-        
+
         // Disable all form inputs
         const inputs = form.querySelectorAll('input, select, button');
         inputs.forEach(input => {
           input.disabled = true;
         });
-        
+
         // Hide reCAPTCHA
         const recaptcha = form.querySelector('.g-recaptcha');
         if (recaptcha) {

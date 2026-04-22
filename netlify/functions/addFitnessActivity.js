@@ -9,7 +9,7 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-const COLLECTION_NAME = 'fitness-challenge-2026';
+const COLLECTION_NAME = 'summerfit-2026';
 
 // Point multipliers
 const POINT_MULTIPLIERS = {
@@ -193,11 +193,11 @@ exports.handler = async (event, context) => {
     // Save to Firestore
     await db.collection(COLLECTION_NAME).add(activityData);
 
-    let successMessage = 'BANG! Your activity has been logged successfully! 🔥';
+    let successMessage = 'Activity logged — enjoy the sunshine! ☀️';
     if (activityType === 'others') {
-      successMessage = `BANG! Others activity logged (+${ACTIVITY_POINTS.others} points)! 💪`;
+      successMessage = `Others activity logged (+${ACTIVITY_POINTS.others} points)! 💪`;
     } else if (activityType === 'recovery') {
-      successMessage = `BANG! Recovery activity logged (+${ACTIVITY_POINTS.recovery} points)! 🧘`;
+      successMessage = `Recovery activity logged (+${ACTIVITY_POINTS.recovery} points)! 🧘`;
     }
 
     return {
