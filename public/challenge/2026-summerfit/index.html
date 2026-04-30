@@ -432,6 +432,63 @@
       color: var(--warning-color);
     }
 
+    /* Others duration picker (only visible when "Others" is selected) */
+    .others-duration-picker {
+      display: none;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .others-duration-picker.visible {
+      display: block;
+    }
+
+    .others-duration-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+      text-align: center;
+    }
+
+    .others-duration-options {
+      display: flex;
+      gap: var(--spacing-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .duration-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-default);
+    }
+
+    .duration-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(249, 115, 22, 0.4);
+      color: var(--text-primary);
+      box-shadow: none;
+    }
+
+    .duration-btn.active {
+      background: var(--summer-gradient);
+      border-color: var(--summer-accent);
+      color: #fff;
+    }
+
+    .duration-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* reCAPTCHA styling */
     .g-recaptcha {
       margin: 15px 0;
@@ -1060,6 +1117,19 @@
               <div class="simple-activity-info" id="activityInfo">
                 <p><strong>Recovery Activity:</strong> 10 points (once per week)</p>
               </div>
+
+              <!-- Duration picker for "Others" only -->
+              <div class="others-duration-picker" id="othersDurationPicker">
+                <div class="others-duration-label">Wähle die Dauer:</div>
+                <div class="others-duration-options">
+                  <button type="button" class="duration-btn active" data-duration="30">
+                    ≥30 Min · 20 Punkte
+                  </button>
+                  <button type="button" class="duration-btn" data-duration="60">
+                    ≥60 Min · 40 Punkte
+                  </button>
+                </div>
+              </div>
             </div>
                         
             <button type="submit" id="submitBtn">
@@ -1192,6 +1262,7 @@
     let showingAllActivities = false;
     let isLoading = false;
     let selectedActivityType = 'zone-training';
+    let selectedOthersDuration = '30'; // '30' or '60', only relevant when activity type is "others"
 
     // Dashboard data cache — avoids redundant Firestore reads.
     // Both getFitnessRanking and getFitnessActivities are fetched ONCE per
@@ -1314,6 +1385,20 @@
       const zoneTraining = document.getElementById('zoneTraining');
       const simpleActivity = document.getElementById('simpleActivity');
       const activityInfo = document.getElementById('activityInfo');
+      const othersDurationPicker = document.getElementById('othersDurationPicker');
+      const durationBtns = document.querySelectorAll('.duration-btn');
+
+      // Helper that sets activityInfo copy based on type + selected Others duration
+      function refreshActivityInfo() {
+        if (selectedActivityType === 'others') {
+          const points = selectedOthersDuration === '60' ? 40 : 20;
+          activityInfo.innerHTML = `<p><strong>Others Activity:</strong> ≥${selectedOthersDuration} Min · ${points} Punkte</p>`;
+          activityInfo.className = 'simple-activity-info others';
+        } else if (selectedActivityType === 'recovery') {
+          activityInfo.innerHTML = '<p><strong>Recovery Activity:</strong> 30 points (once per week)</p>';
+          activityInfo.className = 'simple-activity-info';
+        }
+      }
 
       activityTypeBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -1325,18 +1410,30 @@
           if (selectedActivityType === 'zone-training') {
             zoneTraining.classList.remove('hidden');
             simpleActivity.classList.remove('visible');
+            othersDurationPicker.classList.remove('visible');
           } else {
             zoneTraining.classList.add('hidden');
             simpleActivity.classList.add('visible');
 
+            // Duration picker only relevant for "Others"
             if (selectedActivityType === 'others') {
-              activityInfo.innerHTML = '<p><strong>Others Activity:</strong> 20 points (once per day)</p>';
-              activityInfo.className = 'simple-activity-info others';
-            } else if (selectedActivityType === 'recovery') {
-              activityInfo.innerHTML = '<p><strong>Recovery Activity:</strong> 30 points (once per week)</p>';
-              activityInfo.className = 'simple-activity-info';
+              othersDurationPicker.classList.add('visible');
+            } else {
+              othersDurationPicker.classList.remove('visible');
             }
+
+            refreshActivityInfo();
           }
+        });
+      });
+
+      // Duration pill buttons
+      durationBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          durationBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          selectedOthersDuration = this.dataset.duration;
+          refreshActivityInfo();
         });
       });
     }
@@ -1440,6 +1537,11 @@
           activityType: selectedActivityType,
           honeypot: honeypotValue
         };
+
+        // For "Others" activities, include the chosen duration ('30' or '60')
+        if (selectedActivityType === 'others') {
+          formData.othersDuration = selectedOthersDuration;
+        }
 
         if (selectedActivityType === 'zone-training') {
           document.querySelectorAll('.time-segment').forEach(input => {
@@ -1808,7 +1910,7 @@
         }
       });
     }
-/* 
+/*
     // Keep the form disabled until the challenge officially opens in May.
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('runningForm');
