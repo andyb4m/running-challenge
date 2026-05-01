@@ -9,7 +9,7 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-const COLLECTION_NAME = 'fitness-challenge-2026';
+const COLLECTION_NAME = 'summerfit-2026';
 
 // Point multipliers
 const POINT_MULTIPLIERS = {
@@ -19,8 +19,14 @@ const POINT_MULTIPLIERS = {
   z5: 2.0
 };
 
+// Point values per activity type.
+// "Others" supports two duration tiers (30 vs 60 min).
+const OTHERS_POINTS = {
+  '30': 20,
+  '60': 40
+};
+
 const ACTIVITY_POINTS = {
-  others: 20,
   recovery: 30
 };
 
@@ -103,7 +109,7 @@ exports.handler = async (event, context) => {
 
   try {
     const data = JSON.parse(event.body);
-    const { name, activityType, honeypot } = data;
+    const { name, activityType, honeypot, othersDuration } = data;
 
     // Basic validation
     if (!name || !activityType) {
@@ -124,20 +130,29 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check if activity is allowed
-    const isAllowed = await checkActivityAllowed(name, activityType);
-    if (!isAllowed) {
-      let errorMessage = '';
-      if (activityType === 'others') {
-        errorMessage = 'You can only submit one "Others" activity per day.';
-      } else if (activityType === 'recovery') {
-        errorMessage = 'You can only submit one "Recovery" activity per week (Monday-Sunday).';
+    // Validate othersDuration when relevant
+    let othersDurationValue = null;
+    if (activityType === 'others') {
+      othersDurationValue = String(othersDuration || '30');
+      if (!OTHERS_POINTS.hasOwnProperty(othersDurationValue)) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Invalid duration for Others activity. Must be "30" or "60".' }),
+        };
       }
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: errorMessage }),
-      };
+    }
+
+    // Daily/weekly limit check (Others has no limit anymore — only recovery is rate-limited)
+    if (activityType === 'recovery') {
+      const isAllowed = await checkActivityAllowed(name, activityType);
+      if (!isAllowed) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'You can only submit one "Recovery" activity per week (Monday-Sunday).' }),
+        };
+      }
     }
 
     // Prepare activity data
@@ -183,7 +198,15 @@ exports.handler = async (event, context) => {
         zonePoints: totalPoints
       };
     } else {
-      activityData.zonePoints = ACTIVITY_POINTS[activityType] || 0;
+      // Non-zone activities (others / recovery)
+      let pointsAwarded;
+      if (activityType === 'others') {
+        pointsAwarded = OTHERS_POINTS[othersDurationValue];
+        activityData.othersDuration = othersDurationValue; // '30' or '60'
+      } else {
+        pointsAwarded = ACTIVITY_POINTS[activityType] || 0;
+      }
+      activityData.zonePoints = pointsAwarded;
       activityData.z2 = 0;
       activityData.z3 = 0;
       activityData.z4 = 0;
@@ -193,11 +216,12 @@ exports.handler = async (event, context) => {
     // Save to Firestore
     await db.collection(COLLECTION_NAME).add(activityData);
 
-    let successMessage = 'BANG! Your activity has been logged successfully! 🔥';
+    let successMessage = 'Activity logged — enjoy the sunshine! ☀️';
     if (activityType === 'others') {
-      successMessage = `BANG! Others activity logged (+${ACTIVITY_POINTS.others} points)! 💪`;
+      const pts = OTHERS_POINTS[othersDurationValue];
+      successMessage = `Others activity logged — ≥${othersDurationValue} Min (+${pts} points)! 💪`;
     } else if (activityType === 'recovery') {
-      successMessage = `BANG! Recovery activity logged (+${ACTIVITY_POINTS.recovery} points)! 🧘`;
+      successMessage = `Recovery activity logged (+${ACTIVITY_POINTS.recovery} points)! 🧘`;
     }
 
     return {
