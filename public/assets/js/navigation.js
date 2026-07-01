@@ -4,7 +4,7 @@ const challenges = [
     id: 'fitness-challenge-2026',
     title: 'Chines New Year Challenge 2026 - Get Fit or Die',
     description: 'Push your limits with our fitness challenge. Track your zones and compete with friends.',
-    status: 'active',
+    status: 'ended',
     startDate: '2026-02-01',
     endDate: '2026-03-30',
     participants: 6,
@@ -43,19 +43,19 @@ const challenges = [
     icon: 'fas fa-fire'
   },
   {
-    id: 'running-challenge-zone-2',
-    title: 'Running Challenge Zone 2',
-    description: 'Completed running challenge focused on zone 2 training and endurance building.',
-    status: 'ended',
-    startDate: '2025-05-01',
-    endDate: '2025-6-30',
-    participants: 3,
-    type: 'running',
-    url: '#',
-    difficulty: 'Intermediate',
-    duration: '2 months',
-    icon: 'fas fa-running'
-  }
+  id: 'running-challenge-summer-2026',
+  title: 'Running Challenge Summer 2026',
+  description: 'Running challenge focused on base training to get sexy for summer 2026',
+  status: 'upcoming',
+  startDate: '2026-05-01',
+  endDate: '2025-6-30',
+  participants: 8,
+  type: 'running',
+  url: '/challenge/2026-summerfit/',
+  difficulty: 'Intermediate',
+  duration: '2 months',
+  icon: 'fas fa-running'
+}
 ];
 
 function loadChallenges() {
